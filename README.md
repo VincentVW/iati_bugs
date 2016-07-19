@@ -1,4 +1,4 @@
-# iati_bugs
+# IATI bugs
 IATI validation errors from OIPA
 
 This is still a work in progress.
