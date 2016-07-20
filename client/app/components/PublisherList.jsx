@@ -1,23 +1,13 @@
-/** @flow */
 import React, { Component, PropTypes } from 'react'
-import { InfiniteLoader, AutoSizer, Grid, ScrollSync } from 'react-virtualized'
+import { WindowScroller, InfiniteLoader, VirtualScroll, AutoSizer, Grid, ScrollSync } from 'react-virtualized'
 import shallowCompare from 'react-addons-shallow-compare'
 import cn from 'classnames'
 import styles from '../css/tablestyle.css'
 import scrollbarSize from 'dom-helpers/util/scrollbarSize'
 import { connect } from 'react-redux'
-import {List} from 'immutable'
+import * as immutable from 'immutable'
 import moment from 'moment'
 import { Link } from 'react-router'
-
-const LEFT_COLOR_FROM = hexToRgb('#4ABA79')
-const LEFT_COLOR_TO = hexToRgb('#BC3959')
-
-// const LEFT_COLOR_FROM = hexToRgb('#55b4eb')
-// const LEFT_COLOR_TO = hexToRgb('#9aced9')
-
-const TOP_COLOR_FROM = hexToRgb('#000000')
-const TOP_COLOR_TO = hexToRgb('#000000')
 
 
 class PublisherList extends Component {
@@ -25,41 +15,126 @@ class PublisherList extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      columnWidth: 300,
-      columnCount: 3,
-      height: 1000,
-      overscanColumnCount: 0,
-      overscanRowCount: 5,
-      rowHeight: 36,
-      rowCount: 0,
-      totalCount: 4000
+      loadedRowCount: 0,
+      loadedRowsMap: {},
+      loadingRowCount: 0,
+      columnCount: 8,
+      height: 600,
+      overscanColumnCount: 15,
+      rowHeight: 40,
+      rowCount: 1,
+      totalCount: 1,
+      order: '-note_count',
+      orderAsc: true,
+      filters: immutable.Map({}),
+      next: null,
+      previous: null,
+      filterChangeCounter: 0,
+      publisherSearchInput: '',
+      publisherNameSearchInput: '',
+      fixedHeader: ''
     }
 
-    this._renderBodyCell = this._renderBodyCell.bind(this)
+    if(props.meta.get('filters') != undefined && props.meta.get('filters').get('publisher') != undefined){
+      this.state.publisherSearchInput = props.meta.get('filters').get('publisher')
+    }
+
+    if(props.meta.get('filters') != undefined && props.meta.get('filters').get('publisherName') != undefined){
+      this.state.publisherNameSearchInput = props.meta.get('filters').get('publisherName')
+    }
+
+    if(props.meta.get('filters') != undefined){
+      this.state.filters = props.meta.get('filters')
+    }
+
+    this._renderHeaderCell = this._renderHeaderCell.bind(this)
     this._getColumnWidth = this._getColumnWidth.bind(this)
-    this.props.fetchPublishers()
+    this._rowRenderer = this._rowRenderer.bind(this)
+
+    this.onPublisherSearch = this.onPublisherSearch.bind(this)
+    this.onPublisherNameSearch = this.onPublisherNameSearch.bind(this)
+    this.changeOrder = this.changeOrder.bind(this)
+  }
+
+  componentDidMount(){
+    this.props.fetchPublishers(this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1))
+  }
+
+  componentWillUnmount() {
+    Object.keys(this._timeoutIdMap).forEach(timeoutId => {
+      clearTimeout(timeoutId)
+    })
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.rowCount != nextProps.publishers.size){
-      this.setState({
-        rowCount: nextProps.publishers.size
-      });
+
+    let stateChanges = {
+      rowCount: nextProps.publishers.size,
+      totalCount: nextProps.meta.get('count'),
+      order: nextProps.meta.get('order'),
+      filters: nextProps.meta.get('filters'),
+      previous: nextProps.meta.get('previous'),
+      next: nextProps.meta.get('next'),
+      filterChangeCounter:  nextProps.meta.get('filterChangeCounter'),
     }
+
+    this.setState(stateChanges);
+  }
+
+  onPublisherSearch(event){
+    const searchValue = event.target.value
+    this.setState({publisherSearchInput: searchValue})
+    const { order, filters, filterChangeCounter } = this.state
+    this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisher', searchValue))
+  }
+
+  onPublisherNameSearch(event){
+    const searchValue = event.target.value
+    this.setState({publisherNameSearchInput: searchValue})
+    const { order, filters, filterChangeCounter } = this.state
+    this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisherName', searchValue))
+  }
+
+  changeOrder(nextOrder, defaultOrder){
+    
+    const { orderAsc, order, filters } = this.state
+    let asc = orderAsc;
+
+    if (order.indexOf(nextOrder) > -1){
+      asc = !asc;
+    } else {
+      asc = defaultOrder;
+    }
+
+    if(!asc){
+      nextOrder = '-' + nextOrder;
+    }
+
+    this.setState({orderAsc: asc})
+    this.props.fetchPublishers(nextOrder, filters)
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState)
   }
 
   render () {
-
     const {
       columnCount,
-      columnWidth,
       height,
       overscanColumnCount,
-      overscanRowCount,
       rowHeight,
       rowCount,
-      totalCount
+      totalCount,
+      order,
+      filters,
+      filterChangeCounter,
+      publisherSearchInput,
+      publisherNameSearchInput,
+      fixedHeader
     } = this.state
+
+    const headerClasses = cn(fixedHeader, 'colHeader')
 
     return (
       <div className="ListWrapper2">
@@ -72,155 +147,82 @@ class PublisherList extends Component {
             To search datasets by the publisher, please use the search on the <Link to="/datasets">datasets</Link> page for now.
           </p>
         </div>
-        <div className="ListWrapper">
-          <ScrollSync>
-            {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
-              const x = scrollLeft / (scrollWidth - clientWidth)
-              const y = scrollTop / (scrollHeight - clientHeight)
+        <div id="publisherList">
+          <div 
+          className={headerClasses}>
+            <Grid
+              className="HeaderGrid"
+              columnWidth={this._getColumnWidth}
+              columnCount={columnCount}
+              height={rowHeight}
+              overscanColumnCount={overscanColumnCount}
+              cellRenderer={this._renderHeaderCell}
+              rowHeight={rowHeight}
+              rowCount={1}
+              width={1900}
+              publisherSearchInput={publisherSearchInput}
+              publisherNameSearchInput={publisherNameSearchInput}
+              filterChangeCounter={filterChangeCounter}
+            />
+          </div>
 
-              const leftBackgroundColor = mixColors(LEFT_COLOR_FROM, LEFT_COLOR_TO, y)
-              const leftColor = '#ffffff'
-              const topBackgroundColor = mixColors(TOP_COLOR_FROM, TOP_COLOR_TO, x)
-              const topColor = '#ffffff'
-              const middleBackgroundColor = mixColors(leftBackgroundColor, topBackgroundColor, 0.8)
-              const middleColor = '#ffffff'
-
-              return (
-                <div 
-                  className="GridRow"
-                  style={{
-                    width: '100%',
-                  }}>
-                  
-                  <div className="GridColumn">
-                    <AutoSizer disableHeight>
-                      {({ width }) => (
-                        <div>
-                          <div style={{
-                            backgroundColor: `rgb(58, 58, 58)`,
-                            color: topColor,
-                            height: rowHeight,
-                            width: width - scrollbarSize()
-                          }}>
-                            <Grid
-                              className="HeaderGrid"
-                              columnWidth={this._getColumnWidth}
-                              columnCount={columnCount}
-                              height={rowHeight}
-                              overscanColumnCount={overscanColumnCount}
-                              cellRenderer={this._renderLeftHeaderCell}
-                              rowHeight={rowHeight}
-                              rowCount={1}
-                              scrollLeft={scrollLeft}
-                              width={width - scrollbarSize()}
-                            />
-                          </div>
-                          <div
-                            style={{
-                              backgroundColor: `rgb(${middleBackgroundColor.r},${middleBackgroundColor.g},${middleBackgroundColor.b})`,
-                              color: middleColor,
-                              height,
-                              width
-                            }}
-                          >
-
-                            <Grid
-                              className="BodyGrid"
-                              columnWidth={this._getColumnWidth}
-                              columnCount={columnCount}
-                              height={height}
-                              onScroll={onScroll}
-                              overscanColumnCount={overscanColumnCount}
-                              overscanRowCount={overscanRowCount}
-                              cellRenderer={this._renderBodyCell}
-                              rowHeight={rowHeight}
-                              rowCount={rowCount}
-                              width={width}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </AutoSizer>
-                  </div>
-                </div>
-              )
-            }}
-          </ScrollSync>
+          <VirtualScroll
+            width={1900}
+            height={height}
+            rowCount={totalCount}
+            rowHeight={rowHeight}
+            rowRenderer={this._rowRenderer}
+            order={order}
+            filterChangeCounter={filterChangeCounter}
+          />
         </div>
       </div>
     )
   }
 
-
   _getColumnWidth ({ index }) {
     switch (index) {
       case 0:
-        return 240
+        return 340
       case 1:
-        return 650
+        return 720
       case 2:
-        return 180
+        return 840
       case 3:
-        return 180
-      case 4:
-        return 600
-      case 5:
-        return 800
+        return 100
       default:
         return 100
     }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState)
-  }
+  _renderHeaderCell ({ columnIndex, rowIndex }) {
 
-  _renderBodyCell ({ columnIndex, rowIndex }) {
-
-    const {publishers} = this.props
     let content
+    const {publisherSearchInput, publisherNameSearchInput } = this.state
+
     switch (columnIndex) {
+
       case 0:
-        content = publishers.get(rowIndex)._publisher.org_id
+        content = <input
+            type="text"
+            onChange={this.onPublisherSearch}
+            value={publisherSearchInput}
+            placeholder="Publisher ref"
+          />
         break
       case 1:
-        content = publishers.get(rowIndex)._publisher.org_name
+        content = <input
+            type="text"
+            onChange={this.onPublisherNameSearch}
+            value={publisherNameSearchInput}
+            placeholder="Publisher name"
+          />
         break
       case 2:
-        content = publishers.get(rowIndex).note_count
-        break
-      case 3:
-        //content = publishers.get(rowIndex).activity_count
-        content = 'to do'
-        break
-      default:
-        content = (
-          <div>
-          
+        content = <div className="inputHeaderCell">
+          Bug count
+          <span className="sort-by" onClick={this.changeOrder.bind(null, 'note_count', false)}><img src="/public/images/sort-alphabetical.svg" /></span>
           </div>
-        )
-        break
-    }
-
-    return (
-      <div className="cell">
-        {content}
-      </div>
-    )
-  }
-
-  _renderLeftHeaderCell ({ columnIndex, rowIndex }) {
-    let content
-
-    switch (columnIndex) {
-      case 0:
-        content = 'Ref'
-        break
-      case 1:
-        content = 'Name'
-        break
-      case 2:
-        content = 'Error count'
         break
       case 3:
         content = 'Activity count'
@@ -228,7 +230,7 @@ class PublisherList extends Component {
       default:
         content = (
           <div>
-            empty
+          empty
           </div>
         )
         break
@@ -239,6 +241,46 @@ class PublisherList extends Component {
         {content}
       </div>
     )
+  }
+
+  _rowRenderer ({ index, isScrolling }) {
+    const { loadedRowsMap } = this.state
+    const {publishers} = this.props 
+    const row = publishers.get(index)
+    const even = (index % 2 == 1) ? 'uneven': 'even';
+    const rowCn = cn('rv-row', 'row', 'datasets', even)
+
+    if (row == undefined) {
+      return (
+        <div className={rowCn}>
+          <div className="rv-col column-1" style={{width: this._getColumnWidth({index: 0})}}>
+            loading...
+          </div>
+        </div>
+      )
+    } else {
+      let url = 'publishers/' + row._publisher.id
+      let publisherName = row._publisher.org_name
+      if(publisherName.length > 90){
+        publisherName = publisherName.substr(0,87) + '...'
+      }
+      return (
+        <div className={rowCn}>
+
+          <div className="rv-col column-1" style={{width: this._getColumnWidth({index: 0})}}>
+            {row._publisher.org_id}
+          </div>
+          
+          <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}} title={row._publisher.org_name}>
+            <Link to={url}>{publisherName}</Link>
+          </div>
+
+          <div className="rv-col column-3" style={{width: this._getColumnWidth({index: 2})}}>
+            {row.note_count}
+          </div>
+        </div>
+      )
+    }
   }
 }
 
@@ -251,30 +293,16 @@ function hexToRgb (hex) {
   } : null
 }
 
-/**
- * Ported from sass implementation in C
- * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
- */
-function mixColors (color1, color2, amount) {
-  const weight1 = amount
-  const weight2 = 1 - amount
-
-  const r = Math.round(weight1 * color1.r + weight2 * color2.r)
-  const g = Math.round(weight1 * color1.g + weight2 * color2.g)
-  const b = Math.round(weight1 * color1.b + weight2 * color2.b)
-
-  return { r, g, b }
-}
-
 PublisherList.propTypes = {
-  publishers: PropTypes.instanceOf(List).isRequired
-} 
+  publishers: PropTypes.instanceOf(immutable.List).isRequired,
+  meta: PropTypes.instanceOf(immutable.Map).isRequired,
+}
 
 function mapStateToProps(state, props) {
     const { publishers } = state
-
     return {
-        publishers: publishers,
+        publishers: publishers.get('results'),
+        meta: publishers.get('meta')
     }
 }
 

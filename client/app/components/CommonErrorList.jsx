@@ -11,16 +11,6 @@ import moment from 'moment'
 import { Link } from 'react-router'
 import { errorTypeMapping, elementMapping } from '../mappings'
 
-
-const LEFT_COLOR_FROM = hexToRgb('#4ABA79')
-const LEFT_COLOR_TO = hexToRgb('#BC3959')
-
-// const LEFT_COLOR_FROM = hexToRgb('#55b4eb')
-// const LEFT_COLOR_TO = hexToRgb('#9aced9')
-
-const TOP_COLOR_FROM = hexToRgb('#000000')
-const TOP_COLOR_TO = hexToRgb('#000000')
-
 // element -> reason -> note
 const reasonMapping = {
   'policy-marker': { 
@@ -46,7 +36,7 @@ class CommonErrorList extends Component {
     this.state = {
       columnWidth: 300,
       columnCount: 6,
-      height: 1000,
+      height: 600,
       overscanColumnCount: 0,
       overscanRowCount: 5,
       rowHeight: 40,
@@ -127,51 +117,43 @@ class CommonErrorList extends Component {
             Where known, its also shown why this field is often filled in incorrectly.
           </p>
         </div>
-        <div className="ListWrapper">
 
-          <div id="commonErrorList">
-            <div 
-            className={fixedHeader}
-            style={{
-              backgroundColor: `rgb(58, 58, 58)`,
-              color: `rgb(255, 255, 255)`,
-              height: rowHeight,
-              minWidth: 2350,
-              width: `100%`
-            }}>
-              <Grid
-                className="HeaderGrid"
-                columnWidth={this._getColumnWidth}
-                columnCount={columnCount}
-                height={rowHeight}
-                overscanColumnCount={overscanColumnCount}
-                cellRenderer={this._renderHeaderCell}
-                rowHeight={rowHeight}
-                rowCount={1}
-                width={2350}
-              />
-            </div>
-
-           <WindowScroller>
-              {({ height, scrollTop }) => (
-                <AutoSizer disableHeight>
-                  {({ width }) => (
-                    
-                    <VirtualScroll
-                      autoHeight
-                      width={2350}
-                      height={height}
-                      rowCount={rowCount}
-                      rowHeight={rowHeight}
-                      rowRenderer={this._rowRenderer}
-                      scrollTop={scrollTop}
-                    />
-
-                  )}
-                </AutoSizer>
-              )}
-            </WindowScroller>
+        <div id="commonErrorList">
+          <div 
+          className={fixedHeader}
+          style={{
+            backgroundColor: `rgb(58, 58, 58)`,
+            color: `rgb(255, 255, 255)`,
+            height: rowHeight,
+            minWidth: 2350,
+            width: `100%`
+          }}>
+            <Grid
+              className="HeaderGrid"
+              columnWidth={this._getColumnWidth}
+              columnCount={columnCount}
+              height={rowHeight}
+              overscanColumnCount={overscanColumnCount}
+              cellRenderer={this._renderHeaderCell}
+              rowHeight={rowHeight}
+              rowCount={1}
+              width={2350}
+            />
           </div>
+
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                
+                <VirtualScroll
+                  width={2350}
+                  height={height}
+                  rowCount={rowCount}
+                  rowHeight={rowHeight}
+                  rowRenderer={this._rowRenderer}
+                />
+
+              )}
+            </AutoSizer>
         </div>
       </div>
     )

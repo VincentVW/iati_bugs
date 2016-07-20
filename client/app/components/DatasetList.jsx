@@ -1,4 +1,3 @@
-/** @flow */
 import React, { Component, PropTypes } from 'react'
 import { WindowScroller, InfiniteLoader, VirtualScroll, AutoSizer, Grid, ScrollSync } from 'react-virtualized'
 import shallowCompare from 'react-addons-shallow-compare'
@@ -22,11 +21,11 @@ class DatasetList extends Component {
       loadedRowsMap: {},
       loadingRowCount: 0,
       columnCount: 8,
-      height: 700,
+      height: 600,
       overscanColumnCount: 15,
       rowHeight: 40,
-      rowCount: 0,
-      totalCount: -1,
+      rowCount: 1,
+      totalCount: 1,
       order: 'ref',
       orderAsc: true,
       page: 1,
@@ -61,7 +60,6 @@ class DatasetList extends Component {
       this.state.filters = props.meta.get('filters')
     }
 
-    // this._renderBodyCell = this._renderBodyCell.bind(this)
     this._renderHeaderCell = this._renderHeaderCell.bind(this)
     this._getColumnWidth = this._getColumnWidth.bind(this)
     this._rowRenderer = this._rowRenderer.bind(this)
@@ -76,47 +74,20 @@ class DatasetList extends Component {
     this._isRowLoaded = this._isRowLoaded.bind(this)
     this._loadMoreRows = this._loadMoreRows.bind(this)
     this._clearData = this._clearData.bind(this)
-
-    this.handleScroll = this.handleScroll.bind(this)
-
-    this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters)
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
+  componentDidMount(){
 
+    this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1))
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-
     Object.keys(this._timeoutIdMap).forEach(timeoutId => {
       clearTimeout(timeoutId)
     })
   }
 
-  handleScroll(event) {
-    let scrollTop = event.srcElement.body.scrollTop;
-    let fixedHeader = ''
-    
-    if(scrollTop > 255){
-      fixedHeader = 'fixed'
-    }
-    
-    if(this.state.fixedHeader != fixedHeader){
-      this.setState({
-        fixedHeader: fixedHeader
-      });
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
-
-    // check if order or filters changed, then, clear loaded indexes
-    // if (this.state.filterChangeCounter != nextProps.meta.get('filterChangeCounter') || this.state.order != nextProps.meta.get('order')){
-      // console.log('cleardata');
-      // this._clearData();
-    // }
 
     let stateChanges = {
       rowCount: nextProps.datasets.size,
@@ -261,6 +232,8 @@ class DatasetList extends Component {
       fixedHeader
     } = this.state
 
+    const headerClasses = cn(fixedHeader, 'colHeader')
+
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
@@ -268,73 +241,51 @@ class DatasetList extends Component {
           <p>
             The below list shows all datasets currently in the IATI registry, with the mount of data bugs found.
             <br />&nbsp;<br />
-            Click a column header with a filter icon <i class="fa fa-filter" aria-hidden="true"></i> to search by name.
+            Click a column header with a filter icon <i className="fa fa-filter" aria-hidden="true"></i> to search by name.
             <br />&nbsp;<br />
             For an overview of implemented bug checks, see the <Link to="/common-errors">Common bugs</Link> page.
           </p>
-        </div>
-       <div className="ListWrapper datasetList">
+        </div>        
+
+        <div id="datasetList">
+          <div 
+          className={headerClasses}>
+            <Grid
+              className="HeaderGrid"
+              columnWidth={this._getColumnWidth}
+              columnCount={columnCount}
+              height={rowHeight}
+              overscanColumnCount={overscanColumnCount}
+              cellRenderer={this._renderHeaderCell}
+              rowHeight={rowHeight}
+              rowCount={1}
+              width={2350}
+              refSearchInput={refSearchInput}
+              titleSearchInput={titleSearchInput}
+              publisherSearchInput={publisherSearchInput}
+              publisherNameSearchInput={publisherNameSearchInput}
+              filterChangeCounter={filterChangeCounter}
+            />
+          </div>
 
           <InfiniteLoader
             isRowLoaded={this._isRowLoaded}
             loadMoreRows={this._loadMoreRows}
             minimumBatchSize={100}
-            rowCount={10000}
-          >
+            rowCount={totalCount}>
             {({ onRowsRendered, registerChild }) => (
-
-                  <div id="datasetList">
-                    <div 
-                    className={fixedHeader}
-                    style={{
-                      backgroundColor: `rgb(58, 58, 58)`,
-                      color: `rgb(255, 255, 255)`,
-                      height: rowHeight,
-                      minWidth: 2350,
-                      width: `100%`
-                    }}>
-                      <Grid
-                        className="HeaderGrid"
-                        columnWidth={this._getColumnWidth}
-                        columnCount={columnCount}
-                        height={rowHeight}
-                        overscanColumnCount={overscanColumnCount}
-                        cellRenderer={this._renderHeaderCell}
-                        rowHeight={rowHeight}
-                        rowCount={1}
-                        width={2350}
-                        refSearchInput={refSearchInput}
-                        titleSearchInput={titleSearchInput}
-                        publisherSearchInput={publisherSearchInput}
-                        publisherNameSearchInput={publisherNameSearchInput}
-                      />
-                    </div>
-
-                   <WindowScroller>
-                      {({ height, scrollTop }) => (
-                        <AutoSizer disableHeight>
-                          {({ width }) => (
-                              
-                              <VirtualScroll
-                                autoHeight
-                                ref={registerChild}
-                                width={2350}
-                                height={height}
-                                onRowsRendered={onRowsRendered}
-                                rowCount={totalCount}
-                                rowHeight={rowHeight}
-                                rowRenderer={this._rowRenderer}
-                                scrollTop={scrollTop}
-                                order={order}
-                                filterChangeCounter={filterChangeCounter}
-                              />
-
-                              )}
-                        </AutoSizer>
-                      )}
-                    </WindowScroller>
-                  </div>
-              )}
+              <VirtualScroll
+                ref={registerChild}
+                width={2350}
+                height={height}
+                onRowsRendered={onRowsRendered}
+                rowCount={totalCount}
+                rowHeight={rowHeight}
+                rowRenderer={this._rowRenderer}
+                order={order}
+                filterChangeCounter={filterChangeCounter}
+              />
+            )}
           </InfiniteLoader>
         </div>
       </div>

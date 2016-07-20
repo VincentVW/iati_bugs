@@ -25,7 +25,7 @@ class Dataset extends Component {
       loadedRowsMap: {},
       loadingRowCount: 0,
       columnCount: 5,
-      height: 1000,
+      height: 600,
       overscanColumnCount: 0,
       overscanRowCount: 0,
       rowHeight: 36,
@@ -40,7 +40,6 @@ class Dataset extends Component {
       fixedHeader: ''
     }
 
-    // this._renderBodyCell = this._renderBodyCell.bind(this)
     this._renderHeaderCell = this._renderHeaderCell.bind(this)
     this._getColumnWidth = this._getColumnWidth.bind(this)
     this._rowRenderer = this._rowRenderer.bind(this)
@@ -51,40 +50,18 @@ class Dataset extends Component {
     this._isRowLoaded = this._isRowLoaded.bind(this)
     this._loadMoreRows = this._loadMoreRows.bind(this)
     this._clearData = this._clearData.bind(this)
+  }
 
-    this.handleScroll = this.handleScroll.bind(this)
-
+  componentDidMount() {
     this.props.fetchDataset(this.props.params.datasetId)
     this.props.fetchDatasetNotes(this.props.params.datasetId, this.state.page, this.state.order)
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-
-  }
-
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
 
     Object.keys(this._timeoutIdMap).forEach(timeoutId => {
       clearTimeout(timeoutId)
     })
-  }
-
-  handleScroll(event) {
-    let scrollTop = event.srcElement.body.scrollTop;
-    let fixedHeader = ''
-    
-    if(scrollTop > 480){
-      fixedHeader = 'fixed'
-    }
-    
-    if(this.state.fixedHeader != fixedHeader){
-
-      this.setState({
-        fixedHeader: fixedHeader
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -223,7 +200,7 @@ class Dataset extends Component {
           <InfiniteLoader
             isRowLoaded={this._isRowLoaded}
             loadMoreRows={this._loadMoreRows}
-            minimumBatchSize={100}
+            minimumBatchSize={200}
             rowCount={totalCount}
           >
             {({ onRowsRendered, registerChild }) => (

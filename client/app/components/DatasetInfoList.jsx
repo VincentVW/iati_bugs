@@ -23,7 +23,7 @@ class DatasetInfoList extends Component {
         <div className="datasetInfo">
 
           <div className="rv-row even">
-            <div className="rv-col col-1 col-header">&nbsp;</div><div className="rv-col col-2 col-header">&nbsp;</div>
+            <div className="rv-col col-1 colHeader">&nbsp;</div><div className="rv-col col-2 colHeader">&nbsp;</div>
           </div>
 
           <div className="rv-row even">
