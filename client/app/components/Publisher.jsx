@@ -10,8 +10,8 @@ import * as immutable from 'immutable'
 import moment from 'moment'
 import { Link } from 'react-router'
 import { errorTypeMapping, elementMapping } from '../mappings'
-// import PublisherCommonErrors from './PublisherCommonErrorList'
-// import PublisherInfoList from './PublisherInfoList'
+import PublisherCommonErrors from './PublisherCommonErrorList'
+import PublisherInfoList from './PublisherInfoList'
 
 
 class Publisher extends Component {
@@ -107,15 +107,13 @@ class Publisher extends Component {
 
     const {params, publisher, loading} = this.props
     const headerClasses = cn(fixedHeader, 'colHeader')
-    console.log(filterChangeCounter);
     return (
       <div>
         <div className="ListInfo">
           <h1>{publisher.get('org_name')}</h1>
-          {/*}
+          
           <PublisherInfoList publisher={publisher}></PublisherInfoList>
           <PublisherCommonErrors publisherId={params.publisherId}></PublisherCommonErrors>
-          {*/}
         </div>
         <div className="publisherDatasetsHeader">
           <h2>Datasets</h2>
@@ -293,7 +291,6 @@ Publisher.propTypes = {
 
 function mapStateToProps(state, props) {
     const { publisher, publisherDatasets } = state
-    console.log(publisher)
     return {
         publisher: publisher,
         publisherDatasets: publisherDatasets.get('results'),

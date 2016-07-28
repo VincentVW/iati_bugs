@@ -12,10 +12,14 @@ import { Link } from 'react-router'
 const STATUS_LOADING = 1
 const STATUS_LOADED = 2
 
+
 class DatasetList extends Component {
 
   constructor (props, context) {
     super(props, context)
+
+    const now = Date.now()
+
     this.state = {
       loadedRowCount: 0,
       loadedRowsMap: {},
@@ -29,15 +33,19 @@ class DatasetList extends Component {
       order: 'ref',
       orderAsc: true,
       page: 1,
-      filters: immutable.Map({}),
+      filters: immutable.Map({
+        'filterChangeTime': now
+      }),
       next: null,
       previous: null,
-      filterChangeCounter: 0,
+      filterChangeTime: now,
+      stateFilterChangeTime: now,
       refSearchInput: '',
       titleSearchInput: '',
       publisherSearchInput: '',
       publisherNameSearchInput: '',
-      fixedHeader: ''
+      fixedHeader: '',
+      scrollToIndex: null
     }
 
     if(props.meta.get('filters') != undefined && props.meta.get('filters').get('ref') != undefined){
@@ -70,6 +78,8 @@ class DatasetList extends Component {
     this.onPublisherNameSearch = this.onPublisherNameSearch.bind(this)
     this.changeOrder = this.changeOrder.bind(this)
 
+    this.inputSearch = this.inputSearch.bind(this)
+
     this._timeoutIdMap = {}
     this._isRowLoaded = this._isRowLoaded.bind(this)
     this._loadMoreRows = this._loadMoreRows.bind(this)
@@ -77,14 +87,17 @@ class DatasetList extends Component {
   }
 
   componentDidMount(){
-
-    this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1))
+    this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters)
   }
 
   componentWillUnmount() {
     Object.keys(this._timeoutIdMap).forEach(timeoutId => {
       clearTimeout(timeoutId)
     })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -97,10 +110,149 @@ class DatasetList extends Component {
       filters: nextProps.meta.get('filters'),
       previous: nextProps.meta.get('previous'),
       next: nextProps.meta.get('next'),
-      filterChangeCounter:  nextProps.meta.get('filterChangeCounter'),
+      filterChangeTime:  nextProps.meta.get('filterChangeTime'),
     }
 
     this.setState(stateChanges);
+  }
+
+  inputSearch(event, changedHeader, stateHeaderName){
+    const searchValue = event.target.value
+    let stateChanges = {
+      stateFilterChangeTime: Date.now(), 
+      scrollToIndex: 1
+    }
+    stateChanges[stateHeaderName] = searchValue
+    this.setState(stateChanges)
+    const { order, filters, filterChangeTime } = this.state
+    this.props.fetchDatasets('1', order, filters.set('filterChangeTime', stateChanges.stateFilterChangeTime).set(changedHeader, searchValue))
+  }
+
+  onRefSearch(event){
+    this.inputSearch(event, 'ref', 'refSearchInput')
+  }
+
+  onTitleSearch(event){
+    this.inputSearch(event, 'title', 'titleSearchInput')
+  }
+
+  onPublisherSearch(event){
+    this.inputSearch(event, 'publisher', 'publisherSearchInput')
+  }
+
+  onPublisherNameSearch(event){
+    this.inputSearch(event, 'publisherName', 'publisherNameSearchInput')
+  }
+
+  changeOrder(nextOrder, defaultOrder){
+    
+    const { orderAsc, order, filters } = this.state
+    let asc = orderAsc;
+
+    if (order.indexOf(nextOrder) > -1){
+      asc = !asc;
+    } else {
+      asc = defaultOrder;
+    }
+
+    if(!asc){
+      nextOrder = '-' + nextOrder;
+    }
+
+    this._clearData();
+
+    const now = Date.now()
+
+    this.setState({
+      orderAsc: asc,
+      stateFilterChangeTime: now, 
+      scrollToIndex: 1,
+      rowCount: 0,
+      totalCount: 0,
+    })
+    this.props.fetchDatasets('1', nextOrder, filters.set('filterChangeTime', now))
+  }
+
+  render () {
+    const {
+      columnCount,
+      height,
+      overscanColumnCount,
+      rowHeight,
+      rowCount,
+      totalCount,
+      order,
+      filters,
+      filterChangeTime,
+      stateFilterChangeTime,
+      refSearchInput,
+      titleSearchInput,
+      publisherSearchInput,
+      publisherNameSearchInput,
+      fixedHeader,
+      scrollToIndex
+    } = this.state
+
+    // console.log('----------')
+    // console.log('filterChangeTime' + filterChangeTime)
+    // console.log('stateFilterChangeTime' + stateFilterChangeTime)
+    // console.log(filterChangeTime == stateFilterChangeTime)
+    // console.log('----------')
+
+    // // console.log('stateFilterChangeTime:' + stateFilterChangeTime)
+    // console.log('totalCount: ' + totalCount)
+    const headerClasses = cn(fixedHeader, 'colHeader')
+
+    return (
+      <div className="ListWrapper2">
+        <div className="ListInfo">
+          <h2>Bugs by dataset</h2>
+        </div>        
+
+        <div id="datasetList">
+          <div 
+          className={headerClasses}>
+            <Grid
+              className="HeaderGrid"
+              columnWidth={this._getColumnWidth}
+              columnCount={columnCount}
+              height={rowHeight}
+              overscanColumnCount={overscanColumnCount}
+              cellRenderer={this._renderHeaderCell}
+              rowHeight={rowHeight}
+              rowCount={1}
+              width={2350}
+              refSearchInput={refSearchInput}
+              titleSearchInput={titleSearchInput}
+              publisherSearchInput={publisherSearchInput}
+              publisherNameSearchInput={publisherNameSearchInput}
+              stateFilterChangeTime={stateFilterChangeTime}
+            />
+          </div>
+
+          <InfiniteLoader
+            isRowLoaded={this._isRowLoaded}
+            loadMoreRows={this._loadMoreRows}
+            minimumBatchSize={100}
+            rowCount={totalCount}>
+            {({ onRowsRendered, registerChild }) => (
+              <VirtualScroll
+                ref={registerChild}
+                width={2350}
+                height={height}
+                onRowsRendered={onRowsRendered}
+                rowCount={totalCount}
+                rowHeight={rowHeight}
+                rowRenderer={this._rowRenderer}
+                order={order}
+                scrollToIndex={scrollToIndex}
+                filterChangeTime={filterChangeTime}
+              />
+            )}
+          </InfiniteLoader>
+        </div>
+      </div>
+    )
   }
 
   _clearData () {
@@ -160,136 +312,6 @@ class DatasetList extends Component {
     return new Promise(resolve => {
       promiseResolver = resolve
     })
-  }
-
-  onRefSearch(event){
-    const searchValue = event.target.value
-    this.setState({refSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('ref', searchValue))
-  }
-
-  onTitleSearch(event){
-    const searchValue = event.target.value
-    this.setState({titleSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('title', searchValue))
-  }
-
-  onPublisherSearch(event){
-    const searchValue = event.target.value
-    this.setState({publisherSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisher', searchValue))
-  }
-
-
-  onPublisherNameSearch(event){
-    const searchValue = event.target.value
-    this.setState({publisherNameSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisherName', searchValue))
-  }
-
-  changeOrder(nextOrder, defaultOrder){
-    
-    const { orderAsc, order, filters } = this.state
-    let asc = orderAsc;
-
-    if (order.indexOf(nextOrder) > -1){
-      asc = !asc;
-    } else {
-      asc = defaultOrder;
-    }
-
-    if(!asc){
-      nextOrder = '-' + nextOrder;
-    }
-
-    this.setState({orderAsc: asc})
-    this.props.fetchDatasets('1', nextOrder, filters)
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState)
-  }
-
-  render () {
-    const {
-      columnCount,
-      height,
-      overscanColumnCount,
-      rowHeight,
-      rowCount,
-      totalCount,
-      order,
-      filters,
-      filterChangeCounter,
-      refSearchInput,
-      titleSearchInput,
-      publisherSearchInput,
-      publisherNameSearchInput,
-      fixedHeader
-    } = this.state
-
-    const headerClasses = cn(fixedHeader, 'colHeader')
-
-    return (
-      <div className="ListWrapper2">
-        <div className="ListInfo">
-          <h2>Bugs by dataset</h2>
-          <p>
-            The below list shows all datasets currently in the IATI registry, with the mount of data bugs found.
-            <br />&nbsp;<br />
-            Click a column header with a filter icon <i className="fa fa-filter" aria-hidden="true"></i> to search by name.
-            <br />&nbsp;<br />
-            For an overview of implemented bug checks, see the <Link to="/common-errors">Common bugs</Link> page.
-          </p>
-        </div>        
-
-        <div id="datasetList">
-          <div 
-          className={headerClasses}>
-            <Grid
-              className="HeaderGrid"
-              columnWidth={this._getColumnWidth}
-              columnCount={columnCount}
-              height={rowHeight}
-              overscanColumnCount={overscanColumnCount}
-              cellRenderer={this._renderHeaderCell}
-              rowHeight={rowHeight}
-              rowCount={1}
-              width={2350}
-              refSearchInput={refSearchInput}
-              titleSearchInput={titleSearchInput}
-              publisherSearchInput={publisherSearchInput}
-              publisherNameSearchInput={publisherNameSearchInput}
-              filterChangeCounter={filterChangeCounter}
-            />
-          </div>
-
-          <InfiniteLoader
-            isRowLoaded={this._isRowLoaded}
-            loadMoreRows={this._loadMoreRows}
-            minimumBatchSize={100}
-            rowCount={totalCount}>
-            {({ onRowsRendered, registerChild }) => (
-              <VirtualScroll
-                ref={registerChild}
-                width={2350}
-                height={height}
-                onRowsRendered={onRowsRendered}
-                rowCount={totalCount}
-                rowHeight={rowHeight}
-                rowRenderer={this._rowRenderer}
-                order={order}
-                filterChangeCounter={filterChangeCounter}
-              />
-            )}
-          </InfiniteLoader>
-        </div>
-      </div>
-    )
   }
 
   _getColumnWidth ({ index }) {
@@ -479,30 +501,6 @@ class DatasetList extends Component {
     }
   }
 }
-
-function hexToRgb (hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null
-}
-
-/**
- * Ported from sass implementation in C
- * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
- */
-// function mixColors (color1, color2, amount) {
-//   const weight1 = amount
-//   const weight2 = 1 - amount
-
-//   const r = Math.round(weight1 * color1.r + weight2 * color2.r)
-//   const g = Math.round(weight1 * color1.g + weight2 * color2.g)
-//   const b = Math.round(weight1 * color1.b + weight2 * color2.b)
-
-//   return { r, g, b }
-// }
 
 DatasetList.propTypes = {
   datasets: PropTypes.instanceOf(immutable.List).isRequired,

@@ -106,6 +106,7 @@ export function fetchDatasetNotes(datasetId, page, ordering) {
       'count': -1,
       'next': false,
       'previous': false,
+      'filterChangeTime': Date.now()
     })
     
     return fetch(oipaApiUrl+`datasets/`+datasetId+`/notes/?page=`+page+`&format=json&page_size=200&ordering=`+ordering+`&fields=id,ref,title,type,source_url,date_updated,note_count`)

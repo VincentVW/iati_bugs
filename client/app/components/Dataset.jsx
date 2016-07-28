@@ -27,16 +27,16 @@ class Dataset extends Component {
       columnCount: 5,
       height: 600,
       overscanColumnCount: 0,
-      overscanRowCount: 0,
+      overscanRowCount: 20,
       rowHeight: 36,
-      rowCount: 1,
-      totalCount: 1,
+      rowCount: 0,
+      totalCount: 0,
       order: 'line_number',
       orderAsc: true,
       page: 1,
       next: null,
       previous: null,
-      filterChangeCounter: 0,
+      filterChangeTime: Date.now(),
       fixedHeader: ''
     }
 
@@ -67,10 +67,9 @@ class Dataset extends Component {
   componentWillReceiveProps(nextProps) {
 
     // check if order or filters changed, then, clear loaded indexes
-    if (this.state.filterChangeCounter != nextProps.meta.get('filterChangeCounter') || this.state.order != nextProps.meta.get('order')){
-      this._clearData();
-    }
-
+    // if (this.state.filterChangeTime != nextProps.meta.get('filterChangeTime') || this.state.order != nextProps.meta.get('order')){
+    //   this._clearData();
+    // }
     this.setState({
       rowCount: nextProps.datasetNotes.size,
       totalCount: nextProps.meta.get('count'),
@@ -79,7 +78,7 @@ class Dataset extends Component {
       filters: nextProps.meta.get('filters'),
       previous: nextProps.meta.get('previous'),
       next: nextProps.meta.get('next'),
-      filterChangeCounter:  nextProps.meta.get('filterChangeCounter'),
+      filterChangeTime:  nextProps.meta.get('filterChangeTime'),
     });
   }
 
@@ -178,7 +177,7 @@ class Dataset extends Component {
       totalCount,
       order,
       filters,
-      filterChangeCounter,
+      filterChangeTime,
       fixedHeader
     } = this.state
 
@@ -230,7 +229,7 @@ class Dataset extends Component {
                       rowHeight={rowHeight}
                       rowRenderer={this._rowRenderer}
                       order={order}
-                      filterChangeCounter={filterChangeCounter}
+                      filterChangeTime={filterChangeTime}
                     />
                   </div>
                  
@@ -300,7 +299,6 @@ class Dataset extends Component {
     const row = datasetNotes.get(index)
     const even = (index % 2 == 1) ? 'uneven': 'even';
     const rowCn = cn('rv-row', 'row', 'datasets', even)
-    
     if (loadedRowsMap[index] !== STATUS_LOADED || row == undefined) {
       return (
         <div className={rowCn}>
@@ -365,31 +363,6 @@ class Dataset extends Component {
       </div>
     )
   }
-}
-
-
-function hexToRgb (hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null
-}
-
-/**
- * Ported from sass implementation in C
- * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
- */
-function mixColors (color1, color2, amount) {
-  const weight1 = amount
-  const weight2 = 1 - amount
-
-  const r = Math.round(weight1 * color1.r + weight2 * color2.r)
-  const g = Math.round(weight1 * color1.g + weight2 * color2.g)
-  const b = Math.round(weight1 * color1.b + weight2 * color2.b)
-
-  return { r, g, b }
 }
 
 Dataset.propTypes = {

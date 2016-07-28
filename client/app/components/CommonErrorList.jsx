@@ -47,9 +47,9 @@ class CommonErrorList extends Component {
     this._getColumnWidth = this._getColumnWidth.bind(this)
     this._rowRenderer = this._rowRenderer.bind(this)
 
-    this.handleScroll = this.handleScroll.bind(this)
+    // this.handleScroll = this.handleScroll.bind(this)
 
-    this.props.fetchModelAggregation()
+    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,27 +61,28 @@ class CommonErrorList extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
+    this.props.fetchModelAggregation()
+    // window.addEventListener('scroll', this.handleScroll);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    // window.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleScroll(event) {
-    let scrollTop = event.srcElement.body.scrollTop;
-    let fixedHeader = ''
+  // handleScroll(event) {
+  //   let scrollTop = event.srcElement.body.scrollTop;
+  //   let fixedHeader = ''
     
-    if(scrollTop > 255){
-      fixedHeader = 'fixed'
-    }
+  //   if(scrollTop > 255){
+  //     fixedHeader = 'fixed'
+  //   }
     
-    if(this.state.fixedHeader != fixedHeader){
-      this.setState({
-        fixedHeader: fixedHeader
-      });
-    }
-  }
+  //   if(this.state.fixedHeader != fixedHeader){
+  //     this.setState({
+  //       fixedHeader: fixedHeader
+  //     });
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps) {
 
@@ -195,10 +196,10 @@ class CommonErrorList extends Component {
         content = 'Bug count'
         break
       case 4:
-        content = 'Reason'
+        content = 'Bug message'
         break
       case 5:
-        content = 'Notes'
+        content = 'Main reason'
         break
       default:
         content = (

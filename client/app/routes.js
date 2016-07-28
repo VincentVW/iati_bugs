@@ -11,6 +11,7 @@ import DatasetList from './components/DatasetList.jsx'
 import PublisherList from './components/PublisherList.jsx'
 import Publisher from './components/Publisher.jsx'
 import ErrorPage from "./components/ErrorPage.jsx"
+import ImplementedBugs from "./components/ImplementedBugs.jsx"
 import store from './app'
 
 export default (
@@ -21,6 +22,7 @@ export default (
         <Route path="datasets/:datasetId" component={Dataset}/>
         <Route path="publishers" component={PublisherList}/>
         <Route path="publishers/:publisherId" component={Publisher}/>
+        <Route path="implemented-bugs" component={ImplementedBugs}/>
         <Route path="*" component={Home}/>
     </Route>
 )

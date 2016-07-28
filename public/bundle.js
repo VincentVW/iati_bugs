@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7c890d01b098150ff61a"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "d47315bbba5049baa397"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -570,7 +570,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/public/";
+/******/ 	__webpack_require__.p = "/";
 
 /******/ 	// __webpack_hash__
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
@@ -50552,11 +50552,15 @@
 	}
 
 	function datasets() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ meta: immutable.Map({}), results: immutable.List() }) : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ meta: immutable.Map({ filterChangeTime: 0 }), results: immutable.List() }) : arguments[0];
 	  var action = arguments[1];
 
 	  switch (action.type) {
 	    case datasetsActions.RECEIVE_DATASETS:
+	      if (state.get('meta').get('filterChangeTime') > action.meta.get('filterChangeTime')) {
+	        return state;
+	      }
+
 	      return immutable.Map({
 	        'meta': action.meta,
 	        'results': action.datasets });
@@ -50582,16 +50586,10 @@
 	}
 
 	function datasetNotes() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ loading: true, meta: immutable.Map({}), results: immutable.List() }) : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ loading: false, meta: immutable.Map({ count: 0, filterChangeCounter: 0 }), results: immutable.List() }) : arguments[0];
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case datasetActions.REQUEST_DATASET_NOTES:
-	      if (action.page == 1) {
-	        state = state.set('results', immutable.List());
-	      }
-	      state = state.set('loading', true);
-	      return state;
 	    case datasetActions.RECEIVE_DATASET_NOTES:
 	      return immutable.Map({
 	        'loading': false,
@@ -50625,11 +50623,14 @@
 	}
 
 	function publishers() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ meta: immutable.Map({}), results: immutable.List() }) : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ meta: immutable.Map({ count: 0, filterChangeTime: 0 }), results: immutable.List() }) : arguments[0];
 	  var action = arguments[1];
 
 	  switch (action.type) {
 	    case publishersActions.RECEIVE_PUBLISHERS:
+	      if (state.get('meta').get('filterChangeTime') > action.meta.get('filterChangeTime')) {
+	        return state;
+	      }
 	      return immutable.Map({
 	        'meta': action.meta,
 	        'results': action.publishers });
@@ -50651,7 +50652,7 @@
 	}
 
 	function publisherDatasets() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ loading: true, meta: immutable.Map({}), results: immutable.List() }) : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ loading: true, meta: immutable.Map({ count: 0 }), results: immutable.List() }) : arguments[0];
 	  var action = arguments[1];
 
 	  switch (action.type) {
@@ -50666,6 +50667,23 @@
 	        'loading': false,
 	        'meta': action.meta,
 	        'results': action.publisherDatasets });
+	    default:
+	      return state;
+	  }
+	}
+
+	function publisherCommonErrors() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? immutable.Map({ loading: true, results: immutable.List() }) : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case publisherActions.REQUEST_PUBLISHER_COMMON_ERRORS:
+	      state = state.set('loading', true);
+	      return state;
+	    case publisherActions.RECEIVE_PUBLISHER_COMMON_ERRORS:
+	      return immutable.Map({
+	        'loading': false,
+	        'results': action.publisherCommonErrors });
 	    default:
 	      return state;
 	  }
@@ -50720,6 +50738,7 @@
 	  publishers: publishers,
 	  publisher: publisher,
 	  publisherDatasets: publisherDatasets,
+	  publisherCommonErrors: publisherCommonErrors,
 	  modelAggregation: modelAggregation,
 	  fullscreen: fullscreen,
 	  routing: _reactRouterRedux.routerReducer
@@ -71800,7 +71819,8 @@
 	      'order': ordering,
 	      'count': -1,
 	      'next': false,
-	      'previous': false
+	      'previous': false,
+	      'filterChangeTime': Date.now()
 	    });
 
 	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/' + datasetId + '/notes/?page=' + page + '&format=json&page_size=200&ordering=' + ordering + '&fields=id,ref,title,type,source_url,date_updated,note_count').then(function (response) {
@@ -73386,48 +73406,35 @@
 	  };
 	}
 
+	function addToFilter(filters, name, filterName) {
+	  var item = filters.get(name);
+	  if (item && item != '') {
+	    return '&' + filterName + '=' + item;
+	  }
+	  return '';
+	}
+
 	function fetchDatasets(page, ordering, filters) {
 	  return function (dispatch) {
 
 	    dispatch(requestDatasets(page));
 
-	    var filterChangeCounter = 0;
-
 	    var filter_addition = '';
 	    if (filters != undefined) {
-	      if (filters.get('filterChangeCounter') != undefined) {
-	        filterChangeCounter = filters.get('filterChangeCounter');
-	      }
-
-	      var ref = filters.get('ref');
-	      if (ref != undefined && ref != '') {
-	        filter_addition += '&ref=' + ref;
-	      }
-
-	      var title = filters.get('title');
-	      if (title != undefined && title != '') {
-	        filter_addition += '&title=' + title;
-	      }
-
-	      var publisher = filters.get('publisher');
-	      if (publisher != undefined && publisher != '') {
-	        filter_addition += '&publisher=' + publisher;
-	      }
-
-	      var publisherName = filters.get('publisherName');
-	      if (publisherName != undefined && publisherName != '') {
-	        filter_addition += '&publisher_name=' + publisherName;
-	      }
+	      filter_addition += addToFilter(filters, 'ref', 'ref');
+	      filter_addition += addToFilter(filters, 'title', 'title');
+	      filter_addition += addToFilter(filters, 'publisher', 'publisher_ref');
+	      filter_addition += addToFilter(filters, 'publisherName', 'publisher_name');
 	    }
 
 	    var meta = immutable.Map({
 	      'page': page,
 	      'filters': filters,
 	      'order': ordering,
-	      'count': -1,
+	      'count': 1,
 	      'next': false,
 	      'previous': false,
-	      'filterChangeCounter': filterChangeCounter
+	      'filterChangeTime': filters.get('filterChangeTime')
 	    });
 
 	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/?page=' + page + '&format=json&page_size=200&ordering=' + ordering + '&fields=publisher,id,ref,title,type,source_url,date_updated,note_count' + filter_addition).then(function (response) {
@@ -73518,7 +73525,7 @@
 
 	    dispatch(requestPublisher(publisherId));
 
-	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'publishers/' + publisherId + '/?format=json&fields=org_id,org_name,activity_count').then(function (response) {
+	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'publishers/' + publisherId + '/?format=json&fields=org_id,org_name,activity_count,note_count').then(function (response) {
 	      if (response.status >= 400) {
 	        dispatch(failedToFetchPublisher(publisherId));
 	        return false;
@@ -73574,7 +73581,7 @@
 	      'previous': false
 	    });
 
-	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/?format=json&page_size=400&ordering=' + ordering + '&publisher=' + publisherId + '&fields=publisher,id,ref,title,type,source_url,date_updated,note_count').then(function (response) {
+	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/?format=json&page_size=400&ordering=' + ordering + '&publisher_id=' + publisherId + '&fields=publisher,id,ref,title,type,source_url,date_updated,note_count').then(function (response) {
 	      if (response.status >= 400) {
 	        dispatch(failedToFetchPublisherDatasets(publisherId, page));
 	        return false;
@@ -73628,7 +73635,7 @@
 
 	    dispatch(requestPublisherCommonErrors(publisherId));
 
-	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/aggregations/?format=json&group_by=model&aggregations=note_count&order_by=-note_count&publisher=' + publisherId).then(function (response) {
+	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/aggregations/?format=json&group_by=model&aggregations=note_count&order_by=-note_count&publisher_id=' + publisherId).then(function (response) {
 	      if (response.status >= 400) {
 	        dispatch(failedToFetchPublisherCommonErrors(publisherId));
 	        return false;
@@ -73673,11 +73680,10 @@
 
 	__webpack_require__(780).polyfill();
 	var REQUEST_PUBLISHERS = exports.REQUEST_PUBLISHERS = 'REQUEST_PUBLISHERS';
-	function requestPublishers(meta) {
+	function requestPublishers(requestDateTime) {
 	  return {
 	    type: REQUEST_PUBLISHERS,
-	    meta: meta,
-	    receivedAt: Date.now()
+	    receivedAt: requestDateTime
 	  };
 	}
 
@@ -73686,8 +73692,7 @@
 	  return {
 	    type: RECEIVE_PUBLISHERS,
 	    meta: meta,
-	    publishers: immutable.List(publishers),
-	    receivedAt: Date.now()
+	    publishers: immutable.List(publishers)
 	  };
 	}
 
@@ -73695,9 +73700,16 @@
 	function failedToFetchPublishers(meta) {
 	  return {
 	    type: ERROR_PUBLISHERS,
-	    meta: meta,
-	    receivedAt: Date.now()
+	    meta: meta
 	  };
+	}
+
+	function addToFilter(filters, name, filterName) {
+	  var item = filters.get(name);
+	  if (item && item != '') {
+	    return '&' + filterName + '=' + item;
+	  }
+	  return '';
 	}
 
 	function fetchPublishers(ordering, filters) {
@@ -73705,30 +73717,17 @@
 
 	    dispatch(requestPublishers());
 
-	    var filterChangeCounter = 0;
-
 	    var filter_addition = '';
 	    if (filters != undefined) {
-	      if (filters.get('filterChangeCounter') != undefined) {
-	        filterChangeCounter = filters.get('filterChangeCounter');
-	      }
-
-	      var publisher = filters.get('publisher');
-	      if (publisher != undefined && publisher != '') {
-	        filter_addition += '&publisher=' + publisher;
-	      }
-
-	      var publisherName = filters.get('publisherName');
-	      if (publisherName != undefined && publisherName != '') {
-	        filter_addition += '&publisher_name=' + publisherName;
-	      }
+	      filter_addition += addToFilter(filters, 'publisher', 'publisher_ref');
+	      filter_addition += addToFilter(filters, 'publisherName', 'publisher_name');
 	    }
 
 	    var meta = immutable.Map({
 	      'filters': filters,
 	      'order': ordering,
-	      'count': -1,
-	      'filterChangeCounter': filterChangeCounter
+	      'count': 1,
+	      'filterChangeTime': filters.get('filterChangeTime')
 	    });
 
 	    return (0, _isomorphicFetch2.default)(_config.oipaApiUrl + 'datasets/aggregations/?format=json&group_by=publisher&aggregations=note_count&order_by=' + ordering + filter_addition).then(function (response) {
@@ -81735,9 +81734,13 @@
 
 	var _Publisher2 = _interopRequireDefault(_Publisher);
 
-	var _ErrorPage = __webpack_require__(1174);
+	var _ErrorPage = __webpack_require__(1176);
 
 	var _ErrorPage2 = _interopRequireDefault(_ErrorPage);
+
+	var _ImplementedBugs = __webpack_require__(1177);
+
+	var _ImplementedBugs2 = _interopRequireDefault(_ImplementedBugs);
 
 	var _app = __webpack_require__(372);
 
@@ -81754,6 +81757,7 @@
 	    _react2.default.createElement(_reactRouter.Route, { path: 'datasets/:datasetId', component: _Dataset2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'publishers', component: _PublisherList2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'publishers/:publisherId', component: _Publisher2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'implemented-bugs', component: _ImplementedBugs2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '*', component: _Home2.default })
 	);
 
@@ -82194,7 +82198,8 @@
 	  _createClass(NavBar, [{
 	    key: 'enableFullscreen',
 	    value: function enableFullscreen() {
-	      this.props.enableFullscreen();
+	      alert('not implemented yet, high on the to do list!');
+	      // this.props.enableFullscreen()
 	    }
 	  }, {
 	    key: 'render',
@@ -82205,7 +82210,7 @@
 	        _react2.default.createElement(
 	          _reactRouter.Link,
 	          { className: 'nav-home', to: '/' },
-	          '<iati code="#ERROR" />'
+	          'IATI bugs'
 	        ),
 	        _react2.default.createElement(
 	          _reactRouter.Link,
@@ -82224,13 +82229,13 @@
 	        ),
 	        _react2.default.createElement(
 	          _reactRouter.Link,
-	          { to: '/about' },
-	          'About'
+	          { to: '/implemented-bugs' },
+	          'Implemented checks'
 	        ),
 	        _react2.default.createElement(
-	          'button',
-	          { id: 'full-screen-button', onClick: this.enableFullscreen },
-	          'Full screen list'
+	          _reactRouter.Link,
+	          { to: '/about' },
+	          'About'
 	        )
 	      );
 	    }
@@ -82381,15 +82386,9 @@
 	        _react2.default.createElement(
 	          'h2',
 	          null,
-	          'IATI bug dashboard'
+	          'IATI bugs'
 	        ),
-	        'This tool shows insights on data bugs in IATI. It can be seen as a small addition to the data quality checks that the ',
-	        _react2.default.createElement(
-	          'a',
-	          { href: 'http://dashboard.iatistandard.org/data_quality.html', target: '_blank' },
-	          'IATI Dashboard'
-	        ),
-	        ' shows.',
+	        'This tool shows insights on data bugs in IATI datasets published through the IATI Registry.',
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
 	        'The ',
@@ -82398,19 +82397,22 @@
 	          { href: 'http://validator.iatistandard.org/', target: '_blank' },
 	          'IATI Validator'
 	        ),
-	        ' (XSD validation) is a good start, and the IATI Dashboard shows the majority of the data bugs, but there\'s still checks and in-depth information missing.',
+	        ' (XSD validation) is a good start, and the ',
+	        _react2.default.createElement(
+	          'a',
+	          { href: 'http://dashboard.iatistandard.org/data_quality.html', target: '_blank' },
+	          'IATI Dashboard'
+	        ),
+	        ' shows the majority of the data bugs, but there\'s still checks missing. This tool is an effort to expose those ',
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/implemented-bugs' },
+	          'missing IATI validation checks'
+	        ),
+	        ' and to provide more in-depth info on where these errors occur.',
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
-	        'Are defaults set when required attributes are ommited? ',
-	        _react2.default.createElement('br', null),
-	        'Does the transaction -> provider-acivity-id exist? (not implemented yet!) ',
-	        _react2.default.createElement('br', null),
-	        'Do the recipient country percentages + recipient region percentags add up to 100%? (not implemented yet!) ',
-	        _react2.default.createElement('br', null),
-	        'Where do the bugs occur in the XML file? ',
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement('br', null),
-	        'That kind of information is intended to be shown by this dashboard. At the moment there\'s no place to fully check validation and that\'s reflected in the overall data quality.',
+	        'At the moment there\'s no place to fully check validation and that probably hurts the overall data quality.',
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
 	        'This tool runs on validation errors raised by the ',
@@ -82419,13 +82421,19 @@
 	          { href: 'https://www.oipa.nl', target: '_blank' },
 	          'OIPA'
 	        ),
-	        ' parser. See the ',
+	        ' parser. The ',
 	        _react2.default.createElement(
 	          _reactRouter.Link,
 	          { to: '/about' },
 	          'about page'
 	        ),
-	        ' for further information on this tool.'
+	        ' provides further information on this tool. More importantly, check out the bugs found in your datasets through the ',
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/datasets' },
+	          'datasets page'
+	        ),
+	        '!'
 	      );
 	    }
 	  }]);
@@ -82603,7 +82611,16 @@
 	        'At the moment this tool only catches a subset of IATI validation bugs. But if you have no bugs on the IATI dashboard and in here, it should good enough for now!',
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
-	        'Please keep in mind this is just a first version, built in my own time in the evening hours. That\'s not quite the perfect setting for a complete and bug free tool.',
+	        'See the ',
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: 'implemented-bugs' },
+	          'Implemented checks'
+	        ),
+	        ' page for info on the performed checks.',
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        'Please keep in mind this is just a first version, built in my own time. That\'s not the perfect setting for a complete and bug free tool.',
 	        _react2.default.createElement(
 	          'h3',
 	          null,
@@ -82624,10 +82641,10 @@
 	          { target: '_blank', href: 'http://dashboard.iatistandard.org/publishing_stats.html' },
 	          'Publisher stats / GPEDC'
 	        ),
-	        ' gives great insights to the quality of the data itself, which in the end is way more important than 100% bug free IATI files. The publisher stats however, rely on the technical quality of the data I\'d imagine.',
+	        ' gives great insights to the quality of the data itself, which in the end is way more important than 100% bug free IATI files. The publisher stats however, rely on the technical quality of the data.',
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
-	        'Invalid data also has some major side effects for data users that cannot use your data or have to build workarounds to show your data correctly. There are quite some data portals build upon partly faulty data. While it might be more effort to get the data changed, especially when its not your own data, its generally bad for the standard to be less strict about this. In the long run it could cause a lack of comparability and traceability.'
+	        'Invalid data also has some major side effects for data users that cannot use your data or have to build workarounds to show your data correctly. While it might be more effort to get the data changed, especially when its not your own data, its generally bad for the standard to be less strict about this. In the long run it could cause a lack of comparability and traceability.'
 	      );
 	    }
 	  }]);
@@ -82738,9 +82755,8 @@
 	    _this._getColumnWidth = _this._getColumnWidth.bind(_this);
 	    _this._rowRenderer = _this._rowRenderer.bind(_this);
 
-	    _this.handleScroll = _this.handleScroll.bind(_this);
+	    // this.handleScroll = this.handleScroll.bind(this)
 
-	    _this.props.fetchModelAggregation();
 	    return _this;
 	  }
 
@@ -82756,29 +82772,30 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      window.addEventListener('scroll', this.handleScroll);
+	      this.props.fetchModelAggregation();
+	      // window.addEventListener('scroll', this.handleScroll);
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      window.removeEventListener('scroll', this.handleScroll);
-	    }
-	  }, {
-	    key: 'handleScroll',
-	    value: function handleScroll(event) {
-	      var scrollTop = event.srcElement.body.scrollTop;
-	      var fixedHeader = '';
+	    value: function componentWillUnmount() {}
+	    // window.removeEventListener('scroll', this.handleScroll);
 
-	      if (scrollTop > 255) {
-	        fixedHeader = 'fixed';
-	      }
 
-	      if (this.state.fixedHeader != fixedHeader) {
-	        this.setState({
-	          fixedHeader: fixedHeader
-	        });
-	      }
-	    }
+	    // handleScroll(event) {
+	    //   let scrollTop = event.srcElement.body.scrollTop;
+	    //   let fixedHeader = ''
+
+	    //   if(scrollTop > 255){
+	    //     fixedHeader = 'fixed'
+	    //   }
+
+	    //   if(this.state.fixedHeader != fixedHeader){
+	    //     this.setState({
+	    //       fixedHeader: fixedHeader
+	    //     });
+	    //   }
+	    // }
+
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
@@ -82916,10 +82933,10 @@
 	          content = 'Bug count';
 	          break;
 	        case 4:
-	          content = 'Reason';
+	          content = 'Bug message';
 	          break;
 	        case 5:
-	          content = 'Notes';
+	          content = 'Main reason';
 	          break;
 	        default:
 	          content = _react2.default.createElement(
@@ -103793,16 +103810,16 @@
 	      columnCount: 5,
 	      height: 600,
 	      overscanColumnCount: 0,
-	      overscanRowCount: 0,
+	      overscanRowCount: 20,
 	      rowHeight: 36,
-	      rowCount: 1,
-	      totalCount: 1,
+	      rowCount: 0,
+	      totalCount: 0,
 	      order: 'line_number',
 	      orderAsc: true,
 	      page: 1,
 	      next: null,
 	      previous: null,
-	      filterChangeCounter: 0,
+	      filterChangeTime: Date.now(),
 	      fixedHeader: ''
 	    };
 
@@ -103838,10 +103855,9 @@
 	    value: function componentWillReceiveProps(nextProps) {
 
 	      // check if order or filters changed, then, clear loaded indexes
-	      if (this.state.filterChangeCounter != nextProps.meta.get('filterChangeCounter') || this.state.order != nextProps.meta.get('order')) {
-	        this._clearData();
-	      }
-
+	      // if (this.state.filterChangeTime != nextProps.meta.get('filterChangeTime') || this.state.order != nextProps.meta.get('order')){
+	      //   this._clearData();
+	      // }
 	      this.setState({
 	        rowCount: nextProps.datasetNotes.size,
 	        totalCount: nextProps.meta.get('count'),
@@ -103850,7 +103866,7 @@
 	        filters: nextProps.meta.get('filters'),
 	        previous: nextProps.meta.get('previous'),
 	        next: nextProps.meta.get('next'),
-	        filterChangeCounter: nextProps.meta.get('filterChangeCounter')
+	        filterChangeTime: nextProps.meta.get('filterChangeTime')
 	      });
 	    }
 	  }, {
@@ -103969,7 +103985,7 @@
 	      var totalCount = _state3.totalCount;
 	      var order = _state3.order;
 	      var filters = _state3.filters;
-	      var filterChangeCounter = _state3.filterChangeCounter;
+	      var filterChangeTime = _state3.filterChangeTime;
 	      var fixedHeader = _state3.fixedHeader;
 	      var _props = this.props;
 	      var params = _props.params;
@@ -104044,7 +104060,7 @@
 	                  rowHeight: rowHeight,
 	                  rowRenderer: _this3._rowRenderer,
 	                  order: order,
-	                  filterChangeCounter: filterChangeCounter
+	                  filterChangeTime: filterChangeTime
 	                })
 	              );
 	            }
@@ -104123,7 +104139,6 @@
 	      var row = datasetNotes.get(index);
 	      var even = index % 2 == 1 ? 'uneven' : 'even';
 	      var rowCn = (0, _classnames2.default)('rv-row', 'row', 'datasets', even);
-
 	      if (loadedRowsMap[index] !== STATUS_LOADED || row == undefined) {
 	        return _react2.default.createElement(
 	          'div',
@@ -104203,30 +104218,6 @@
 
 	  return Dataset;
 	}(_react.Component);
-
-	function hexToRgb(hex) {
-	  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	  return result ? {
-	    r: parseInt(result[1], 16),
-	    g: parseInt(result[2], 16),
-	    b: parseInt(result[3], 16)
-	  } : null;
-	}
-
-	/**
-	 * Ported from sass implementation in C
-	 * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
-	 */
-	function mixColors(color1, color2, amount) {
-	  var weight1 = amount;
-	  var weight2 = 1 - amount;
-
-	  var r = Math.round(weight1 * color1.r + weight2 * color2.r);
-	  var g = Math.round(weight1 * color1.g + weight2 * color2.g);
-	  var b = Math.round(weight1 * color1.b + weight2 * color2.b);
-
-	  return { r: r, g: g, b: b };
-	}
 
 	Dataset.propTypes = {
 	  dataset: _react.PropTypes.instanceOf(immutable.Map).isRequired,
@@ -104332,21 +104323,28 @@
 	      columnCount: 3,
 	      height: 310,
 	      rowHeight: 36,
-	      rowCount: 1
+	      rowCount: 1,
+	      filterChangeCounter: 0
 	    };
 
 	    _this._renderHeaderCell = _this._renderHeaderCell.bind(_this);
 	    _this._getColumnWidth = _this._getColumnWidth.bind(_this);
 	    _this._rowRenderer = _this._rowRenderer.bind(_this);
-	    _this.props.fetchDatasetCommonErrors(_this.props.datasetId);
+
 	    return _this;
 	  }
 
 	  _createClass(DatasetCommonErrors, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.fetchDatasetCommonErrors(this.props.datasetId);
+	    }
+	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      this.setState({
-	        rowCount: nextProps.datasetCommonErrors.size
+	        rowCount: nextProps.datasetCommonErrors.size,
+	        filterChangeCounter: this.state.filterChangeCounter + 1
 	      });
 	    }
 	  }, {
@@ -104364,6 +104362,7 @@
 	      var height = _state.height;
 	      var rowHeight = _state.rowHeight;
 	      var rowCount = _state.rowCount;
+	      var filterChangeCounter = _state.filterChangeCounter;
 	      var _props = this.props;
 	      var dataset = _props.dataset;
 	      var loading = _props.loading;
@@ -104417,7 +104416,8 @@
 	                  rowRenderer: _this2._rowRenderer,
 	                  rowHeight: rowHeight,
 	                  rowCount: rowCount,
-	                  width: 820
+	                  width: 820,
+	                  filterChangeCounter: filterChangeCounter
 	                });
 	              }
 	            )
@@ -104827,6 +104827,8 @@
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DatasetList).call(this, props, context));
 
+	    var now = Date.now();
+
 	    _this.state = {
 	      loadedRowCount: 0,
 	      loadedRowsMap: {},
@@ -104840,15 +104842,19 @@
 	      order: 'ref',
 	      orderAsc: true,
 	      page: 1,
-	      filters: immutable.Map({}),
+	      filters: immutable.Map({
+	        'filterChangeTime': now
+	      }),
 	      next: null,
 	      previous: null,
-	      filterChangeCounter: 0,
+	      filterChangeTime: now,
+	      stateFilterChangeTime: now,
 	      refSearchInput: '',
 	      titleSearchInput: '',
 	      publisherSearchInput: '',
 	      publisherNameSearchInput: '',
-	      fixedHeader: ''
+	      fixedHeader: '',
+	      scrollToIndex: null
 	    };
 
 	    if (props.meta.get('filters') != undefined && props.meta.get('filters').get('ref') != undefined) {
@@ -104881,6 +104887,8 @@
 	    _this.onPublisherNameSearch = _this.onPublisherNameSearch.bind(_this);
 	    _this.changeOrder = _this.changeOrder.bind(_this);
 
+	    _this.inputSearch = _this.inputSearch.bind(_this);
+
 	    _this._timeoutIdMap = {};
 	    _this._isRowLoaded = _this._isRowLoaded.bind(_this);
 	    _this._loadMoreRows = _this._loadMoreRows.bind(_this);
@@ -104891,8 +104899,7 @@
 	  _createClass(DatasetList, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-
-	      this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1));
+	      this.props.fetchDatasets(this.state.page, this.state.order, this.state.filters);
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -104900,6 +104907,11 @@
 	      Object.keys(this._timeoutIdMap).forEach(function (timeoutId) {
 	        clearTimeout(timeoutId);
 	      });
+	    }
+	  }, {
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(nextProps, nextState) {
+	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
@@ -104913,141 +104925,55 @@
 	        filters: nextProps.meta.get('filters'),
 	        previous: nextProps.meta.get('previous'),
 	        next: nextProps.meta.get('next'),
-	        filterChangeCounter: nextProps.meta.get('filterChangeCounter')
+	        filterChangeTime: nextProps.meta.get('filterChangeTime')
 	      };
 
 	      this.setState(stateChanges);
 	    }
 	  }, {
-	    key: '_clearData',
-	    value: function _clearData() {
-	      this.setState({
-	        loadedRowCount: 0,
-	        loadedRowsMap: {},
-	        loadingRowCount: 0
-	      });
-	    }
-	  }, {
-	    key: '_isRowLoaded',
-	    value: function _isRowLoaded(_ref) {
-	      var index = _ref.index;
-	      var loadedRowsMap = this.state.loadedRowsMap;
-
-	      return !!loadedRowsMap[index]; // STATUS_LOADING or STATUS_LOADED
-	    }
-	  }, {
-	    key: '_loadMoreRows',
-	    value: function _loadMoreRows(_ref2) {
-	      var _this2 = this;
-
-	      var startIndex = _ref2.startIndex;
-	      var stopIndex = _ref2.stopIndex;
-
-
-	      startIndex = 200 * Math.floor(startIndex / 200);
-	      stopIndex = startIndex + 200;
-	      var page = Math.floor(startIndex / 200) + 1;
-	      if (page > 1) {
-	        this.props.fetchDatasets(page, this.state.order, this.state.filters);
-	      }
-
+	    key: 'inputSearch',
+	    value: function inputSearch(event, changedHeader, stateHeaderName) {
+	      var searchValue = event.target.value;
+	      var stateChanges = {
+	        stateFilterChangeTime: Date.now(),
+	        scrollToIndex: 1
+	      };
+	      stateChanges[stateHeaderName] = searchValue;
+	      this.setState(stateChanges);
 	      var _state = this.state;
-	      var loadedRowsMap = _state.loadedRowsMap;
-	      var loadingRowCount = _state.loadingRowCount;
+	      var order = _state.order;
+	      var filters = _state.filters;
+	      var filterChangeTime = _state.filterChangeTime;
 
-	      var increment = stopIndex - startIndex + 1;
-
-	      for (var i = startIndex; i <= stopIndex; i++) {
-	        loadedRowsMap[i] = STATUS_LOADING;
-	      }
-
-	      this.setState({
-	        loadingRowCount: loadingRowCount + increment
-	      });
-
-	      var timeoutId = setTimeout(function () {
-	        var _state2 = _this2.state;
-	        var loadedRowCount = _state2.loadedRowCount;
-	        var loadingRowCount = _state2.loadingRowCount;
-
-
-	        delete _this2._timeoutIdMap[timeoutId];
-
-	        for (var i = startIndex; i <= stopIndex; i++) {
-	          loadedRowsMap[i] = STATUS_LOADED;
-	        }
-
-	        _this2.setState({
-	          loadingRowCount: loadingRowCount - increment,
-	          loadedRowCount: loadedRowCount + increment
-	        });
-
-	        promiseResolver();
-	      }, 750 + Math.round(Math.random() * 100));
-
-	      this._timeoutIdMap[timeoutId] = true;
-
-	      var promiseResolver = void 0;
-
-	      return new Promise(function (resolve) {
-	        promiseResolver = resolve;
-	      });
+	      this.props.fetchDatasets('1', order, filters.set('filterChangeTime', stateChanges.stateFilterChangeTime).set(changedHeader, searchValue));
 	    }
 	  }, {
 	    key: 'onRefSearch',
 	    value: function onRefSearch(event) {
-	      var searchValue = event.target.value;
-	      this.setState({ refSearchInput: searchValue });
-	      var _state3 = this.state;
-	      var order = _state3.order;
-	      var filters = _state3.filters;
-	      var filterChangeCounter = _state3.filterChangeCounter;
-
-	      this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('ref', searchValue));
+	      this.inputSearch(event, 'ref', 'refSearchInput');
 	    }
 	  }, {
 	    key: 'onTitleSearch',
 	    value: function onTitleSearch(event) {
-	      var searchValue = event.target.value;
-	      this.setState({ titleSearchInput: searchValue });
-	      var _state4 = this.state;
-	      var order = _state4.order;
-	      var filters = _state4.filters;
-	      var filterChangeCounter = _state4.filterChangeCounter;
-
-	      this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('title', searchValue));
+	      this.inputSearch(event, 'title', 'titleSearchInput');
 	    }
 	  }, {
 	    key: 'onPublisherSearch',
 	    value: function onPublisherSearch(event) {
-	      var searchValue = event.target.value;
-	      this.setState({ publisherSearchInput: searchValue });
-	      var _state5 = this.state;
-	      var order = _state5.order;
-	      var filters = _state5.filters;
-	      var filterChangeCounter = _state5.filterChangeCounter;
-
-	      this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisher', searchValue));
+	      this.inputSearch(event, 'publisher', 'publisherSearchInput');
 	    }
 	  }, {
 	    key: 'onPublisherNameSearch',
 	    value: function onPublisherNameSearch(event) {
-	      var searchValue = event.target.value;
-	      this.setState({ publisherNameSearchInput: searchValue });
-	      var _state6 = this.state;
-	      var order = _state6.order;
-	      var filters = _state6.filters;
-	      var filterChangeCounter = _state6.filterChangeCounter;
-
-	      this.props.fetchDatasets('1', order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisherName', searchValue));
+	      this.inputSearch(event, 'publisherName', 'publisherNameSearchInput');
 	    }
 	  }, {
 	    key: 'changeOrder',
 	    value: function changeOrder(nextOrder, defaultOrder) {
-	      var _state7 = this.state;
-	      var orderAsc = _state7.orderAsc;
-	      var order = _state7.order;
-	      var filters = _state7.filters;
+	      var _state2 = this.state;
+	      var orderAsc = _state2.orderAsc;
+	      var order = _state2.order;
+	      var filters = _state2.filters;
 
 	      var asc = orderAsc;
 
@@ -105061,35 +104987,50 @@
 	        nextOrder = '-' + nextOrder;
 	      }
 
-	      this.setState({ orderAsc: asc });
-	      this.props.fetchDatasets('1', nextOrder, filters);
-	    }
-	  }, {
-	    key: 'shouldComponentUpdate',
-	    value: function shouldComponentUpdate(nextProps, nextState) {
-	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
+	      this._clearData();
+
+	      var now = Date.now();
+
+	      this.setState({
+	        orderAsc: asc,
+	        stateFilterChangeTime: now,
+	        scrollToIndex: 1,
+	        rowCount: 0,
+	        totalCount: 0
+	      });
+	      this.props.fetchDatasets('1', nextOrder, filters.set('filterChangeTime', now));
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this2 = this;
 
-	      var _state8 = this.state;
-	      var columnCount = _state8.columnCount;
-	      var height = _state8.height;
-	      var overscanColumnCount = _state8.overscanColumnCount;
-	      var rowHeight = _state8.rowHeight;
-	      var rowCount = _state8.rowCount;
-	      var totalCount = _state8.totalCount;
-	      var order = _state8.order;
-	      var filters = _state8.filters;
-	      var filterChangeCounter = _state8.filterChangeCounter;
-	      var refSearchInput = _state8.refSearchInput;
-	      var titleSearchInput = _state8.titleSearchInput;
-	      var publisherSearchInput = _state8.publisherSearchInput;
-	      var publisherNameSearchInput = _state8.publisherNameSearchInput;
-	      var fixedHeader = _state8.fixedHeader;
+	      var _state3 = this.state;
+	      var columnCount = _state3.columnCount;
+	      var height = _state3.height;
+	      var overscanColumnCount = _state3.overscanColumnCount;
+	      var rowHeight = _state3.rowHeight;
+	      var rowCount = _state3.rowCount;
+	      var totalCount = _state3.totalCount;
+	      var order = _state3.order;
+	      var filters = _state3.filters;
+	      var filterChangeTime = _state3.filterChangeTime;
+	      var stateFilterChangeTime = _state3.stateFilterChangeTime;
+	      var refSearchInput = _state3.refSearchInput;
+	      var titleSearchInput = _state3.titleSearchInput;
+	      var publisherSearchInput = _state3.publisherSearchInput;
+	      var publisherNameSearchInput = _state3.publisherNameSearchInput;
+	      var fixedHeader = _state3.fixedHeader;
+	      var scrollToIndex = _state3.scrollToIndex;
 
+	      // console.log('----------')
+	      // console.log('filterChangeTime' + filterChangeTime)
+	      // console.log('stateFilterChangeTime' + stateFilterChangeTime)
+	      // console.log(filterChangeTime == stateFilterChangeTime)
+	      // console.log('----------')
+
+	      // // console.log('stateFilterChangeTime:' + stateFilterChangeTime)
+	      // console.log('totalCount: ' + totalCount)
 
 	      var headerClasses = (0, _classnames2.default)(fixedHeader, 'colHeader');
 
@@ -105103,27 +105044,6 @@
 	            'h2',
 	            null,
 	            'Bugs by dataset'
-	          ),
-	          _react2.default.createElement(
-	            'p',
-	            null,
-	            'The below list shows all datasets currently in the IATI registry, with the mount of data bugs found.',
-	            _react2.default.createElement('br', null),
-	            ' ',
-	            _react2.default.createElement('br', null),
-	            'Click a column header with a filter icon ',
-	            _react2.default.createElement('i', { className: 'fa fa-filter', 'aria-hidden': 'true' }),
-	            ' to search by name.',
-	            _react2.default.createElement('br', null),
-	            ' ',
-	            _react2.default.createElement('br', null),
-	            'For an overview of implemented bug checks, see the ',
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: '/common-errors' },
-	              'Common bugs'
-	            ),
-	            ' page.'
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -105147,7 +105067,7 @@
 	              titleSearchInput: titleSearchInput,
 	              publisherSearchInput: publisherSearchInput,
 	              publisherNameSearchInput: publisherNameSearchInput,
-	              filterChangeCounter: filterChangeCounter
+	              stateFilterChangeTime: stateFilterChangeTime
 	            })
 	          ),
 	          _react2.default.createElement(
@@ -105157,9 +105077,9 @@
 	              loadMoreRows: this._loadMoreRows,
 	              minimumBatchSize: 100,
 	              rowCount: totalCount },
-	            function (_ref3) {
-	              var onRowsRendered = _ref3.onRowsRendered;
-	              var registerChild = _ref3.registerChild;
+	            function (_ref) {
+	              var onRowsRendered = _ref.onRowsRendered;
+	              var registerChild = _ref.registerChild;
 	              return _react2.default.createElement(_reactVirtualized.VirtualScroll, {
 	                ref: registerChild,
 	                width: 2350,
@@ -105167,14 +105087,90 @@
 	                onRowsRendered: onRowsRendered,
 	                rowCount: totalCount,
 	                rowHeight: rowHeight,
-	                rowRenderer: _this3._rowRenderer,
+	                rowRenderer: _this2._rowRenderer,
 	                order: order,
-	                filterChangeCounter: filterChangeCounter
+	                scrollToIndex: scrollToIndex,
+	                filterChangeTime: filterChangeTime
 	              });
 	            }
 	          )
 	        )
 	      );
+	    }
+	  }, {
+	    key: '_clearData',
+	    value: function _clearData() {
+	      this.setState({
+	        loadedRowCount: 0,
+	        loadedRowsMap: {},
+	        loadingRowCount: 0
+	      });
+	    }
+	  }, {
+	    key: '_isRowLoaded',
+	    value: function _isRowLoaded(_ref2) {
+	      var index = _ref2.index;
+	      var loadedRowsMap = this.state.loadedRowsMap;
+
+	      return !!loadedRowsMap[index]; // STATUS_LOADING or STATUS_LOADED
+	    }
+	  }, {
+	    key: '_loadMoreRows',
+	    value: function _loadMoreRows(_ref3) {
+	      var _this3 = this;
+
+	      var startIndex = _ref3.startIndex;
+	      var stopIndex = _ref3.stopIndex;
+
+
+	      startIndex = 200 * Math.floor(startIndex / 200);
+	      stopIndex = startIndex + 200;
+	      var page = Math.floor(startIndex / 200) + 1;
+	      if (page > 1) {
+	        this.props.fetchDatasets(page, this.state.order, this.state.filters);
+	      }
+
+	      var _state4 = this.state;
+	      var loadedRowsMap = _state4.loadedRowsMap;
+	      var loadingRowCount = _state4.loadingRowCount;
+
+	      var increment = stopIndex - startIndex + 1;
+
+	      for (var i = startIndex; i <= stopIndex; i++) {
+	        loadedRowsMap[i] = STATUS_LOADING;
+	      }
+
+	      this.setState({
+	        loadingRowCount: loadingRowCount + increment
+	      });
+
+	      var timeoutId = setTimeout(function () {
+	        var _state5 = _this3.state;
+	        var loadedRowCount = _state5.loadedRowCount;
+	        var loadingRowCount = _state5.loadingRowCount;
+
+
+	        delete _this3._timeoutIdMap[timeoutId];
+
+	        for (var i = startIndex; i <= stopIndex; i++) {
+	          loadedRowsMap[i] = STATUS_LOADED;
+	        }
+
+	        _this3.setState({
+	          loadingRowCount: loadingRowCount - increment,
+	          loadedRowCount: loadedRowCount + increment
+	        });
+
+	        promiseResolver();
+	      }, 750 + Math.round(Math.random() * 100));
+
+	      this._timeoutIdMap[timeoutId] = true;
+
+	      var promiseResolver = void 0;
+
+	      return new Promise(function (resolve) {
+	        promiseResolver = resolve;
+	      });
 	    }
 	  }, {
 	    key: '_getColumnWidth',
@@ -105210,11 +105206,11 @@
 
 
 	      var content = void 0;
-	      var _state9 = this.state;
-	      var refSearchInput = _state9.refSearchInput;
-	      var titleSearchInput = _state9.titleSearchInput;
-	      var publisherSearchInput = _state9.publisherSearchInput;
-	      var publisherNameSearchInput = _state9.publisherNameSearchInput;
+	      var _state6 = this.state;
+	      var refSearchInput = _state6.refSearchInput;
+	      var titleSearchInput = _state6.titleSearchInput;
+	      var publisherSearchInput = _state6.publisherSearchInput;
+	      var publisherNameSearchInput = _state6.publisherNameSearchInput;
 
 
 	      switch (columnIndex) {
@@ -105427,30 +105423,6 @@
 	  return DatasetList;
 	}(_react.Component);
 
-	function hexToRgb(hex) {
-	  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	  return result ? {
-	    r: parseInt(result[1], 16),
-	    g: parseInt(result[2], 16),
-	    b: parseInt(result[3], 16)
-	  } : null;
-	}
-
-	/**
-	 * Ported from sass implementation in C
-	 * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
-	 */
-	// function mixColors (color1, color2, amount) {
-	//   const weight1 = amount
-	//   const weight2 = 1 - amount
-
-	//   const r = Math.round(weight1 * color1.r + weight2 * color2.r)
-	//   const g = Math.round(weight1 * color1.g + weight2 * color2.g)
-	//   const b = Math.round(weight1 * color1.b + weight2 * color2.b)
-
-	//   return { r, g, b }
-	// }
-
 	DatasetList.propTypes = {
 	  datasets: _react.PropTypes.instanceOf(immutable.List).isRequired,
 	  meta: _react.PropTypes.instanceOf(immutable.Map).isRequired
@@ -105552,10 +105524,8 @@
 	      totalCount: 1,
 	      order: '-note_count',
 	      orderAsc: true,
-	      filters: immutable.Map({}),
-	      next: null,
-	      previous: null,
-	      filterChangeCounter: 0,
+	      filters: immutable.Map({ 'filterChangeTime': Date.now() }),
+	      filterChangeTime: 0,
 	      publisherSearchInput: '',
 	      publisherNameSearchInput: '',
 	      fixedHeader: ''
@@ -105580,20 +105550,20 @@
 	    _this.onPublisherSearch = _this.onPublisherSearch.bind(_this);
 	    _this.onPublisherNameSearch = _this.onPublisherNameSearch.bind(_this);
 	    _this.changeOrder = _this.changeOrder.bind(_this);
+
+	    _this.inputSearch = _this.inputSearch.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(PublisherList, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.fetchPublishers(this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1));
+	      this.props.fetchPublishers(this.state.order, this.state.filters);
 	    }
 	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      Object.keys(this._timeoutIdMap).forEach(function (timeoutId) {
-	        clearTimeout(timeoutId);
-	      });
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(nextProps, nextState) {
+	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
@@ -105604,44 +105574,41 @@
 	        totalCount: nextProps.meta.get('count'),
 	        order: nextProps.meta.get('order'),
 	        filters: nextProps.meta.get('filters'),
-	        previous: nextProps.meta.get('previous'),
-	        next: nextProps.meta.get('next'),
-	        filterChangeCounter: nextProps.meta.get('filterChangeCounter')
+	        filterChangeTime: nextProps.meta.get('filterChangeTime')
 	      };
 
 	      this.setState(stateChanges);
 	    }
 	  }, {
-	    key: 'onPublisherSearch',
-	    value: function onPublisherSearch(event) {
+	    key: 'inputSearch',
+	    value: function inputSearch(event, changedHeader, stateHeaderName) {
 	      var searchValue = event.target.value;
-	      this.setState({ publisherSearchInput: searchValue });
+	      var stateChanges = {};
+	      stateChanges[stateHeaderName] = searchValue;
+	      this.setState(stateChanges);
 	      var _state = this.state;
 	      var order = _state.order;
 	      var filters = _state.filters;
-	      var filterChangeCounter = _state.filterChangeCounter;
 
-	      this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisher', searchValue));
+	      this.props.fetchPublishers(order, filters.set('filterChangeTime', Date.now()).set(changedHeader, searchValue));
+	    }
+	  }, {
+	    key: 'onPublisherSearch',
+	    value: function onPublisherSearch(event) {
+	      this.inputSearch(event, 'publisher', 'publisherSearchInput');
 	    }
 	  }, {
 	    key: 'onPublisherNameSearch',
 	    value: function onPublisherNameSearch(event) {
-	      var searchValue = event.target.value;
-	      this.setState({ publisherNameSearchInput: searchValue });
-	      var _state2 = this.state;
-	      var order = _state2.order;
-	      var filters = _state2.filters;
-	      var filterChangeCounter = _state2.filterChangeCounter;
-
-	      this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisherName', searchValue));
+	      this.inputSearch(event, 'publisherName', 'publisherNameSearchInput');
 	    }
 	  }, {
 	    key: 'changeOrder',
 	    value: function changeOrder(nextOrder, defaultOrder) {
-	      var _state3 = this.state;
-	      var orderAsc = _state3.orderAsc;
-	      var order = _state3.order;
-	      var filters = _state3.filters;
+	      var _state2 = this.state;
+	      var orderAsc = _state2.orderAsc;
+	      var order = _state2.order;
+	      var filters = _state2.filters;
 
 	      var asc = orderAsc;
 
@@ -105659,26 +105626,21 @@
 	      this.props.fetchPublishers(nextOrder, filters);
 	    }
 	  }, {
-	    key: 'shouldComponentUpdate',
-	    value: function shouldComponentUpdate(nextProps, nextState) {
-	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _state4 = this.state;
-	      var columnCount = _state4.columnCount;
-	      var height = _state4.height;
-	      var overscanColumnCount = _state4.overscanColumnCount;
-	      var rowHeight = _state4.rowHeight;
-	      var rowCount = _state4.rowCount;
-	      var totalCount = _state4.totalCount;
-	      var order = _state4.order;
-	      var filters = _state4.filters;
-	      var filterChangeCounter = _state4.filterChangeCounter;
-	      var publisherSearchInput = _state4.publisherSearchInput;
-	      var publisherNameSearchInput = _state4.publisherNameSearchInput;
-	      var fixedHeader = _state4.fixedHeader;
+	      var _state3 = this.state;
+	      var columnCount = _state3.columnCount;
+	      var height = _state3.height;
+	      var overscanColumnCount = _state3.overscanColumnCount;
+	      var rowHeight = _state3.rowHeight;
+	      var rowCount = _state3.rowCount;
+	      var totalCount = _state3.totalCount;
+	      var order = _state3.order;
+	      var filters = _state3.filters;
+	      var filterChangeTime = _state3.filterChangeTime;
+	      var publisherSearchInput = _state3.publisherSearchInput;
+	      var publisherNameSearchInput = _state3.publisherNameSearchInput;
+	      var fixedHeader = _state3.fixedHeader;
 
 
 	      var headerClasses = (0, _classnames2.default)(fixedHeader, 'colHeader');
@@ -105693,22 +105655,6 @@
 	            'h2',
 	            null,
 	            'bugs by publisher'
-	          ),
-	          _react2.default.createElement(
-	            'p',
-	            null,
-	            'The below list shows all detected bugs by IATI Publisher.'
-	          ),
-	          _react2.default.createElement(
-	            'p',
-	            null,
-	            'To search datasets by the publisher, please use the search on the ',
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: '/datasets' },
-	              'datasets'
-	            ),
-	            ' page for now.'
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -105730,7 +105676,7 @@
 	              width: 1900,
 	              publisherSearchInput: publisherSearchInput,
 	              publisherNameSearchInput: publisherNameSearchInput,
-	              filterChangeCounter: filterChangeCounter
+	              filterChangeTime: filterChangeTime
 	            })
 	          ),
 	          _react2.default.createElement(_reactVirtualized.VirtualScroll, {
@@ -105740,7 +105686,7 @@
 	            rowHeight: rowHeight,
 	            rowRenderer: this._rowRenderer,
 	            order: order,
-	            filterChangeCounter: filterChangeCounter
+	            filterChangeTime: filterChangeTime
 	          })
 	        )
 	      );
@@ -105771,9 +105717,9 @@
 
 
 	      var content = void 0;
-	      var _state5 = this.state;
-	      var publisherSearchInput = _state5.publisherSearchInput;
-	      var publisherNameSearchInput = _state5.publisherNameSearchInput;
+	      var _state4 = this.state;
+	      var publisherSearchInput = _state4.publisherSearchInput;
+	      var publisherNameSearchInput = _state4.publisherNameSearchInput;
 
 
 	      switch (columnIndex) {
@@ -105962,6 +105908,14 @@
 
 	var _mappings = __webpack_require__(1167);
 
+	var _PublisherCommonErrorList = __webpack_require__(1174);
+
+	var _PublisherCommonErrorList2 = _interopRequireDefault(_PublisherCommonErrorList);
+
+	var _PublisherInfoList = __webpack_require__(1175);
+
+	var _PublisherInfoList2 = _interopRequireDefault(_PublisherInfoList);
+
 	var _publisher = __webpack_require__(784);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -105973,9 +105927,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	// import PublisherCommonErrors from './PublisherCommonErrorList'
-	// import PublisherInfoList from './PublisherInfoList'
 
 	var Publisher = function (_Component) {
 	  _inherits(Publisher, _Component);
@@ -106081,7 +106032,6 @@
 	      var loading = _props.loading;
 
 	      var headerClasses = (0, _classnames2.default)(fixedHeader, 'colHeader');
-	      console.log(filterChangeCounter);
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -106092,7 +106042,9 @@
 	            'h1',
 	            null,
 	            publisher.get('org_name')
-	          )
+	          ),
+	          _react2.default.createElement(_PublisherInfoList2.default, { publisher: publisher }),
+	          _react2.default.createElement(_PublisherCommonErrorList2.default, { publisherId: params.publisherId })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -106319,7 +106271,6 @@
 	  var publisher = state.publisher;
 	  var publisherDatasets = state.publisherDatasets;
 
-	  console.log(publisher);
 	  return {
 	    publisher: publisher,
 	    publisherDatasets: publisherDatasets.get('results'),
@@ -106338,6 +106289,453 @@
 
 /***/ },
 /* 1174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(373), RootInstanceProvider = __webpack_require__(381), ReactMount = __webpack_require__(383), React = __webpack_require__(448); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(448);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactVirtualized = __webpack_require__(1010);
+
+	var _reactAddonsShallowCompare = __webpack_require__(1013);
+
+	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
+
+	var _classnames = __webpack_require__(1004);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _tablestyle = __webpack_require__(1062);
+
+	var _tablestyle2 = _interopRequireDefault(_tablestyle);
+
+	var _scrollbarSize = __webpack_require__(1028);
+
+	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
+
+	var _reactRedux = __webpack_require__(766);
+
+	var _immutable = __webpack_require__(775);
+
+	var immutable = _interopRequireWildcard(_immutable);
+
+	var _moment = __webpack_require__(1064);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _reactRouter = __webpack_require__(501);
+
+	var _mappings = __webpack_require__(1167);
+
+	var _publisher = __webpack_require__(784);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PublisherCommonErrors = function (_Component) {
+	  _inherits(PublisherCommonErrors, _Component);
+
+	  function PublisherCommonErrors(props, context) {
+	    _classCallCheck(this, PublisherCommonErrors);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PublisherCommonErrors).call(this, props, context));
+
+	    _this.state = {
+	      columnCount: 3,
+	      height: 310,
+	      rowHeight: 36,
+	      rowCount: 1,
+	      filterChangeCounter: 0
+	    };
+
+	    _this._renderHeaderCell = _this._renderHeaderCell.bind(_this);
+	    _this._getColumnWidth = _this._getColumnWidth.bind(_this);
+	    _this._rowRenderer = _this._rowRenderer.bind(_this);
+
+	    return _this;
+	  }
+
+	  _createClass(PublisherCommonErrors, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.fetchPublisherCommonErrors(this.props.publisherId);
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.setState({
+	        rowCount: nextProps.publisherCommonErrors.size,
+	        filterChangeCounter: this.state.filterChangeCounter + 1
+	      });
+	    }
+	  }, {
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(nextProps, nextState) {
+	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _state = this.state;
+	      var columnCount = _state.columnCount;
+	      var height = _state.height;
+	      var rowHeight = _state.rowHeight;
+	      var rowCount = _state.rowCount;
+	      var filterChangeCounter = _state.filterChangeCounter;
+	      var _props = this.props;
+	      var publisher = _props.publisher;
+	      var loading = _props.loading;
+
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'col publisherCommonErrorsWrapper' },
+	        _react2.default.createElement(
+	          'h2',
+	          null,
+	          'Bug count per element'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'ListWrapper publisherCommonErrors' },
+	          _react2.default.createElement(
+	            'div',
+	            { style: {
+	                overflowX: 'scroll',
+	                width: '100%',
+	                maxWidth: '820px'
+	              } },
+	            _react2.default.createElement(
+	              'div',
+	              { style: {
+	                  backgroundColor: 'rgb(58, 58, 58)',
+	                  color: 'rgb(255, 255, 255)',
+	                  height: rowHeight,
+	                  width: '100%',
+	                  maxWidth: '820px'
+	                } },
+	              _react2.default.createElement(_reactVirtualized.Grid, {
+	                className: 'HeaderGrid',
+	                columnWidth: this._getColumnWidth,
+	                columnCount: columnCount,
+	                height: rowHeight,
+	                cellRenderer: this._renderHeaderCell,
+	                rowHeight: rowHeight,
+	                rowCount: 1,
+	                width: 820
+	              })
+	            ),
+	            _react2.default.createElement(
+	              _reactVirtualized.AutoSizer,
+	              { disableHeight: true },
+	              function (_ref) {
+	                var width = _ref.width;
+	                return _react2.default.createElement(_reactVirtualized.VirtualScroll, {
+	                  height: height,
+	                  rowRenderer: _this2._rowRenderer,
+	                  rowHeight: rowHeight,
+	                  rowCount: rowCount,
+	                  width: 820,
+	                  filterChangeCounter: filterChangeCounter
+	                });
+	              }
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: '_getColumnWidth',
+	    value: function _getColumnWidth(_ref2) {
+	      var index = _ref2.index;
+
+	      switch (index) {
+	        case 0:
+	          return 120;
+	        case 1:
+	          return 400;
+	        case 2:
+	          return 300;
+	        default:
+	          return 100;
+	      }
+	    }
+	  }, {
+	    key: '_renderHeaderCell',
+	    value: function _renderHeaderCell(_ref3) {
+	      var columnIndex = _ref3.columnIndex;
+	      var rowIndex = _ref3.rowIndex;
+
+
+	      var content = void 0;
+
+	      switch (columnIndex) {
+	        case 0:
+	          content = 'Bug count';
+	          break;
+	        case 1:
+	          content = 'Element';
+	          break;
+	        case 2:
+	          content = 'Field';
+	          break;
+	        default:
+	          content = _react2.default.createElement(
+	            'div',
+	            null,
+	            'empty'
+	          );
+	          break;
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'headerCell' },
+	        content
+	      );
+	    }
+	  }, {
+	    key: '_rowRenderer',
+	    value: function _rowRenderer(_ref4) {
+	      var index = _ref4.index;
+	      var isScrolling = _ref4.isScrolling;
+	      var loadedRowsMap = this.state.loadedRowsMap;
+	      var publisherCommonErrors = this.props.publisherCommonErrors;
+
+	      var row = publisherCommonErrors.get(index);
+	      var even = index % 2 == 1 ? 'uneven' : 'even';
+	      var rowCn = (0, _classnames2.default)('rv-row', 'row', even);
+
+	      if (row == undefined) {
+	        return _react2.default.createElement('div', { className: rowCn });
+	      }
+
+	      var model = row.model;
+	      if (_mappings.elementMapping[model] != undefined) {
+	        model = _mappings.elementMapping[model];
+	      }
+	      var fullModel = model;
+	      if (model.length > 44) {
+	        model = model.substring(0, 42) + '...';
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: rowCn },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-1', style: { width: this._getColumnWidth({ index: 0 }) } },
+	          row.note_count
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-2', style: { width: this._getColumnWidth({ index: 1 }) }, title: fullModel },
+	          model
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-3', style: { width: this._getColumnWidth({ index: 2 }) } },
+	          row.field
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PublisherCommonErrors;
+	}(_react.Component);
+
+	PublisherCommonErrors.propTypes = {
+	  publisherCommonErrors: _react.PropTypes.instanceOf(immutable.List).isRequired
+	};
+
+	function mapStateToProps(state, props) {
+	  var publisherCommonErrors = state.publisherCommonErrors;
+
+	  return {
+	    publisherCommonErrors: publisherCommonErrors.get('results')
+	  };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+	  fetchPublisherCommonErrors: _publisher.fetchPublisherCommonErrors
+	})(PublisherCommonErrors);
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(469); if (makeExportsHot(module, __webpack_require__(448))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "PublisherCommonErrorList.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 1175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(373), RootInstanceProvider = __webpack_require__(381), ReactMount = __webpack_require__(383), React = __webpack_require__(448); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(448);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _immutable = __webpack_require__(775);
+
+	var immutable = _interopRequireWildcard(_immutable);
+
+	var _moment = __webpack_require__(1064);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PublisherInfoList = function (_Component) {
+	  _inherits(PublisherInfoList, _Component);
+
+	  function PublisherInfoList(props, context) {
+	    _classCallCheck(this, PublisherInfoList);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PublisherInfoList).call(this, props, context));
+	  }
+
+	  _createClass(PublisherInfoList, [{
+	    key: 'render',
+	    value: function render() {
+	      var publisher = this.props.publisher;
+
+
+	      if (publisher.size == 0) {
+	        return _react2.default.createElement('div', null);
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'col' },
+	        _react2.default.createElement(
+	          'h2',
+	          null,
+	          'Publisher meta'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'publisherInfo' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'rv-row even' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-1 colHeader' },
+	              ' '
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-2 colHeader' },
+	              ' '
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'rv-row even' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-1' },
+	              'Organisation identifier'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-2' },
+	              publisher.get('org_id')
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'rv-row uneven' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-1' },
+	              'Name on registry'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-2' },
+	              publisher.get('org_name')
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'rv-row uneven' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-1' },
+	              '# Activities'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-2' },
+	              publisher.get('activity_count')
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'rv-row even' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-1' },
+	              '# Bugs'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'rv-col col-2' },
+	              publisher.get('note_count')
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PublisherInfoList;
+	}(_react.Component);
+
+	PublisherInfoList.propTypes = {
+	  publisher: _react.PropTypes.instanceOf(immutable.Map).isRequired
+	};
+
+	exports.default = PublisherInfoList;
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(469); if (makeExportsHot(module, __webpack_require__(448))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "PublisherInfoList.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 1176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(373), RootInstanceProvider = __webpack_require__(381), ReactMount = __webpack_require__(383), React = __webpack_require__(448); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
@@ -106371,6 +106769,342 @@
 	});
 
 	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(469); if (makeExportsHot(module, __webpack_require__(448))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ErrorPage.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 1177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(373), RootInstanceProvider = __webpack_require__(381), ReactMount = __webpack_require__(383), React = __webpack_require__(448); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(448);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactVirtualized = __webpack_require__(1010);
+
+	var _reactAddonsShallowCompare = __webpack_require__(1013);
+
+	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
+
+	var _classnames = __webpack_require__(1004);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _tablestyle = __webpack_require__(1062);
+
+	var _tablestyle2 = _interopRequireDefault(_tablestyle);
+
+	var _scrollbarSize = __webpack_require__(1028);
+
+	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
+
+	var _reactRedux = __webpack_require__(766);
+
+	var _immutable = __webpack_require__(775);
+
+	var _moment = __webpack_require__(1064);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _reactRouter = __webpack_require__(501);
+
+	var _mappings = __webpack_require__(1167);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ImplementedErrorList = function (_Component) {
+	  _inherits(ImplementedErrorList, _Component);
+
+	  function ImplementedErrorList(props, context) {
+	    _classCallCheck(this, ImplementedErrorList);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImplementedErrorList).call(this, props, context));
+
+	    _this.state = {
+	      columnWidth: 300,
+	      columnCount: 7,
+	      height: 600,
+	      overscanColumnCount: 0,
+	      overscanRowCount: 5,
+	      rowHeight: 40,
+	      rowCount: 0,
+	      fixedHeader: ''
+	    };
+	    _this._renderHeaderCell = _this._renderHeaderCell.bind(_this);
+	    _this._getColumnWidth = _this._getColumnWidth.bind(_this);
+	    _this._rowRenderer = _this._rowRenderer.bind(_this);
+
+	    _this.state.implementedChecks = [{ standard: 'activity', version: '1.01+', element: 'iati-activity', attribute: 'last-updated-datetime', check: 'last-updated-time is less than previously existing activity', bugs: 1, dashboard: 0, validator: 0 }, { standard: 'activity', version: '1.01+', element: 'iati-activity', attribute: 'last-updated-datetime', check: 'last-updated-time is not present, but is present on previously existing activity', bugs: 1, dashboard: 0, validator: 0 }, { standard: 'activity', version: '1.01+', element: 'iati-activity', attribute: 'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1 }, { standard: 'activity', version: '1.01+', element: 'iati-activity', attribute: 'default-currency', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1 }, { standard: 'activity', version: '2.02', element: 'iati-activity', attribute: 'humanitarian', check: 'must be of type xsd:boolean', bugs: 1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '1.01+', element: 'iati-activity', attribute: 'hierarchy', check: 'must be of type xsd:int', bugs: 1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute: 'text', check: 'must occur', bugs: 1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute: 'text', check: ' must be prefixed with either the current org ref for the reporting org or a previous identifier reported in other-identifier, and suffixed with the organisation’s own activity identifier.', bugs: 0, dashboard: 0, validator: 0 }, { standard: 'activity', version: '1.01+', element: 'reporting-org', attribute: 'ref', check: 'must be of type xsd:int', bugs: 1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '2.01+', element: 'reporting-org', attribute: 'ref', check: 'must be in format {RegistrationAgency}-{RegistrationNumber}', bugs: 0, dashboard: -1, validator: -1 }, { standard: 'activity', version: '1.01+', element: 'reporting-org', attribute: 'type', check: 'must be on codelist', bugs: 1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '1.01+', element: 'reporting-org', attribute: 'secondary-publisher', check: 'must be of type xsd:boolean', bugs: 1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '1.0x', element: 'reporting-org', attribute: 'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1 }, { standard: 'activity', version: '2.01+', element: 'title', attribute: '-', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '2.01+', element: 'title', attribute: 'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '', element: 'sector', attribute: 'code', check: 'required', bugs: 1, dashboard: -1, validator: 1 }, { standard: 'activity', version: '', element: 'sector', attribute: 'code', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1 }, { standard: 'activity', version: '', element: 'sector', attribute: 'vocabulary', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'sector', attribute: 'percentage', check: 'Percentages for all reported sectors must add up to 100%', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'recipient-country', attribute: 'code', check: 'required', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'recipient-country', attribute: 'code', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'recipient-country', attribute: 'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1 }, { standard: 'activity', version: '', element: 'recipient-region', attribute: 'code', check: 'required', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'recipient-region', attribute: 'code', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'recipient-region', attribute: 'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1 }, { standard: 'activity', version: '', element: 'recipient-region', attribute: 'vocabulary', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1 }, { standard: 'activity', version: '', element: 'recipient-region', attribute: 'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1 }, { standard: 'activity', version: '', element: 'recipient-country / recipient-region', attribute: 'percentage', check: 'Percentages for all reported countries and regions must add up to 100%.', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', version: '', element: 'transaction/provider-org', attribute: 'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: -1, dashboard: -1, validator: -1 }, { standard: 'activity', element: 'policy-marker', attribute: 'code', check: 'on codelist (only for default vocabulary)', bugs: 1, dashboard: 1, validator: 0 }, { standard: 'activity', element: 'policy-marker', attribute: 'code', check: 'on codelist (for non-default vocabulary)', bugs: 0, dashboard: 0, validator: 0 }, { standard: 'activity', element: 'policy-marker', attribute: 'vocabulry', check: 'on codelist if reported', bugs: 1, dashboard: 1, validator: 0 }, { standard: 'activity', element: 'policy-marker', attribute: 'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0 }, { standard: '-', element: 'Any more suggestions?', attribute: 'Let me know!', check: '-', bugs: 0, dashboard: 0, validator: 0 }];
+
+	    _this.state.rowCount = _this.state.implementedChecks.length;
+	    return _this;
+	  }
+
+	  _createClass(ImplementedErrorList, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (this.state.rowCount != nextProps.modelAggregation.size) {
+	        this.setState({
+	          rowCount: nextProps.modelAggregation.size
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {}
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {}
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+
+	      var stateChanges = {
+	        rowCount: nextProps.modelAggregation.size
+	      };
+
+	      this.setState(stateChanges);
+	    }
+	  }, {
+	    key: 'shouldComponentUpdate',
+	    value: function shouldComponentUpdate(nextProps, nextState) {
+	      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _state = this.state;
+	      var columnCount = _state.columnCount;
+	      var height = _state.height;
+	      var overscanColumnCount = _state.overscanColumnCount;
+	      var rowHeight = _state.rowHeight;
+	      var rowCount = _state.rowCount;
+	      var fixedHeader = _state.fixedHeader;
+
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'ListWrapper2' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'ListInfo' },
+	          _react2.default.createElement(
+	            'h2',
+	            null,
+	            'Implemented checks'
+	          ),
+	          _react2.default.createElement(
+	            'p',
+	            { style: { color: 'red', fontWeight: 'bold' } },
+	            'Note: This list is incomplete and will be updated in the upcoming days.'
+	          ),
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            'The below list will show a complete list of all IATI validation checks.',
+	            _react2.default.createElement('br', null),
+	            _react2.default.createElement('br', null),
+	            'Do you have any additions? Feel free to add them to the ',
+	            _react2.default.createElement(
+	              'a',
+	              { target: '_blank', href: 'https://trello.com/b/cAa0ryxh/iati-bugs' },
+	              'Trello board'
+	            ),
+	            ' or the code!',
+	            _react2.default.createElement('br', null),
+	            _react2.default.createElement('br', null),
+	            'Last updated: 2016-07-26'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'commonErrorList' },
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              className: fixedHeader,
+	              style: {
+	                backgroundColor: 'rgb(58, 58, 58)',
+	                color: 'rgb(255, 255, 255)',
+	                height: rowHeight,
+	                minWidth: 2350,
+	                width: '100%'
+	              } },
+	            _react2.default.createElement(_reactVirtualized.Grid, {
+	              className: 'HeaderGrid',
+	              columnWidth: this._getColumnWidth,
+	              columnCount: columnCount,
+	              height: rowHeight,
+	              overscanColumnCount: overscanColumnCount,
+	              cellRenderer: this._renderHeaderCell,
+	              rowHeight: rowHeight,
+	              rowCount: 1,
+	              width: 2350
+	            })
+	          ),
+	          _react2.default.createElement(
+	            _reactVirtualized.AutoSizer,
+	            { disableHeight: true },
+	            function (_ref) {
+	              var width = _ref.width;
+	              return _react2.default.createElement(_reactVirtualized.VirtualScroll, {
+	                width: 2350,
+	                height: height,
+	                rowCount: rowCount,
+	                rowHeight: rowHeight,
+	                rowRenderer: _this2._rowRenderer
+	              });
+	            }
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: '_getColumnWidth',
+	    value: function _getColumnWidth(_ref2) {
+	      var index = _ref2.index;
+
+	      switch (index) {
+	        case 0:
+	          return 150;
+	        case 1:
+	          return 350;
+	        case 2:
+	          return 250;
+	        case 3:
+	          return 150;
+	        case 4:
+	          return 150;
+	        case 5:
+	          return 150;
+	        case 6:
+	          return 900;
+	        default:
+	          return 100;
+	      }
+	    }
+	  }, {
+	    key: '_renderHeaderCell',
+	    value: function _renderHeaderCell(_ref3) {
+	      var columnIndex = _ref3.columnIndex;
+	      var rowIndex = _ref3.rowIndex;
+
+	      var content = void 0;
+
+	      switch (columnIndex) {
+	        case 0:
+	          content = 'Standard type';
+	          break;
+	        case 1:
+	          content = 'Element';
+	          break;
+	        case 2:
+	          content = 'Attribute';
+	          break;
+	        case 3:
+	          content = 'Checked by IATI bug swarm';
+	          break;
+	        case 4:
+	          content = 'Checked by IATI dashboard';
+	          break;
+	        case 5:
+	          content = 'Checked by IATI validator';
+	          break;
+	        case 6:
+	          content = 'Validation check';
+	          break;
+	        default:
+	          content = _react2.default.createElement(
+	            'div',
+	            null,
+	            'empty'
+	          );
+	          break;
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'headerCell' },
+	        content
+	      );
+	    }
+	  }, {
+	    key: '_rowRenderer',
+	    value: function _rowRenderer(_ref4) {
+	      var index = _ref4.index;
+	      var isScrolling = _ref4.isScrolling;
+	      var implementedChecks = this.state.implementedChecks;
+	      // const {} = this.props 
+
+	      var row = implementedChecks[index];
+	      var even = index % 2 == 1 ? 'uneven' : 'even';
+	      var rowCn = (0, _classnames2.default)('rv-row', 'row', even);
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: rowCn },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-1', style: { width: this._getColumnWidth({ index: 0 }) } },
+	          row.standard
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-2', style: { width: this._getColumnWidth({ index: 1 }) } },
+	          row.element
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-3', style: { width: this._getColumnWidth({ index: 2 }) } },
+	          row.attribute
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-4', style: { width: this._getColumnWidth({ index: 3 }) } },
+	          row.check
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-5', style: { width: this._getColumnWidth({ index: 4 }) } },
+	          row.bugs
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-6', style: { width: this._getColumnWidth({ index: 5 }) } },
+	          row.dashboard
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'rv-col column-7', style: { width: this._getColumnWidth({ index: 6 }) } },
+	          row.validator
+	        )
+	      );
+	    }
+	  }]);
+
+	  return ImplementedErrorList;
+	}(_react.Component);
+
+	exports.default = ImplementedErrorList;
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(469); if (makeExportsHot(module, __webpack_require__(448))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "ImplementedBugs.jsx" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
 
 /***/ }

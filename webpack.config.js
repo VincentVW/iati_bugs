@@ -10,9 +10,9 @@ module.exports = {
     ],
     output: {
         path: path.resolve(__dirname, './public'),
-        publicPath: '/public/',
+        publicPath: '/',
         filename: 'bundle.js',
-    },  
+    },
     module: {
         loaders: [
             {
@@ -34,7 +34,8 @@ module.exports = {
         extensions: ['', '.js', '.jsx']
     },
     devServer: {
-      // contentBase: "./public",
+      publicPath: '/',
+      contentBase: ".",
       hot: true,
       historyApiFallback: true
     }

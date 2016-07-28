@@ -36,7 +36,9 @@ class About extends Component {
         I Recently went through the logs of the OIPA parser and found tons of validation errors of which some I coulnd't find on the IATI Dashboard. 
         At the same time these logs are time-consuming to check while an interface would make it far easier.
         So why not make them transparent through the OIPA API and build a dashboard to make publishers aware. 
-        This should only have winners; publishers get an extra tool to check correctness of their data, the OIPA parser bugs are spotted earlier through feedback on this tool, and OIPA developers have an easier interface to check parser logs. 
+        This should only have winners; publishers have an extra tool to check correctness of their data, bugs in the OIPA parser are spotted earlier through feedback on this tool, and OIPA developers have an easier interface to check (a subset of) the parser logs. 
+        <br /><br />
+        Please keep in mind this is just a first version, built in my own time as a quick prototype. 
 
         <h3>Questions</h3>
         
@@ -44,32 +46,6 @@ class About extends Component {
 
         <br /><br />
         There's a <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> ready for bugs / feature requests.
-
-        <h3>Do I publish 100% correct data when there's 0 bugs listed?</h3>
-        
-        At the moment this tool only catches a subset of IATI validation bugs. But if you have no bugs on the IATI dashboard and in here, it should good enough for now!
-        <br /><br />
-        Please keep in mind this is just a first version, built in my own time in the evening hours. That's not quite the perfect setting for a complete and bug free tool. 
-        
-
-        <h3>IATI Dashboard</h3>
-        Similar functionality as provided by this tool could be added to the IATI dashboard and I hope it will. 
-        The reason I kept this separately instead of asking / helping the IATI dashboard to show these errors, is because the entry point of this dashboard is very different and less effort for me. See 'How does it work?' for details. 
-        <br /><br />
-        In this case I think its also healthy to have 2 tools to do the same thing. It makes it easier to spot bugs in the tools when publishers do cross-checks.
-
-        <h3>Is this important?</h3>
-
-        The <a target="_blank" href="http://dashboard.iatistandard.org/publishing_stats.html">Publisher stats / GPEDC</a> gives great insights to the quality of the data itself, which in the end is way more important than 100% bug free IATI files. 
-
-        The publisher stats however, rely on the technical quality of the data I'd imagine. 
-
-        <br /><br />
-
-        Invalid data also has some major side effects for data users that cannot use your data or have to build workarounds to show your data correctly. 
-
-        There are quite some data portals build upon partly faulty data. While it might be more effort to get the data changed, especially when its not your own data, its generally bad for the standard to be less strict about this. In the long run it could cause a lack of comparability and traceability.
-
       </div>
     )
   }

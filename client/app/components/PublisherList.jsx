@@ -14,6 +14,7 @@ class PublisherList extends Component {
 
   constructor (props, context) {
     super(props, context)
+
     this.state = {
       loadedRowCount: 0,
       loadedRowsMap: {},
@@ -26,10 +27,8 @@ class PublisherList extends Component {
       totalCount: 1,
       order: '-note_count',
       orderAsc: true,
-      filters: immutable.Map({}),
-      next: null,
-      previous: null,
-      filterChangeCounter: 0,
+      filters: immutable.Map({'filterChangeTime': Date.now()}),
+      filterChangeTime: 0,
       publisherSearchInput: '',
       publisherNameSearchInput: '',
       fixedHeader: ''
@@ -54,16 +53,16 @@ class PublisherList extends Component {
     this.onPublisherSearch = this.onPublisherSearch.bind(this)
     this.onPublisherNameSearch = this.onPublisherNameSearch.bind(this)
     this.changeOrder = this.changeOrder.bind(this)
+
+    this.inputSearch = this.inputSearch.bind(this)
   }
 
   componentDidMount(){
-    this.props.fetchPublishers(this.state.order, this.state.filters.set('filterChangeCounter', this.state.filterChangeCounter + 1))
+    this.props.fetchPublishers(this.state.order, this.state.filters)
   }
 
-  componentWillUnmount() {
-    Object.keys(this._timeoutIdMap).forEach(timeoutId => {
-      clearTimeout(timeoutId)
-    })
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -73,26 +72,27 @@ class PublisherList extends Component {
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
       filters: nextProps.meta.get('filters'),
-      previous: nextProps.meta.get('previous'),
-      next: nextProps.meta.get('next'),
-      filterChangeCounter:  nextProps.meta.get('filterChangeCounter'),
+      filterChangeTime:  nextProps.meta.get('filterChangeTime'),
     }
 
     this.setState(stateChanges);
   }
 
-  onPublisherSearch(event){
+  inputSearch(event, changedHeader, stateHeaderName){
     const searchValue = event.target.value
-    this.setState({publisherSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisher', searchValue))
+    let stateChanges = {}
+    stateChanges[stateHeaderName] = searchValue
+    this.setState(stateChanges)
+    const { order, filters } = this.state
+    this.props.fetchPublishers(order, filters.set('filterChangeTime', Date.now()).set(changedHeader, searchValue))
+  }
+
+  onPublisherSearch(event){
+    this.inputSearch(event, 'publisher', 'publisherSearchInput')
   }
 
   onPublisherNameSearch(event){
-    const searchValue = event.target.value
-    this.setState({publisherNameSearchInput: searchValue})
-    const { order, filters, filterChangeCounter } = this.state
-    this.props.fetchPublishers(order, filters.set('filterChangeCounter', filterChangeCounter + 1).set('publisherName', searchValue))
+    this.inputSearch(event, 'publisherName', 'publisherNameSearchInput')
   }
 
   changeOrder(nextOrder, defaultOrder){
@@ -114,10 +114,6 @@ class PublisherList extends Component {
     this.props.fetchPublishers(nextOrder, filters)
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState)
-  }
-
   render () {
     const {
       columnCount,
@@ -128,7 +124,7 @@ class PublisherList extends Component {
       totalCount,
       order,
       filters,
-      filterChangeCounter,
+      filterChangeTime,
       publisherSearchInput,
       publisherNameSearchInput,
       fixedHeader
@@ -140,12 +136,6 @@ class PublisherList extends Component {
       <div className="ListWrapper2">
         <div className="ListInfo">
           <h2>bugs by publisher</h2>
-          <p>
-            The below list shows all detected bugs by IATI Publisher.
-          </p>
-          <p>
-            To search datasets by the publisher, please use the search on the <Link to="/datasets">datasets</Link> page for now.
-          </p>
         </div>
         <div id="publisherList">
           <div 
@@ -162,7 +152,7 @@ class PublisherList extends Component {
               width={1900}
               publisherSearchInput={publisherSearchInput}
               publisherNameSearchInput={publisherNameSearchInput}
-              filterChangeCounter={filterChangeCounter}
+              filterChangeTime={filterChangeTime}
             />
           </div>
 
@@ -173,7 +163,7 @@ class PublisherList extends Component {
             rowHeight={rowHeight}
             rowRenderer={this._rowRenderer}
             order={order}
-            filterChangeCounter={filterChangeCounter}
+            filterChangeTime={filterChangeTime}
           />
         </div>
       </div>

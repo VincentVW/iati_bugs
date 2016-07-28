@@ -1,4 +1,3 @@
-/** @flow */
 import React, { Component, PropTypes } from 'react'
 import { WindowScroller, VirtualScroll, InfiniteLoader, AutoSizer, Grid, ScrollSync } from 'react-virtualized'
 import shallowCompare from 'react-addons-shallow-compare'
@@ -11,11 +10,8 @@ import moment from 'moment'
 import { Link } from 'react-router'
 import { errorTypeMapping, elementMapping } from '../mappings'
 
-const STATUS_LOADING = 1
-const STATUS_LOADED = 2
 
-
-class DatasetCommonErrors extends Component {
+class PublisherCommonErrors extends Component {
 
   constructor (props, context) {
     super(props, context)
@@ -33,12 +29,12 @@ class DatasetCommonErrors extends Component {
     
   }
   componentDidMount(){
-    this.props.fetchDatasetCommonErrors(this.props.datasetId)
+    this.props.fetchPublisherCommonErrors(this.props.publisherId)
   }
   
   componentWillReceiveProps(nextProps) {
     this.setState({
-      rowCount: nextProps.datasetCommonErrors.size,
+      rowCount: nextProps.publisherCommonErrors.size,
       filterChangeCounter: this.state.filterChangeCounter + 1
     });
   }
@@ -57,12 +53,12 @@ class DatasetCommonErrors extends Component {
       filterChangeCounter
     } = this.state
 
-    const {dataset, loading} = this.props
+    const {publisher, loading} = this.props
 
     return (
-    	<div className="col datasetCommonErrorsWrapper">
+    	<div className="col publisherCommonErrorsWrapper">
         <h2>Bug count per element</h2>
-  			<div className="ListWrapper datasetCommonErrors">
+  			<div className="ListWrapper publisherCommonErrors">
   				<div style={{
   					overflowX: `scroll`,
   					width: `100%`,
@@ -150,10 +146,10 @@ class DatasetCommonErrors extends Component {
 
   _rowRenderer ({ index, isScrolling }) {
     const { loadedRowsMap } = this.state
-    const {datasetCommonErrors} = this.props 
-    const row = datasetCommonErrors.get(index)
+    const {publisherCommonErrors} = this.props 
+    const row = publisherCommonErrors.get(index)
     const even = (index % 2 == 1) ? 'uneven': 'even';
-    const rowCn = cn('rv-row', 'row', 'datasets', even)
+    const rowCn = cn('rv-row', 'row', even)
 
     if (row == undefined){
     	return (<div className={rowCn}></div>)
@@ -184,18 +180,18 @@ class DatasetCommonErrors extends Component {
   }
 }
 
-DatasetCommonErrors.propTypes = {
-  datasetCommonErrors: PropTypes.instanceOf(immutable.List).isRequired,
+PublisherCommonErrors.propTypes = {
+  publisherCommonErrors: PropTypes.instanceOf(immutable.List).isRequired,
 }
 
 function mapStateToProps(state, props) {
-    const { datasetCommonErrors } = state
+    const { publisherCommonErrors } = state
     return {
-        datasetCommonErrors: datasetCommonErrors.get('results'),
+        publisherCommonErrors: publisherCommonErrors.get('results'),
     }
 }
 
-import { fetchDatasetCommonErrors } from '../actions/dataset'
+import { fetchPublisherCommonErrors } from '../actions/publisher'
 export default connect(mapStateToProps, {
-    fetchDatasetCommonErrors
-})(DatasetCommonErrors)
+    fetchPublisherCommonErrors
+})(PublisherCommonErrors)
