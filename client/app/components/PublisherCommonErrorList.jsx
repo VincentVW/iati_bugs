@@ -55,6 +55,8 @@ class PublisherCommonErrors extends Component {
 
     const {publisher, loading} = this.props
 
+    const headerClasses = cn('colHeader')
+
     return (
     	<div className="col publisherCommonErrorsWrapper">
         <h2>Bug count per element</h2>
@@ -64,20 +66,14 @@ class PublisherCommonErrors extends Component {
   					width: `100%`,
             maxWidth: `820px`
   				}}>
-  					<div style={{
-  					  backgroundColor: `rgb(58, 58, 58)`,
-  					  color: `rgb(255, 255, 255)`,
-  					  height: rowHeight,
-  					  width: `100%`,
-              maxWidth: `820px`
-  					}}>
+  					<div className={headerClasses}>
   						<Grid
   							className="HeaderGrid"
   							columnWidth={this._getColumnWidth}
   							columnCount={columnCount}
-  							height={rowHeight}
+  							height={46}
   							cellRenderer={this._renderHeaderCell}
-  							rowHeight={rowHeight}
+  							rowHeight={46}
   							rowCount={1}
   							width={820}
   						/>

@@ -1,6 +1,4 @@
-import _ from 'lodash'
 import * as immutable from 'immutable'
-
 
 import * as datasetActions from './actions/dataset'
 import * as datasetsActions from './actions/datasets'

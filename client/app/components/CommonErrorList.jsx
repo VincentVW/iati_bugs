@@ -26,7 +26,6 @@ const reasonMapping = {
   'transaction/sector': {
     'required attribute missing': '108k bugs by UNICEF due to empty code'
   },
-
 }
 
 class CommonErrorList extends Component {
@@ -46,10 +45,6 @@ class CommonErrorList extends Component {
     this._renderHeaderCell = this._renderHeaderCell.bind(this)
     this._getColumnWidth = this._getColumnWidth.bind(this)
     this._rowRenderer = this._rowRenderer.bind(this)
-
-    // this.handleScroll = this.handleScroll.bind(this)
-
-    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,27 +57,7 @@ class CommonErrorList extends Component {
 
   componentDidMount() {
     this.props.fetchModelAggregation()
-    // window.addEventListener('scroll', this.handleScroll);
   }
-
-  componentWillUnmount() {
-    // window.removeEventListener('scroll', this.handleScroll);
-  }
-
-  // handleScroll(event) {
-  //   let scrollTop = event.srcElement.body.scrollTop;
-  //   let fixedHeader = ''
-    
-  //   if(scrollTop > 255){
-  //     fixedHeader = 'fixed'
-  //   }
-    
-  //   if(this.state.fixedHeader != fixedHeader){
-  //     this.setState({
-  //       fixedHeader: fixedHeader
-  //     });
-  //   }
-  // }
 
   componentWillReceiveProps(nextProps) {
 
@@ -108,10 +83,11 @@ class CommonErrorList extends Component {
       fixedHeader
     } = this.state
 
+    const headerClasses = cn(fixedHeader, 'colHeader')
+
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <h2>Common bugs</h2>
           <p>
             The below list shows all detected bugs by IATI element/attribute and type of bug.
             <br />&nbsp;<br />
@@ -120,23 +96,15 @@ class CommonErrorList extends Component {
         </div>
 
         <div id="commonErrorList">
-          <div 
-          className={fixedHeader}
-          style={{
-            backgroundColor: `rgb(58, 58, 58)`,
-            color: `rgb(255, 255, 255)`,
-            height: rowHeight,
-            minWidth: 2350,
-            width: `100%`
-          }}>
+          <div className={headerClasses}>
             <Grid
               className="HeaderGrid"
               columnWidth={this._getColumnWidth}
               columnCount={columnCount}
-              height={rowHeight}
+              height={46}
               overscanColumnCount={overscanColumnCount}
               cellRenderer={this._renderHeaderCell}
-              rowHeight={rowHeight}
+              rowHeight={46}
               rowCount={1}
               width={2350}
             />
@@ -144,7 +112,6 @@ class CommonErrorList extends Component {
 
             <AutoSizer disableHeight>
               {({ width }) => (
-                
                 <VirtualScroll
                   width={2350}
                   height={height}
@@ -279,34 +246,8 @@ class CommonErrorList extends Component {
       )
     }
   }
-
-
-
 }
 
-function hexToRgb (hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null
-}
-
-/**
- * Ported from sass implementation in C
- * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
- */
-function mixColors (color1, color2, amount) {
-  const weight1 = amount
-  const weight2 = 1 - amount
-
-  const r = Math.round(weight1 * color1.r + weight2 * color2.r)
-  const g = Math.round(weight1 * color1.g + weight2 * color2.g)
-  const b = Math.round(weight1 * color1.b + weight2 * color2.b)
-
-  return { r, g, b }
-}
 
 CommonErrorList.propTypes = {
   modelAggregation: PropTypes.instanceOf(List).isRequired

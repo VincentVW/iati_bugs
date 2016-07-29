@@ -20,7 +20,7 @@ class Publisher extends Component {
     super(props, context)
     this.state = {
       columnCount: 6,
-      height: 600,
+      height: 400,
       overscanColumnCount: 0,
       overscanRowCount: 0,
       rowHeight: 36,
@@ -53,7 +53,14 @@ class Publisher extends Component {
 
   componentWillReceiveProps(nextProps) {
 
+    let height = 400;
+    if(nextProps.publisherDatasets.size < 11){
+      height = nextProps.publisherDatasets.size * this.state.rowHeight
+    }
+
+
     this.setState({
+      height: height,
       rowCount: nextProps.publisherDatasets.size,
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
@@ -110,16 +117,15 @@ class Publisher extends Component {
     return (
       <div>
         <div className="ListInfo">
-          <h1>{publisher.get('org_name')}</h1>
-          
           <PublisherInfoList publisher={publisher}></PublisherInfoList>
           <PublisherCommonErrors publisherId={params.publisherId}></PublisherCommonErrors>
         </div>
+
         <div className="publisherDatasetsHeader">
           <h2>Datasets</h2>
         </div>
+        
         <div className="ListWrapper">
-
           <div id="publisherDatasets">
             <div 
             className={headerClasses}>
@@ -127,10 +133,10 @@ class Publisher extends Component {
                 className="HeaderGrid"
                 columnWidth={this._getColumnWidth}
                 columnCount={columnCount}
-                height={rowHeight}
+                height={46}
                 overscanColumnCount={overscanColumnCount}
                 cellRenderer={this._renderHeaderCell}
-                rowHeight={rowHeight}
+                rowHeight={46}
                 rowCount={1}
                 width={1920}
               />

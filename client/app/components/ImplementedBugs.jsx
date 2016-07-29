@@ -117,11 +117,12 @@ class ImplementedErrorList extends Component {
       fixedHeader
     } = this.state
 
+    const headerClasses = cn(fixedHeader, 'colHeader')
+
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <h2>Implemented checks</h2>
-          <p style={{color: 'red', fontWeight: 'bold'}}>Note: This list is incomplete and will be updated in the upcoming days.</p>
+          <p style={{fontWeight: 'bold'}}>Note: This list is incomplete and will be updated in the upcoming days.</p>
           <p>
             The below list will show a complete list of all IATI validation checks.
 
@@ -133,22 +134,15 @@ class ImplementedErrorList extends Component {
         </div>
         <div id="commonErrorList">
           <div 
-          className={fixedHeader}
-          style={{
-            backgroundColor: `rgb(58, 58, 58)`,
-            color: `rgb(255, 255, 255)`,
-            height: rowHeight,
-            minWidth: 2350,
-            width: `100%`
-          }}>
+          className={headerClasses}>
             <Grid
               className="HeaderGrid"
               columnWidth={this._getColumnWidth}
               columnCount={columnCount}
-              height={rowHeight}
+              height={46}
               overscanColumnCount={overscanColumnCount}
               cellRenderer={this._renderHeaderCell}
-              rowHeight={rowHeight}
+              rowHeight={46}
               rowCount={1}
               width={2350}
             />
@@ -207,13 +201,13 @@ class ImplementedErrorList extends Component {
         content = 'Attribute'
         break
       case 3:
-        content = 'Checked by IATI bug swarm'
+        content = 'Checked by IATI Bug Tracker'
         break
       case 4:
-        content = 'Checked by IATI dashboard'
+        content = 'Checked by IATI Dashboard'
         break
       case 5:
-        content = 'Checked by IATI validator'
+        content = 'Checked by IATI Validator'
         break
       case 6:
         content = 'Validation check'
@@ -256,20 +250,20 @@ class ImplementedErrorList extends Component {
           {row.attribute}
         </div>
 
-        <div className="rv-col column-4" style={{width: this._getColumnWidth({index: 3})}}>
-          {row.check}
-        </div>
-
-        <div className="rv-col column-5" style={{width: this._getColumnWidth({index: 4})}}>
+        <div className="rv-col column-4" style={{width: this._getColumnWidth({index: 4})}}>
           {row.bugs}
         </div>
 
-        <div className="rv-col column-6" style={{width: this._getColumnWidth({index: 5})}}>
+        <div className="rv-col column-5" style={{width: this._getColumnWidth({index: 5})}}>
           {row.dashboard}
         </div>
 
-        <div className="rv-col column-7" style={{width: this._getColumnWidth({index: 6})}}>
+        <div className="rv-col column-6" style={{width: this._getColumnWidth({index: 6})}}>
           {row.validator}
+        </div>
+
+        <div className="rv-col column-7" style={{width: this._getColumnWidth({index: 3})}}>
+          {row.check}
         </div>
       </div>
     )

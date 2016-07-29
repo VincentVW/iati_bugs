@@ -26,11 +26,11 @@ class PublisherInfoList extends Component {
             <div className="rv-col col-1 colHeader">&nbsp;</div><div className="rv-col col-2 colHeader">&nbsp;</div>
           </div>
 
-          <div className="rv-row even">
+          <div className="rv-row uneven">
             <div className="rv-col col-1">Organisation identifier</div><div className="rv-col col-2">{publisher.get('org_id')}</div>
           </div>
 
-          <div className="rv-row uneven">
+          <div className="rv-row even">
             <div className="rv-col col-1">Name on registry</div><div className="rv-col col-2">{publisher.get('org_name')}</div>
           </div>
 

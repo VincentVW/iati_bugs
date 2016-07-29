@@ -9,6 +9,7 @@ import * as immutable from 'immutable'
 import moment from 'moment'
 import { Link } from 'react-router'
 
+
 const STATUS_LOADING = 1
 const STATUS_LOADED = 2
 
@@ -193,22 +194,10 @@ class DatasetList extends Component {
       scrollToIndex
     } = this.state
 
-    // console.log('----------')
-    // console.log('filterChangeTime' + filterChangeTime)
-    // console.log('stateFilterChangeTime' + stateFilterChangeTime)
-    // console.log(filterChangeTime == stateFilterChangeTime)
-    // console.log('----------')
-
-    // // console.log('stateFilterChangeTime:' + stateFilterChangeTime)
-    // console.log('totalCount: ' + totalCount)
     const headerClasses = cn(fixedHeader, 'colHeader')
 
     return (
       <div className="ListWrapper2">
-        <div className="ListInfo">
-          <h2>Bugs by dataset</h2>
-        </div>        
-
         <div id="datasetList">
           <div 
           className={headerClasses}>
@@ -219,7 +208,7 @@ class DatasetList extends Component {
               height={rowHeight}
               overscanColumnCount={overscanColumnCount}
               cellRenderer={this._renderHeaderCell}
-              rowHeight={rowHeight}
+              rowHeight={46}
               rowCount={1}
               width={2350}
               refSearchInput={refSearchInput}

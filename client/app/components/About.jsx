@@ -25,6 +25,10 @@ class About extends Component {
 
         This tool is a React (Javascript) app that directly uses that endpoint to display aggregated and detailed error information.
 
+        <h3>Future</h3>
+        The aim of this tool is to show all validation errors. Other features will be kept limited as I'd rather want to spent time on helping the <a target="_blank" href="http://discuss.iatistandard.org/t/work-towards-an-improved-iati-validator/524/1">new IATI validator</a> to be feature rich. 
+
+
         <h3>The origin of this tool</h3>
 
         I'm Vincent van 't Westende, a developer at <a target="_blank" href="https://www.zimmermanzimmerman.nl">Zimmerman & Zimmerman</a>. 
@@ -33,16 +37,17 @@ class About extends Component {
         OIPA serves as data engine for <a target="_blank" href="https://www.iatistudio.com">IATI Studio</a>, <a target="_blank" href="https://devtracker.dfid.gov.uk/">DevTracker</a>, <a target="_blank" href="https://www.openaid.nl">OpenaidNL</a>, <a target="_blank" href="https://aiddata.rvo.nl/">Dutch Enterprise Agency - Aid Data</a>, <a target="_blank" href="http://opendata.unesco.org">UNESCO Open Data</a>, <a target="_blank" href="http://open.unhabitat.org">Open UN-Habitat</a>, <a target="_blank" href="http://www.rainfoundation.org">RAIN Foundation</a> and <a target="_blank" href="http://urbandata.unhabitat.org/">UN-Habitat - Urban data</a>.
 
         <br /><br />
-        I Recently went through the logs of the OIPA parser and found tons of validation errors of which some I coulnd't find on the IATI Dashboard. 
+        I recently went through the logs of the OIPA parser and found tons of validation errors of which some I coulnd't find on the IATI Dashboard. 
         At the same time these logs are time-consuming to check while an interface would make it far easier.
         So why not make them transparent through the OIPA API and build a dashboard to make publishers aware. 
         This should only have winners; publishers have an extra tool to check correctness of their data, bugs in the OIPA parser are spotted earlier through feedback on this tool, and OIPA developers have an easier interface to check (a subset of) the parser logs. 
         <br /><br />
-        Please keep in mind this is just a first version, built in my own time as a quick prototype. 
+        Please keep in mind this is just a first version, built in my own time as a quick prototype.  
 
-        <h3>Questions</h3>
         
-        I have no idea if anyone will use this and if it will cause response, so for now feel free to <a target="_blank" href="https://twitter.com/vwestende">tweet me</a> on anything regarding this dashboard (re-parse request, feature, bugs in a bug dashboard, etc.).
+        <h3>Questions / Contact</h3>
+        
+        I have no idea if anyone will use this and if it will cause response, so for now feel free to <a target="_blank" href="https://twitter.com/vwestende">tweet me</a> on anything regarding this dashboard (re-parse request, feature, bugs in a bug dashboard, etcetera).
 
         <br /><br />
         There's a <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> ready for bugs / feature requests.

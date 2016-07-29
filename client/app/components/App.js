@@ -9,7 +9,7 @@ import Loader from './Loader.jsx'
 const App = React.createClass({
     render: function() {
         return (
-            <DocumentTitle title='IATI bug swarm'>
+            <DocumentTitle title='IATI Bug Tracker'>
                 <div>
                     <NavBar></NavBar>
                     <Loader></Loader>

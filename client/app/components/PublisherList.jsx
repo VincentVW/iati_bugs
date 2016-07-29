@@ -134,9 +134,6 @@ class PublisherList extends Component {
 
     return (
       <div className="ListWrapper2">
-        <div className="ListInfo">
-          <h2>bugs by publisher</h2>
-        </div>
         <div id="publisherList">
           <div 
           className={headerClasses}>
@@ -149,7 +146,7 @@ class PublisherList extends Component {
               cellRenderer={this._renderHeaderCell}
               rowHeight={rowHeight}
               rowCount={1}
-              width={1900}
+              width={2000}
               publisherSearchInput={publisherSearchInput}
               publisherNameSearchInput={publisherNameSearchInput}
               filterChangeTime={filterChangeTime}
@@ -157,7 +154,7 @@ class PublisherList extends Component {
           </div>
 
           <VirtualScroll
-            width={1900}
+            width={2000}
             height={height}
             rowCount={totalCount}
             rowHeight={rowHeight}
@@ -175,9 +172,9 @@ class PublisherList extends Component {
       case 0:
         return 340
       case 1:
-        return 720
+        return 550
       case 2:
-        return 840
+        return 1110
       case 3:
         return 100
       default:
