@@ -52,7 +52,8 @@ export function fetchPublishers(ordering, filters) {
       'filters': filters,
       'order': ordering,
       'count': 1,
-      'filterChangeTime': filters.get('filterChangeTime')
+      'filterChangeTime': filters.get('filterChangeTime'),
+      'loading': false
     })
     
     return fetch(oipaApiUrl+`datasets/aggregations/?format=json&group_by=publisher&aggregations=note_count&order_by=`+ordering+filter_addition)

@@ -37,7 +37,13 @@ class DatasetCommonErrors extends Component {
   }
   
   componentWillReceiveProps(nextProps) {
+    let height = 310;
+    if(nextProps.datasetCommonErrors.size < 9){
+      height = nextProps.datasetCommonErrors.size * this.state.rowHeight
+    }
+
     this.setState({
+      height: height,
       rowCount: nextProps.datasetCommonErrors.size,
       filterChangeCounter: this.state.filterChangeCounter + 1
     });
@@ -59,6 +65,8 @@ class DatasetCommonErrors extends Component {
 
     const {dataset, loading} = this.props
 
+    const headerClasses = cn('colHeader')
+
     return (
     	<div className="col datasetCommonErrorsWrapper">
         <h2>Bug count per element</h2>
@@ -68,13 +76,7 @@ class DatasetCommonErrors extends Component {
   					width: `100%`,
             maxWidth: `820px`
   				}}>
-  					<div style={{
-  					  backgroundColor: `rgb(58, 58, 58)`,
-  					  color: `rgb(255, 255, 255)`,
-  					  height: rowHeight,
-  					  width: `100%`,
-              maxWidth: `820px`
-  					}}>
+  					<div className={headerClasses}>
   						<Grid
   							className="HeaderGrid"
   							columnWidth={this._getColumnWidth}

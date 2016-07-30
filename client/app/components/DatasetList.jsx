@@ -22,6 +22,7 @@ class DatasetList extends Component {
     const now = Date.now()
 
     this.state = {
+      loading: false,
       loadedRowCount: 0,
       loadedRowsMap: {},
       loadingRowCount: 0,
@@ -29,8 +30,8 @@ class DatasetList extends Component {
       height: 600,
       overscanColumnCount: 15,
       rowHeight: 40,
-      rowCount: 1,
-      totalCount: 1,
+      rowCount: 0,
+      totalCount: 0,
       order: 'ref',
       orderAsc: true,
       page: 1,
@@ -46,7 +47,7 @@ class DatasetList extends Component {
       publisherSearchInput: '',
       publisherNameSearchInput: '',
       fixedHeader: '',
-      scrollToIndex: null
+      scrollToIndex: null,
     }
 
     if(props.meta.get('filters') != undefined && props.meta.get('filters').get('ref') != undefined){
@@ -103,7 +104,14 @@ class DatasetList extends Component {
 
   componentWillReceiveProps(nextProps) {
 
+    let height = 600;
+    if(nextProps.datasets.size < 16){
+      height = nextProps.datasets.size * this.state.rowHeight
+    }
+
     let stateChanges = {
+      height: height,
+      loading: nextProps.loading,
       rowCount: nextProps.datasets.size,
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
@@ -111,7 +119,7 @@ class DatasetList extends Component {
       filters: nextProps.meta.get('filters'),
       previous: nextProps.meta.get('previous'),
       next: nextProps.meta.get('next'),
-      filterChangeTime:  nextProps.meta.get('filterChangeTime'),
+      filterChangeTime: nextProps.meta.get('filterChangeTime'),
     }
 
     this.setState(stateChanges);
@@ -120,8 +128,7 @@ class DatasetList extends Component {
   inputSearch(event, changedHeader, stateHeaderName){
     const searchValue = event.target.value
     let stateChanges = {
-      stateFilterChangeTime: Date.now(), 
-      scrollToIndex: 1
+      stateFilterChangeTime: Date.now(),
     }
     stateChanges[stateHeaderName] = searchValue
     this.setState(stateChanges)
@@ -160,16 +167,17 @@ class DatasetList extends Component {
       nextOrder = '-' + nextOrder;
     }
 
-    this._clearData();
+    // this._clearData();
+    // this._loadMoreRows(0,0);
 
     const now = Date.now()
 
     this.setState({
       orderAsc: asc,
       stateFilterChangeTime: now, 
-      scrollToIndex: 1,
       rowCount: 0,
       totalCount: 0,
+      scrollToIndex: 0,
     })
     this.props.fetchDatasets('1', nextOrder, filters.set('filterChangeTime', now))
   }
@@ -191,21 +199,22 @@ class DatasetList extends Component {
       publisherSearchInput,
       publisherNameSearchInput,
       fixedHeader,
+      loading,
       scrollToIndex
     } = this.state
 
     const headerClasses = cn(fixedHeader, 'colHeader')
+    const loaderClasses = cn({loading: loading}, 'loader')
 
     return (
       <div className="ListWrapper2">
         <div id="datasetList">
-          <div 
-          className={headerClasses}>
+          <div className={headerClasses}>
             <Grid
               className="HeaderGrid"
               columnWidth={this._getColumnWidth}
               columnCount={columnCount}
-              height={rowHeight}
+              height={46}
               overscanColumnCount={overscanColumnCount}
               cellRenderer={this._renderHeaderCell}
               rowHeight={46}
@@ -218,7 +227,7 @@ class DatasetList extends Component {
               stateFilterChangeTime={stateFilterChangeTime}
             />
           </div>
-
+          <div className={loaderClasses}></div>
           <InfiniteLoader
             isRowLoaded={this._isRowLoaded}
             loadMoreRows={this._loadMoreRows}
@@ -234,8 +243,8 @@ class DatasetList extends Component {
                 rowHeight={rowHeight}
                 rowRenderer={this._rowRenderer}
                 order={order}
-                scrollToIndex={scrollToIndex}
                 filterChangeTime={filterChangeTime}
+                scrollTop={scrollToIndex}
               />
             )}
           </InfiniteLoader>
@@ -444,7 +453,7 @@ class DatasetList extends Component {
     } else {
       let ref = row.ref
       if (ref.length > 32){ ref = ref.substr(0,32) + '...'; }
-      let url = 'datasets/' + row.id
+      let url = '/datasets/' + row.id
       let publisherName = row.publisher.org_name
       if(publisherName.length > 45){
         publisherName = publisherName.substr(0,42) + '...'
@@ -492,6 +501,7 @@ class DatasetList extends Component {
 }
 
 DatasetList.propTypes = {
+  loading: PropTypes.bool.isRequired,
   datasets: PropTypes.instanceOf(immutable.List).isRequired,
   meta: PropTypes.instanceOf(immutable.Map).isRequired,
 }
@@ -499,6 +509,7 @@ DatasetList.propTypes = {
 function mapStateToProps(state, props) {
     const { datasets } = state
     return {
+        loading: datasets.get('loading'),
         datasets: datasets.get('results'),
         meta: datasets.get('meta')
     }

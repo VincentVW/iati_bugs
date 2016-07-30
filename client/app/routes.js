@@ -18,8 +18,8 @@ export default (
     <Route component={App}>
         <Route path="about" component={About}/>
     	<Route path="common-errors" component={CommonErrorList}/>
-        <Route path="datasets" component={DatasetList}/>
         <Route path="datasets/:datasetId" component={Dataset}/>
+        <Route path="datasets" component={DatasetList}/>
         <Route path="publishers" component={PublisherList}/>
         <Route path="publishers/:publisherId" component={Publisher}/>
         <Route path="implemented-bugs" component={ImplementedBugs}/>

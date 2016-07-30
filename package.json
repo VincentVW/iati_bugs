@@ -42,6 +42,8 @@
     ]
   },
   "dependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.11.4",
     "babel-polyfill": "^6.9.1",
     "classnames": "^2.2.5",
     "css-loader": "^0.23.1",
@@ -57,9 +59,10 @@
     "react-document-title": "^2.0.2",
     "react-dom": "^15.1.0",
     "react-infinite-scroll": "^0.1.5",
+    "react-redux": "^4.4.5",
     "react-router": "^2.5.1",
     "react-router-redux": "^4.0.5",
-    "react-virtualized": "^7.11.2",
+    "react-virtualized": "^7.16.0",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
     "request-promise": "^3.0.0",

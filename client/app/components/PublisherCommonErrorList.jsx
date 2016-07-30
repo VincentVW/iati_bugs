@@ -16,6 +16,7 @@ class PublisherCommonErrors extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      loading: false,
       columnCount: 3,
       height: 310,
       rowHeight: 36,
@@ -33,7 +34,15 @@ class PublisherCommonErrors extends Component {
   }
   
   componentWillReceiveProps(nextProps) {
+
+    let height = 310;
+    if(nextProps.publisherCommonErrors.size < 9){
+      height = nextProps.publisherCommonErrors.size * this.state.rowHeight
+    }
+
     this.setState({
+      loading: nextProps.loading,
+      height: height,
       rowCount: nextProps.publisherCommonErrors.size,
       filterChangeCounter: this.state.filterChangeCounter + 1
     });
@@ -50,12 +59,14 @@ class PublisherCommonErrors extends Component {
       height,
       rowHeight,
       rowCount,
-      filterChangeCounter
+      filterChangeCounter,
+      loading
     } = this.state
 
-    const {publisher, loading} = this.props
+    const {publisher} = this.props
 
     const headerClasses = cn('colHeader')
+    const loaderClasses = cn({loading: loading}, 'loader')
 
     return (
     	<div className="col publisherCommonErrorsWrapper">
@@ -78,7 +89,7 @@ class PublisherCommonErrors extends Component {
   							width={820}
   						/>
   					</div>
-
+            <div className={loaderClasses}></div>
   					<AutoSizer disableHeight>
   					    {({ width }) => (
   					      <VirtualScroll
@@ -177,12 +188,14 @@ class PublisherCommonErrors extends Component {
 }
 
 PublisherCommonErrors.propTypes = {
+  loading: PropTypes.bool.isRequired,
   publisherCommonErrors: PropTypes.instanceOf(immutable.List).isRequired,
 }
 
 function mapStateToProps(state, props) {
     const { publisherCommonErrors } = state
     return {
+        loading: publisherCommonErrors.get('loading'),
         publisherCommonErrors: publisherCommonErrors.get('results'),
     }
 }

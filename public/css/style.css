@@ -1,27 +1,38 @@
 h1,h2,h3,h4,h5,h6{
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
+h2{
+  font-size: 1.8em;
+}
 body{
+  background-color: #1D2423;
   font-family: 'Open Sans', sans-serif;
-  background-color: rgb(230, 230, 230);
+  /*background-color: rgb(230, 230, 230);*/
 }
 
 body a{
-  color: #000;
+  color: #EEE;
+  text-decoration: underline;
 }
 body a:hover{
-  color: #555;
+  cursor: pointer;
+  color: #C19C7F;
 }
 
 
 /* list info */ 
-#content-wrap{
+/*#content-wrap{
   padding: 1em;
+}*/
+
+.ListInfo{
+  color: #fff;
+  padding: 0 1em;
 }
 
 .ListInfo .li-row-header{
-  background-color: rgb(58,58,58);
+  background-color: #4D7573;
 }
 
 .ListInfo .col{
@@ -30,10 +41,6 @@ body a:hover{
   width: 50%;
   padding: 0 0 4em;
   float: left;
-}
-
-.ListInfo .ListWrapper{
-  min-height: 220px;
 }
 
 .li-row{
@@ -71,7 +78,6 @@ body a:hover{
   -ms-flex-direction: row;
   flex-direction: row;
   width: 100%;
-  background-color: #EEE;
 }
 
 
@@ -193,12 +199,12 @@ body{
 }
 
 .even{
-  background-color: #EEE;
+  background-color: #FFF;
   color: #000;
 }
 
 .uneven{
-  background-color: #ddd;
+  background-color: #EBEBEB;
   color: #000;
 }
 
@@ -215,6 +221,7 @@ body{
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  background-color: #fff;
 }
 
 .GridRow {
@@ -289,7 +296,7 @@ body{
 }
 
 .headerCell input{
-  background-color: rgb(58, 58, 58);
+  background-color: #4D7573;
   color: #fff;
   border: 0;
   border-bottom: 1px solid #ddd;
@@ -306,7 +313,7 @@ body{
 /* NAVBAR */
 
 .navbar{
-  background-color: rgb(30, 30, 30);
+  background-color: #294544;
 }
 
 .navbar a{
@@ -327,7 +334,7 @@ body{
 
 .navbar a:hover{
   color: #fff;
-  background-color: rgb(0, 0, 0);
+  background-color: #4D7573;
 }
 
 #full-screen-button{
@@ -346,6 +353,7 @@ body{
 /* ABOUT */
 
 .about-page{
+  color: #fff;
   padding: 1em;
   max-width: 36em;
   margin: 0 auto 3em;
@@ -361,6 +369,14 @@ body{
 .about-page h2, .about-page h3{
   margin-top: 1.0em;
   margin-bottom: 0.1em;
+}
+
+.about-page h3{
+  margin-top: 2em;
+}
+
+.about-page h2{
+  margin-bottom: 0.5em;
 }
 
 /*  */
@@ -390,7 +406,7 @@ body{
 .rv-col{
   display: inline-block;
   text-align: left;
-  padding: 0.3em 1em;
+  padding: 0.3em 2em;
   color: #333;
   box-sizing: border-box;
   zoom: 1;
@@ -428,15 +444,10 @@ body{
 }
 
 .colHeader{
-  background-color: rgb(58, 58, 58);
+  background-color: #4D7573;
   color: rgb(255, 255, 255);
-  height: 36px;
+  height: 46px;
   width: 100%;
-}
-
-.datasetInfo .colHeader, .publisherInfo .columnHeader{
-  background-color: rgb(58,58,58);
-  height: 36px;
 }
 
 #datasetList .colHeader{
@@ -453,6 +464,15 @@ body{
 
 #publisherDatasets .colHeader{
   min-width: 1920px;
+}
+
+
+#commonErrorList .colHeader{
+  min-width: 2450px;
+}
+
+#implementedBugsList .colHeader{
+  min-width: 2400px;
 }
 
 #publisherDatasets .rv-col.column-3{
@@ -473,15 +493,28 @@ body{
 #datasetList,
 #commonErrorList,
 #datasetList,
-.datasetCommonErrors,
-.publisherCommonErrors,
 .datasetInfo,
 .publisherInfo,
-#publisherDatasets{
+.datasetCommonErrors,
+.publisherCommonErrors,
+#publisherDatasets,
+#implementedBugsList{
+  position: relative;
+  margin-top: 3em;
   -webkit-box-shadow: 0px 2px 3px -1px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 2px 3px -1px rgba(0,0,0,0.75);
   box-shadow: 0px 2px 3px -1px rgba(0,0,0,0.75);
   overflow-x: scroll;
+}
+
+#datasetNotes,
+.datasetInfo,
+.publisherInfo,
+.datasetCommonErrors,
+.publisherCommonErrors,
+#publisherDatasets,
+#implementedBugsList{
+  margin-top: 0;
 }
 
 #publisherList,
@@ -489,7 +522,8 @@ body{
 #datasetList,
 #commonErrorList,
 #datasetList,
-#publisherDatasets{
+#publisherDatasets,
+#implementedBugsList{
   width: 100%;
   margin-bottom: 200px;
 }
@@ -504,8 +538,51 @@ body{
 .datasetNotesHeader, .publisherDatasetsHeader{
   padding: 0 1em;
   clear: both;
+  color: #fff;
 }
 
 #datasetNotes .rv-row .column-2{
   white-space: normal;
+}
+
+.status-1{
+  text-align: center;
+  color: #fff;
+  margin: 2px;
+  background-color: #327F2E;
+}
+
+.status-0{
+  text-align: center;
+  color: #fff;
+  margin: 2px;
+  font-weight: bold;
+  background-color: #9C373A;
+}
+
+.status--1{
+  text-align: center;
+  margin: 2px;
+  color: #fff;
+  background-color: #AFA36D;
+}
+
+.loader{
+  position: absolute;
+  z-index: 10;
+  padding-top: 46px;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  height: 100%;
+  min-height: 200px;
+  width: 100%;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center 20%; 
+}
+
+.loading{
+  pointer-events: auto;
+  background-image: url('../images/loader.svg');
 }

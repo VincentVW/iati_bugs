@@ -66,11 +66,13 @@ class Dataset extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    // check if order or filters changed, then, clear loaded indexes
-    // if (this.state.filterChangeTime != nextProps.meta.get('filterChangeTime') || this.state.order != nextProps.meta.get('order')){
-    //   this._clearData();
-    // }
+    let height = 600;
+    if(nextProps.datasetNotes.size < 16){
+      height = nextProps.datasetNotes.size * this.state.rowHeight
+    }
+
     this.setState({
+      height: height,
       rowCount: nextProps.datasetNotes.size,
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
@@ -158,6 +160,7 @@ class Dataset extends Component {
       orderAsc: asc
     })
 
+    this._clearData();
     this.props.fetchDatasetNotes(this.props.params.datasetId, '1', order)
   }
 
@@ -188,7 +191,6 @@ class Dataset extends Component {
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <h1>{dataset.get('title')}</h1>
           <DatasetInfoList dataset={dataset}></DatasetInfoList>
           <DatasetCommonErrors datasetId={params.datasetId}></DatasetCommonErrors>
         </div>
@@ -366,6 +368,7 @@ class Dataset extends Component {
 }
 
 Dataset.propTypes = {
+  datasetLoading: PropTypes.bool.isRequired,
   dataset: PropTypes.instanceOf(immutable.Map).isRequired,
   datasetNotes: PropTypes.instanceOf(immutable.List).isRequired,
   meta: PropTypes.instanceOf(immutable.Map).isRequired,
@@ -375,7 +378,8 @@ Dataset.propTypes = {
 function mapStateToProps(state, props) {
     const { dataset, datasetNotes } = state
     return {
-        dataset: dataset,
+        datasetLoading: dataset.get('loading'),
+        dataset: dataset.get('meta'),
         datasetNotes: datasetNotes.get('results'),
         meta: datasetNotes.get('meta'),
         loading: datasetNotes.get('loading'),

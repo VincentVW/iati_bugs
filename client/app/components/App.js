@@ -12,7 +12,6 @@ const App = React.createClass({
             <DocumentTitle title='IATI Bug Tracker'>
                 <div>
                     <NavBar></NavBar>
-                    <Loader></Loader>
                     <div id="content-wrap">
                     { this.props.children }
                     </div>

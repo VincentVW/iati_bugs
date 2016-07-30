@@ -6,7 +6,7 @@ import 'react-virtualized/styles.css'
 import 'babel-polyfill'
 
 import { createHistory } from 'history'
-import { useRouterHistory, hashHistory } from "react-router"
+import { useRouterHistory, browserHistory } from "react-router"
 import { syncHistoryWithStore } from 'react-router-redux'
 
 // const browserHistory = useRouterHistory(createHistory)({
@@ -19,8 +19,7 @@ import ReactDOM from 'react-dom'
 import configureStore from './store/configureStore';
 
 const store = configureStore({})
-// const history = syncHistoryWithStore(browserHistory, store)
-
+const history = syncHistoryWithStore(browserHistory, store)
 
 
 export default store
@@ -29,7 +28,7 @@ import Root from './Root'
 
 document.addEventListener('DOMContentLoaded', function () {
     ReactDOM.render(
-    	<Root store={store} history={hashHistory} />,
+    	<Root store={store} history={history} />,
         document.getElementById('app')
     )
 });

@@ -4,10 +4,10 @@ import * as immutable from 'immutable'
 import {oipaApiUrl} from '../config'
 
 export const REQUEST_DATASETS = 'REQUEST_DATASETS'
-function requestDatasets(meta) {
+function requestDatasets(page) {
   return {
     type: REQUEST_DATASETS,
-    meta,
+    page,
     receivedAt: Date.now()
   }
 }
@@ -33,10 +33,10 @@ function addDatasets(meta, datasets) {
 }
 
 export const ERROR_DATASETS = 'ERROR_DATASETS'
-function failedToFetchDatasets(meta){
+function failedToFetchDatasets(page){
 	return {
 		type: ERROR_DATASETS,
-		meta,
+		page,
 		receivedAt: Date.now()
 	}
 }
@@ -51,8 +51,10 @@ function addToFilter(filters, name, filterName){
 
 export function fetchDatasets(page, ordering, filters) {
   return function (dispatch) {
-    
-    dispatch(requestDatasets(page))
+
+    if(page == 1){
+      dispatch(requestDatasets(page))
+    }
     
     var filter_addition = '';
     if(filters != undefined){

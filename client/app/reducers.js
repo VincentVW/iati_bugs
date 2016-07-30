@@ -14,18 +14,25 @@ function setState(state, newState) {
   return state.merge(newState);
 }
 
-function datasets(state = immutable.Map({meta: immutable.Map({filterChangeTime: 0}), results: immutable.List()}), action) {
+function datasets(state = immutable.Map({loading: false, meta: immutable.Map({count: 0, filterChangeTime: 0}), results: immutable.List()}), action) {
   switch (action.type) {
+    case datasetsActions.REQUEST_DATASETS:
+      // if (action.page == 1){
+      //   state = state.set('meta', state.get('meta').set('count', 0))
+      //   state = state.set('results', immutable.List())
+      // }
+      return state.set('loading', true)
   	case datasetsActions.RECEIVE_DATASETS:
       if(state.get('meta').get('filterChangeTime') > action.meta.get('filterChangeTime')){
         return state;
       }
-
   		return immutable.Map({
+        'loading': false,
         'meta': action.meta,
         'results': action.datasets})
     case datasetsActions.ADD_DATASETS:
       return immutable.Map({
+        'loading': false,
         'meta': action.meta,
         'results': state.get('results').concat(action.datasets)})
     default:
@@ -33,10 +40,14 @@ function datasets(state = immutable.Map({meta: immutable.Map({filterChangeTime: 
   }
 }
 
-function dataset(state = immutable.Map(), action) {
+function dataset(state = immutable.Map({loading: true, meta: immutable.Map({})}), action) {
   switch (action.type) {
+    case datasetActions.REQUEST_DATASET:
+      return state.set('loading', true)
     case datasetActions.RECEIVE_DATASET:
-      return action.dataset
+      return immutable.Map({
+        'loading': false,
+        'meta': action.dataset})
     default:
       return state
   }
@@ -44,6 +55,8 @@ function dataset(state = immutable.Map(), action) {
 
 function datasetNotes(state = immutable.Map({loading: false, meta: immutable.Map({count: 0, filterChangeCounter: 0}), results: immutable.List()}), action) {
   switch (action.type) {
+    case datasetActions.REQUEST_DATSET_NOTES:
+      return state.set('loading', true)
     case datasetActions.RECEIVE_DATASET_NOTES:
       return immutable.Map({
         'loading': false,
@@ -59,9 +72,9 @@ function datasetNotes(state = immutable.Map({loading: false, meta: immutable.Map
   }
 }
 
-function datasetCommonErrors(state = immutable.Map({loading: true, results: immutable.List()}), action) {
+function datasetCommonErrors(state = immutable.Map({loading: false, results: immutable.List()}), action) {
   switch (action.type) {
-    case datasetActions.REQUEST_DATASET_COMMON_ERRORS:      
+    case datasetActions.REQUEST_DATASET_COMMON_ERRORS:
       state = state.set('loading', true)
       return state
     case datasetActions.RECEIVE_DATASET_COMMON_ERRORS:
@@ -73,13 +86,16 @@ function datasetCommonErrors(state = immutable.Map({loading: true, results: immu
   }
 }
 
-function publishers(state = immutable.Map({meta: immutable.Map({count: 0, filterChangeTime: 0}), results: immutable.List()}), action) {
+function publishers(state = immutable.Map({loading: false, meta: immutable.Map({ count: 0, filterChangeTime: 0}), results: immutable.List()}), action) {
   switch (action.type) {
+    case publishersActions.REQUEST_PUBLISHERS:
+      return state.set('loading', true)
     case publishersActions.RECEIVE_PUBLISHERS:
       if(state.get('meta').get('filterChangeTime') > action.meta.get('filterChangeTime')){
         return state;
       }
       return immutable.Map({
+        'loading': false,
         'meta': action.meta,
         'results': action.publishers})
     default:
@@ -87,21 +103,26 @@ function publishers(state = immutable.Map({meta: immutable.Map({count: 0, filter
   }
 }
 
-function publisher(state = immutable.Map(), action) {
+function publisher(state = immutable.Map({loading: true, meta: immutable.Map({})}), action) {
   switch (action.type) {
+    case publisherActions.REQUEST_PUBLISHER:
+      return state.set('loading', true)
     case publisherActions.RECEIVE_PUBLISHER:
-      return action.publisher
+      return immutable.Map({
+        'loading': false,
+        'meta': action.publisher})
     default:
       return state
   }
 }
 
-function publisherDatasets(state = immutable.Map({loading: true, meta: immutable.Map({count: 0}), results: immutable.List()}), action) {
+function publisherDatasets(state = immutable.Map({loading: false, meta: immutable.Map({count: 0}), results: immutable.List()}), action) {
   switch (action.type) {
+
     case publisherActions.REQUEST_PUBLISHER_DATASETS:
-      if (action.page == 1){
-        state = state.set('results', immutable.List())
-      }
+      // if (action.page == 1){
+      //   state = state.set('results', immutable.List())
+      // }
       state = state.set('loading', true)
       return state
     case publisherActions.RECEIVE_PUBLISHER_DATASETS:
@@ -114,7 +135,7 @@ function publisherDatasets(state = immutable.Map({loading: true, meta: immutable
   }
 }
 
-function publisherCommonErrors(state = immutable.Map({loading: true, results: immutable.List()}), action) {
+function publisherCommonErrors(state = immutable.Map({loading: false, results: immutable.List()}), action) {
   switch (action.type) {
     case publisherActions.REQUEST_PUBLISHER_COMMON_ERRORS:      
       state = state.set('loading', true)
@@ -128,10 +149,14 @@ function publisherCommonErrors(state = immutable.Map({loading: true, results: im
   }
 }
 
-function modelAggregation(state = immutable.List(), action) {
+function modelAggregation(state = immutable.Map({loading: false, results: immutable.List()}), action) {
   switch (action.type) {
+    case modelAggregationActions.REQUEST_MODEL_AGGREGATION:
+      return state.set('loading', true)
     case modelAggregationActions.RECEIVE_MODEL_AGGREGATION:
-      return action.modelAggregation
+      return immutable.Map({
+        'loading': false,
+        'results': action.modelAggregation})
     default:
       return state
   }

@@ -1,64 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="/public/css/font-awesome.min.css">
 <link rel="stylesheet" href="/public/css/normalize.min.css">
-<link href='https://fonts.googleapis.com/css?family=Orbitron:400,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
   <div id="app"></div>
+  <script   src="https://code.jquery.com/jquery-3.1.0.slim.min.js"   integrity="sha256-cRpWjoSOw5KcyIOaZNo4i6fZ9tKPhYYb6i5T9RSVJG8="   crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="http://localhost:3000/webpack-dev-server.js"></script>
   <script src="/public/bundle.js"></script>
-  <!-- 
-  <script src="/public/js/jquery.js"></script>
-  <script src="/public/js/jquery.mousewheel.js"></script> -->
-  <script>
-//   (function ($) {
-
-//   // This code is only valid for Mac
-//   if (!navigator.userAgent.match(/Macintosh/)) {
-//     return;
-//   }
-
-//   // Detect browsers
-//   // http://stackoverflow.com/questions/5899783/detect-safari-using-jquery
-//   var is_chrome = navigator.userAgent.indexOf('Chrome') > -1;
-//   var is_safari = navigator.userAgent.indexOf("Safari") > -1;
-//   var is_firefox = navigator.userAgent.indexOf('Firefox') > -1;
-
-//   // Handle scroll events in Chrome, Safari, and Firefox
-//   if (is_chrome || is_safari || is_firefox) {
-
-//     // TODO: This only prevents scroll when reaching the topmost or leftmost
-//     // positions of a container. It doesn't handle rightmost or bottom,
-//     // and Lion scroll can be triggered by scrolling right (or bottom) and then
-//     // scrolling left without raising your fingers from the scroll position.
-//     $(window).on('mousewheel', function (e) {
-
-//       var prevent_left, prevent_up;
-
-//       // If none of the parents can be scrolled left when we try to scroll left
-//       prevent_left = e.deltaX < 0 && $(e.target).parents().filter(function() {
-//         return $(this).scrollLeft() > 0;
-//       }).length === 0;
-
-
-//       // If none of the parents can be scrolled up when we try to scroll up
-//       prevent_up = e.deltaY > 0 && !$(e.target).parents().filter(function() {
-//         return $(this).scrollTop() > 0;
-//       }).length === 0;
-
-//       // Prevent futile scroll, which would trigger the Back/Next page event
-//       if (prevent_left || prevent_up) {
-//         e.preventDefault();
-//       }
-//     });
-
-//   }
-
-// }(jQuery));
-</script>
 </body>
 </html>

@@ -16,6 +16,7 @@ class PublisherList extends Component {
     super(props, context)
 
     this.state = {
+      loading: false,
       loadedRowCount: 0,
       loadedRowsMap: {},
       loadingRowCount: 0,
@@ -67,7 +68,13 @@ class PublisherList extends Component {
 
   componentWillReceiveProps(nextProps) {
 
+    let height = 600;
+    if(nextProps.publishers.size < 16){
+      height = nextProps.publishers.size * this.state.rowHeight
+    }
     let stateChanges = {
+      height: height,
+      loading: nextProps.loading,
       rowCount: nextProps.publishers.size,
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
@@ -127,10 +134,12 @@ class PublisherList extends Component {
       filterChangeTime,
       publisherSearchInput,
       publisherNameSearchInput,
-      fixedHeader
+      fixedHeader,
+      loading
     } = this.state
 
     const headerClasses = cn(fixedHeader, 'colHeader')
+    const loaderClasses = cn({loading: loading}, 'loader')
 
     return (
       <div className="ListWrapper2">
@@ -141,10 +150,10 @@ class PublisherList extends Component {
               className="HeaderGrid"
               columnWidth={this._getColumnWidth}
               columnCount={columnCount}
-              height={rowHeight}
+              height={46}
               overscanColumnCount={overscanColumnCount}
               cellRenderer={this._renderHeaderCell}
-              rowHeight={rowHeight}
+              rowHeight={46}
               rowCount={1}
               width={2000}
               publisherSearchInput={publisherSearchInput}
@@ -152,16 +161,16 @@ class PublisherList extends Component {
               filterChangeTime={filterChangeTime}
             />
           </div>
-
-          <VirtualScroll
-            width={2000}
-            height={height}
-            rowCount={totalCount}
-            rowHeight={rowHeight}
-            rowRenderer={this._rowRenderer}
-            order={order}
-            filterChangeTime={filterChangeTime}
-          />
+          <div className={loaderClasses}></div>
+            <VirtualScroll
+              width={2000}
+              height={height}
+              rowCount={totalCount}
+              rowHeight={rowHeight}
+              rowRenderer={this._rowRenderer}
+              order={order}
+              filterChangeTime={filterChangeTime}
+            />
         </div>
       </div>
     )
@@ -271,16 +280,8 @@ class PublisherList extends Component {
   }
 }
 
-function hexToRgb (hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null
-}
-
 PublisherList.propTypes = {
+  loading: PropTypes.bool.isRequired,
   publishers: PropTypes.instanceOf(immutable.List).isRequired,
   meta: PropTypes.instanceOf(immutable.Map).isRequired,
 }
@@ -288,6 +289,7 @@ PublisherList.propTypes = {
 function mapStateToProps(state, props) {
     const { publishers } = state
     return {
+        loading: publishers.get('loading'),
         publishers: publishers.get('results'),
         meta: publishers.get('meta')
     }

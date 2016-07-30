@@ -19,6 +19,8 @@ class Publisher extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      loading: false,
+      publisherLoading: false,
       columnCount: 6,
       height: 400,
       overscanColumnCount: 0,
@@ -58,9 +60,10 @@ class Publisher extends Component {
       height = nextProps.publisherDatasets.size * this.state.rowHeight
     }
 
-
     this.setState({
       height: height,
+      loading: nextProps.loading,
+      publisherLoading: nextProps.publisherLoading,
       rowCount: nextProps.publisherDatasets.size,
       totalCount: nextProps.meta.get('count'),
       order: nextProps.meta.get('order'),
@@ -109,15 +112,17 @@ class Publisher extends Component {
       order,
       filters,
       filterChangeCounter,
-      fixedHeader
+      fixedHeader,
+      loading,
+      publisherLoading
     } = this.state
-
-    const {params, publisher, loading} = this.props
+    const {params, publisher} = this.props
     const headerClasses = cn(fixedHeader, 'colHeader')
+    const loaderClasses = cn({loading: loading}, 'loader')
     return (
       <div>
         <div className="ListInfo">
-          <PublisherInfoList publisher={publisher}></PublisherInfoList>
+          <PublisherInfoList publisherLoading={publisherLoading} publisher={publisher}></PublisherInfoList>
           <PublisherCommonErrors publisherId={params.publisherId}></PublisherCommonErrors>
         </div>
 
@@ -141,7 +146,7 @@ class Publisher extends Component {
                 width={1920}
               />
             </div>
-
+            <div className={loaderClasses}></div>
             <VirtualScroll
               width={1920}
               height={height}
@@ -249,7 +254,7 @@ class Publisher extends Component {
 
     let ref = row.ref
 	if (ref.length > 32){ ref = ref.substr(0,32) + '...'; }
-	let url = 'datasets/' + row.id
+	let url = '/datasets/' + row.id
 	let title = row.title
 	if(title.length > 45){
 		title = title.substr(0,42) + '...'
@@ -289,6 +294,7 @@ class Publisher extends Component {
 }
 
 Publisher.propTypes = {
+  publisherLoading: PropTypes.bool.isRequired,
   publisher: PropTypes.instanceOf(immutable.Map).isRequired,
   publisherDatasets: PropTypes.instanceOf(immutable.List).isRequired,
   meta: PropTypes.instanceOf(immutable.Map).isRequired,
@@ -298,7 +304,8 @@ Publisher.propTypes = {
 function mapStateToProps(state, props) {
     const { publisher, publisherDatasets } = state
     return {
-        publisher: publisher,
+        publisherLoading: publisher.get('loading'),
+        publisher: publisher.get('meta'),
         publisherDatasets: publisherDatasets.get('results'),
         meta: publisherDatasets.get('meta'),
         loading: publisherDatasets.get('loading'),

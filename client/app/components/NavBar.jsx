@@ -20,7 +20,6 @@ class NavBar extends Component {
   }
 
   render () {
-    console.log(this.props.routing)
     return (
       <div className="navbar">
         <Link activeStyle={ACTIVE} className="nav-home" to="/">IATI Bug Tracker</Link>
@@ -42,11 +41,9 @@ NavBar.propTypes = {
 }
 
 function mapStateToProps(state, props) {
-    const { fullscreen, routing } = state
-
+    const { fullscreen } = state
     return {
         fullscreen: fullscreen,
-        routing: routing
     }
 }
 

@@ -33,6 +33,7 @@ class CommonErrorList extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      loading: false,
       columnWidth: 300,
       columnCount: 6,
       height: 600,
@@ -62,6 +63,7 @@ class CommonErrorList extends Component {
   componentWillReceiveProps(nextProps) {
 
     let stateChanges = {
+      loading: nextProps.loading,
       rowCount: nextProps.modelAggregation.size,
     }
 
@@ -80,10 +82,12 @@ class CommonErrorList extends Component {
       overscanColumnCount,
       rowHeight,
       rowCount,
-      fixedHeader
+      fixedHeader,
+      loading
     } = this.state
 
     const headerClasses = cn(fixedHeader, 'colHeader')
+    const loaderClasses = cn({loading: loading}, 'loader')
 
     return (
       <div className="ListWrapper2">
@@ -106,14 +110,14 @@ class CommonErrorList extends Component {
               cellRenderer={this._renderHeaderCell}
               rowHeight={46}
               rowCount={1}
-              width={2350}
+              width={2450}
             />
           </div>
-
+          <div className={loaderClasses}></div>
             <AutoSizer disableHeight>
               {({ width }) => (
                 <VirtualScroll
-                  width={2350}
+                  width={2450}
                   height={height}
                   rowCount={rowCount}
                   rowHeight={rowHeight}
@@ -248,7 +252,6 @@ class CommonErrorList extends Component {
   }
 }
 
-
 CommonErrorList.propTypes = {
   modelAggregation: PropTypes.instanceOf(List).isRequired
 } 
@@ -257,7 +260,8 @@ function mapStateToProps(state, props) {
     const { modelAggregation } = state
 
     return {
-        modelAggregation: modelAggregation,
+        loading: modelAggregation.get('loading'),
+        modelAggregation: modelAggregation.get('results'),
     }
 }
 

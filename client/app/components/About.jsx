@@ -25,7 +25,7 @@ class About extends Component {
 
         This tool is a React (Javascript) app that directly uses that endpoint to display aggregated and detailed error information.
 
-        <h3>Future</h3>
+        <h3>Roadmap</h3>
         The aim of this tool is to show all validation errors. Other features will be kept limited as I'd rather want to spent time on helping the <a target="_blank" href="http://discuss.iatistandard.org/t/work-towards-an-improved-iati-validator/524/1">new IATI validator</a> to be feature rich. 
 
 
@@ -42,10 +42,10 @@ class About extends Component {
         So why not make them transparent through the OIPA API and build a dashboard to make publishers aware. 
         This should only have winners; publishers have an extra tool to check correctness of their data, bugs in the OIPA parser are spotted earlier through feedback on this tool, and OIPA developers have an easier interface to check (a subset of) the parser logs. 
         <br /><br />
-        Please keep in mind this is just a first version, built in my own time as a quick prototype.  
+        Please keep in mind this is just a first version, built in my own time as a quick prototype without much testing, so it might contain bugs here in there.  
 
         
-        <h3>Questions / Contact</h3>
+        <h3>Contact</h3>
         
         I have no idea if anyone will use this and if it will cause response, so for now feel free to <a target="_blank" href="https://twitter.com/vwestende">tweet me</a> on anything regarding this dashboard (re-parse request, feature, bugs in a bug dashboard, etcetera).
 
