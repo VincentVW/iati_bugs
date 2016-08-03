@@ -22,10 +22,9 @@ import configureStore from './store/configureStore';
 const store = configureStore({})
 const history = syncHistoryWithStore(browserHistory, store)
 
-const unlisten = history.listen(location => {
-  ga('send', location);
+history.listen(function (location) {
+    window.ga('send', 'pageview', location.pathname);
 });
-
 
 export default store
 
@@ -37,6 +36,3 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('app')
     )
 });
-
-
-unlisten()
