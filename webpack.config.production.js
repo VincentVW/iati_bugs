@@ -32,9 +32,8 @@ module.exports = {
             }
         }),
         new webpack.DefinePlugin({
-          GA_TRACKING_CODE: JSON.stringify('UA-81567494-1'),
+          GA_TRACKING_CODE: JSON.stringify('UA-81567494-1'),       
           GA_CONFIG: {
-            'name': 'BugGaTracker'
           }
         }),
         new webpack.optimize.UglifyJsPlugin({
