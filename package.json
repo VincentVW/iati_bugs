@@ -6,6 +6,7 @@
   "scripts": {
     "test:server": "mocha server/ --require babel-core/register --recursive",
     "build:webpack": "webpack",
+    "build:prod": "webpack --config webpack.config.production.js",
     "build": "npm run build:webpack",
     "build:scss": "cat client/scss/app.scss | node-sass --include-path public/ --include-path client/scss --output-style expanded > public/css/app.css",
     "wp": "webpack-dev-server --content-base ./public",

@@ -36,7 +36,7 @@ module.exports = {
           GA_CONFIG: {
             'name': 'BugGaTracker'
           }
-        })
+        }),
         new webpack.optimize.UglifyJsPlugin({
             compressor: {
                 warnings: false
