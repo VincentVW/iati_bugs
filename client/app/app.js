@@ -2,12 +2,13 @@
 
 import './css'
 import 'react-virtualized/styles.css'
-
+import ga from 'ga-react-router'
 import 'babel-polyfill'
 
 import { createHistory } from 'history'
 import { useRouterHistory, browserHistory } from "react-router"
 import { syncHistoryWithStore } from 'react-router-redux'
+
 
 // const browserHistory = useRouterHistory(createHistory)({
 //     basename: '/app'
@@ -21,6 +22,10 @@ import configureStore from './store/configureStore';
 const store = configureStore({})
 const history = syncHistoryWithStore(browserHistory, store)
 
+const unlisten = history.listen(location => {
+  ga('send', location);
+});
+
 
 export default store
 
@@ -32,3 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('app')
     )
 });
+
+
+unlisten()

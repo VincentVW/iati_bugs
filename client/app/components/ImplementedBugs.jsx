@@ -44,19 +44,17 @@ class ImplementedErrorList extends Component {
       {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'ref', check: 'must be of type xsd:int', bugs: 1, dashboard: 1, validator: 1},
       {standard: 'activity', version: '2.01+', element: 'reporting-org', attribute:'ref', check: 'must be in format {RegistrationAgency}-{RegistrationNumber}', bugs: 0, dashboard: 0, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'type', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'secondary-publisher', check: 'must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: -1},
-      {standard: 'activity', version: '1.0x', element: 'reporting-org', attribute:'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'secondary-publisher', check: 'must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.0x', element: 'reporting-org', attribute:'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
       
-      {standard: 'activity', version: '2.01+', element: 'title', attribute:'-', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1},
-      {standard: 'activity', version: '2.01+', element: 'title', attribute:'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title', attribute:'-', check: 'should occur once and only once', bugs: 0, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title', attribute:'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: 0, validator: 1},
 
       {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1},
-      
-
 
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: 1},
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'vocabulary', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'vocabulary', check: 'must be on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'percentage', check: 'Percentages for all reported sectors must add up to 100%', bugs: -1, dashboard: -1, validator: -1},
 
       {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'required', bugs: -1, dashboard: -1, validator: -1},
@@ -131,12 +129,14 @@ class ImplementedErrorList extends Component {
         <div className="ListInfo">
           <p style={{fontWeight: 'bold'}}>Note: This list is incomplete and will be updated in the upcoming days.</p>
           <p>
-            The below list will show a complete list of all IATI validation checks.
+            The below list will show a complete list of all IATI validation checks. 
 
             <br /><br />
             Do you have any additions? Feel free to add them to the <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> or <a target="_blank" href="https://github.com/VincentVW/iati_bugs">the code</a>!
             <br /><br />
             Last updated: 2016-07-28
+            <br /><br />
+            Note: The IATI Dashboard and current version of the IATI Validator are set up to be used together, together they implement the majority of validation checks. One extra feature this bug tracker brings is XML line numbers on validation errors that are not checked by the IATI validator.  
           </p>
         </div>
         <div id="implementedBugsList">

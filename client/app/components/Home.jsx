@@ -29,9 +29,9 @@ class Home extends Component {
         
         <br /><br />
         <br /><br />
-        <strong>Note</strong>: The IATI Tech Team is working on a new validator that should also cover all validation errors and will have more functionality than this tool. Progress on it can be followed <a target="_blank" href="http://discuss.iatistandard.org/t/work-towards-an-improved-iati-validator/524/1">here</a>.
+        <strong>Note</strong>: The IATI Tech Team is working on a new validator that should also cover all validation errors and will have more functionality than this tool. 
+        Progress on it can be followed <a target="_blank" href="http://discuss.iatistandard.org/t/work-towards-an-improved-iati-validator/524/1">here</a>.
         At the time of creating this tool, the plans on the new validator were not public yet.
-        
       </div>
     )
   }
