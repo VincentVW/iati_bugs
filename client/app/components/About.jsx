@@ -42,8 +42,7 @@ class About extends Component {
         So why not make them transparent through the OIPA API and build a dashboard to make publishers aware. 
         This should only have winners; publishers have an extra tool to check correctness of their data, bugs in the OIPA parser are spotted earlier through feedback on this tool, and OIPA developers have an easier interface to check (a subset of) the parser logs. 
         <br /><br />
-        Please keep in mind this is just a first version, built in my own time as a quick prototype without much testing, so it might contain bugs here in there.
-
+        Please keep in mind this is just a first version, built in my own time as a quick prototype without much testing, so it might contain bugs here in there. I'm also no designer nor a user experience expert so feel free to suggest improvements on that part!
         
         <h3>Contact</h3>
         

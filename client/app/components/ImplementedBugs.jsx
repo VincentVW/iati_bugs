@@ -18,7 +18,7 @@ class ImplementedErrorList extends Component {
     super(props, context)
     this.state = {
       columnWidth: 300,
-      columnCount: 7,
+      columnCount: 6,
       height: 600,
       overscanColumnCount: 0,
       overscanRowCount: 5,
@@ -48,35 +48,35 @@ class ImplementedErrorList extends Component {
       {standard: 'activity', version: '1.0x', element: 'reporting-org', attribute:'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
       
       {standard: 'activity', version: '2.01+', element: 'title', attribute:'-', check: 'should occur once and only once', bugs: 0, dashboard: 0, validator: 1},
-      {standard: 'activity', version: '2.01+', element: 'title', attribute:'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.0x', element: 'title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
 
-      {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'should occur once and only once', bugs: -1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
 
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: 1},
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1},
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'vocabulary', check: 'must be on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'percentage', check: 'Percentages for all reported sectors must add up to 100%', bugs: -1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'percentage', check: 'Percentages for all reported sectors must add up to 100%', bugs: 0, dashboard: -1, validator: -1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'required', bugs: -1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'required', bugs: -1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'must be on codelist', bugs: -1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-country / recipient-region', attribute:'percentage', check: 'Percentages for all reported countries and regions must add up to 100%.', bugs: -1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: -1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-country / recipient-region', attribute:'percentage', check: 'Percentages for all reported countries and regions must add up to 100%.', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
 
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for non-default vocabulary)', bugs: 0, dashboard: 0, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'vocabulry', check: 'on codelist if reported', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'required when using OECD DAC CRS vocabulary (1)', bugs: 1, dashboard: 0, validator: 0},
 
       {standard: 'activity', version: '1.01+', element: 'result/result-indicator/result-indicator-period', attribute:'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0},
 
 
-      {standard: '-', element: 'Any more suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
+      {standard: '-', version: '-', element: 'Any more suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
     ]
 
     this.state.rowCount = this.state.implementedChecks.length
@@ -127,17 +127,15 @@ class ImplementedErrorList extends Component {
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <p style={{fontWeight: 'bold'}}>Note: This list is incomplete and will be updated in the upcoming days.</p>
+          <p style={{fontWeight: 'bold'}}>Note: This list is highly incomplete and will be updated in the upcoming days.</p>
           <p>
             The below list will show a complete list of all IATI validation checks. 
 
             <br /><br />
             Do you have any additions? Feel free to add them to the <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> or <a target="_blank" href="https://github.com/VincentVW/iati_bugs">the code</a>!
             <br /><br />
-            Last updated: 2016-07-28
-            <br /><br />
-            Note: The IATI Dashboard and current version of the IATI Validator are set up to be used together, together they implement the majority of validation checks. One extra feature this bug tracker brings is XML line numbers on validation errors that are not checked by the IATI validator.  
-          </p>
+            Last updated: 2016-08-04
+           </p>
         </div>
         <div id="implementedBugsList">
           <div 
@@ -178,16 +176,18 @@ class ImplementedErrorList extends Component {
       case 0:
         return 150
       case 1:
-        return 260
+        return 100
       case 2:
-        return 250
+        return 260
       case 3:
-        return 150
+        return 250
       case 4:
         return 150
       case 5:
-        return 150
+        return 1200
       case 6:
+        return 150
+      case 7:
         return 1200
       default:
         return 100
@@ -202,21 +202,18 @@ class ImplementedErrorList extends Component {
         content = 'Standard type'
         break
       case 1:
-        content = 'Element'
+        content = 'Version'
         break
       case 2:
-        content = 'Attribute'
+        content = 'Element'
         break
       case 3:
-        content = 'Checked by IATI Bug Tracker'
+        content = 'Attribute'
         break
       case 4:
-        content = 'Checked by IATI Dashboard'
+        content = 'Implemented'
         break
       case 5:
-        content = 'Checked by IATI Validator 1.0'
-        break
-      case 6:
         content = 'Validation check'
         break
       default:
@@ -248,7 +245,6 @@ class ImplementedErrorList extends Component {
 
   _rowRenderer ({ index, isScrolling }) {
     const { implementedChecks } = this.state
-    // const {} = this.props 
     const row = implementedChecks[index]
     const even = (index % 2 == 1) ? 'uneven': 'even';
     const rowCn = cn('rv-row', 'row', even)
@@ -272,27 +268,23 @@ class ImplementedErrorList extends Component {
           {row.standard}
         </div>
 
-        <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}} title={row.element}>
+        <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}}>
+          {row.version}
+        </div>
+
+        <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 2})}} title={row.element}>
           {element}
         </div>
         
-        <div className="rv-col column-3" style={{width: this._getColumnWidth({index: 2})}}>
+        <div className="rv-col column-3" style={{width: this._getColumnWidth({index: 3})}}>
           {row.attribute}
         </div>
 
-        <div className={bugsClasses} style={{width: this._getColumnWidth({index: 3})}}>
+        <div className={bugsClasses} style={{width: this._getColumnWidth({index: 4})}}>
           {bugsText}
         </div>
 
-        <div className={dashboardClasses} style={{width: this._getColumnWidth({index: 4})}}>
-          {dashboardText}
-        </div>
-
-        <div className={validatorClasses} style={{width: this._getColumnWidth({index: 5})}}>
-          {validatorText}
-        </div>
-
-        <div className="rv-col column-7" style={{width: this._getColumnWidth({index: 6})}}>
+        <div className="rv-col column-5" style={{width: this._getColumnWidth({index: 5})}}>
           {row.check}
         </div>
       </div>
