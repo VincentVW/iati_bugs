@@ -22,7 +22,7 @@ export const elementMapping = {
 	'ResultIndicatorDescriptionNarrative': 'result/indicator/description/narrative',
 	'ActivityReportingOrganisationNarrative': 'reporting-org/narrative',
 	'ContactInfoDepartmentNarrative': 'contact-info/department/narrative',
-	'ContactInfoJobTitleNarrative': 'contct-info/job-title/narrative',
+	'ContactInfoJobTitleNarrative': 'contact-info/job-title/narrative',
 	'LocationActivityDescriptionNarrative': 'location/activity-description/narrative',
 	'ResultTitleNarrative': 'result/title/narrative',
 	'ResultDescriptionNarrative': 'result/description/narrative',
