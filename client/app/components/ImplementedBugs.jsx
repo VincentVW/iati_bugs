@@ -127,10 +127,9 @@ class ImplementedErrorList extends Component {
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <p style={{fontWeight: 'bold'}}>Note: This list is highly incomplete and will be updated in the upcoming days.</p>
+          <p style={{fontWeight: 'bold'}}>Note: This list is highly incomplete and there's many more checks done. This page will be updated in the upcoming days.</p>
           <p>
             The below list will show a complete list of all IATI validation checks. 
-
             <br /><br />
             Do you have any additions? Feel free to add them to the <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> or <a target="_blank" href="https://github.com/VincentVW/iati_bugs">the code</a>!
             <br /><br />
