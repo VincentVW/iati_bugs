@@ -25,7 +25,7 @@ class Home extends Component {
 
         <br /><br />
         This tool runs on validation errors raised by the <a href="https://www.oipa.nl" target="_blank">OIPA</a> parser. 
-        The <Link to="/about">about page</Link> provides further information on this tool. More importantly, check out the bugs found in your datasets through the <Link to="/datasets">datasets page</Link>!
+        The <Link to="/about">about page</Link> provides further information on this tool. Check out the bugs found in your datasets through the <Link to="/datasets">datasets page</Link>!
         
         <br /><br />
         <br /><br />
