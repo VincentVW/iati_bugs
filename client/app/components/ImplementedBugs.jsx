@@ -33,44 +33,212 @@ class ImplementedErrorList extends Component {
     this.state.implementedChecks = [
       {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'last-updated-datetime', check: 'last-updated-time is less than previously existing activity', bugs: 1, dashboard: 0, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'last-updated-datetime', check: 'last-updated-time is not present, but is present on previously existing activity', bugs: 1, dashboard: 0, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'default-currency', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '2.02', element: 'iati-activity', attribute:'humanitarian', check: 'must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
-      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'hierarchy', check: 'must be of type xsd:int', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'xml:lang', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'default-currency', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '2.02',  element: 'iati-activity', attribute:'humanitarian', check: 'Must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'hierarchy', check: 'Must be of type xsd:int', bugs: 1, dashboard: 0, validator: 1},
       
-      {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: 'must occur', bugs: 1, dashboard: 0, validator: 1},
-      {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: ' must be prefixed with either the current org ref for the reporting org or a previous identifier reported in other-identifier, and suffixed with the organisation’s own activity identifier.', bugs: 0, dashboard: 0, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: 'Required element', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: ' Must be prefixed with either the current org ref for the reporting org or a previous identifier reported in other-identifier, and suffixed with the organisation’s own activity identifier.', bugs: 0, dashboard: 0, validator: 0},
 
-      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'ref', check: 'must be of type xsd:int', bugs: 1, dashboard: 1, validator: 1},
-      {standard: 'activity', version: '2.01+', element: 'reporting-org', attribute:'ref', check: 'must be in format {RegistrationAgency}-{RegistrationNumber}', bugs: 0, dashboard: 0, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'type', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'secondary-publisher', check: 'must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
-      {standard: 'activity', version: '1.0x', element: 'reporting-org', attribute:'xml:lang', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'ref', check: 'Must be of type xsd:int', bugs: 1, dashboard: 1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'reporting-org', attribute:'ref', check: 'Must be in format {RegistrationAgency}-{RegistrationNumber}', bugs: 0, dashboard: 0, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'secondary-publisher', check: 'Must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.0x',  element: 'reporting-org', attribute:'xml:lang', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '2.01+', element: 'reporting-org/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'reporting-org/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: 0, validator: 1},
+
+      {standard: 'activity', version: '1.0x',  element: 'title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title', attribute:'-', check: 'Should occur once and only once', bugs: 0, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: 0, validator: 1},
+
+      {standard: 'activity', version: '1.0x',  element: 'description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'description/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: 0, validator: 1},
+
+      {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Must be in the format {Registration Agency} - (Registration Number}', bugs: 0, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Participating-org/@ref should match the regex [^\/\&\|\?]+', bugs: 0, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Either @ref or narrative must be present', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'participating-org', attribute:'activity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'participating-org', attribute:'text', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'participating-org/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'participating-org/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.0x',  element: 'other-identifier', attribute:'owner-ref/owner-name', check: 'Either @owner-ref or @owner-name must be present', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier', attribute:'ref', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier', attribute:'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier/owner-org', attribute:'ref', check: 'When used MUST contain a valid organisation identifier', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier/owner-org', attribute:'ref', check: 'When used, then either other-identifier/owner-org/@ref or other-identifier/owner-org/narrative/text() MUST be present', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier/owner-org/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'other-identifier/owner-org/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
       
-      {standard: 'activity', version: '2.01+', element: 'title', attribute:'-', check: 'should occur once and only once', bugs: 0, dashboard: 0, validator: 1},
-      {standard: 'activity', version: '1.0x', element: 'title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'activity-status', attribute:'-', check: 'This element should occur once and only once', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-status', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-status', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
 
-      {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'type', check: 'All instances of the ActivityDateType code 2 & 4 (actual dates) are not expected to be in the future.', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'activity-date', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'activity-date/narratives', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'activity-date/narratives', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
 
-      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: 1},
-      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: 1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'vocabulary', check: 'must be on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
+
+      {standard: 'activity', version: '1.01+', element: 'contact-info', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'-', check: 'Required element', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/organisation', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/organisation/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/organisation/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '2.01+', element: 'contact-info/department', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/department/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/department/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.0x', element: 'contact-info/person-name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/person-name', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/person-name', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/person-name/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/person-name/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.0x', element: 'contact-info/job-title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/job-title', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/job-title', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/job-title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/job-title/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'contact-info/telephone', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'contact-info/email', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'contact-info/website', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.0x', element: 'contact-info/mailing-address', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'contact-info/mailing-address', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/mailing-address/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'contact-info/mailing-address/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.03+', element: 'activity-scope', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.03+', element: 'activity-scope', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'percentage', check: 'Should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
+
+
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'Must be on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'Must be on codelist (for non-default vocabulary)', bugs: 0, dashboard: 0, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'percentage', check: 'Should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'vocabulary', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 1},
+
+      {standard: 'activity', version: '1.01+', element: 'recipient-country / recipient-region', attribute:'percentage', check: 'Percentages for all reported countries and regions must add up to 100%', bugs: 0, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'location', attribute:'ref', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/location-id', attribute:'code', check: 'Must be on codelist (for any vocabulary)', bugs: 0, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/location-id', attribute:'vocabulary', check: 'Must be on codelist', bugs: 0, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.0x', element: 'location/name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/name/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/name/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.0x', element: 'location/description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.0x', element: 'location/activity-description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/activity-description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '2.01+', element: 'location/activity-description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.01+', element: 'location/administrative', attribute:'code', check: 'Must be on codelist (for any vocabulary)', bugs: 0, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/administrative', attribute:'vocabulary', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/administrative', attribute:'level', check: 'Should be of type xsd:nonNegativeInteger', bugs: 0, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.01+', element: 'location/point/pos', attribute:'text', check: 'Should be of format "lat lng"', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/point/pos', attribute:'text', check: 'Should be a valid point according to epsg-crs-4326', bugs: 1, dashboard: -1, validator: 1},      
+
+      {standard: 'activity', version: '1.01+', element: 'location/exactness', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/exactness', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.01+', element: 'location/location-reach', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/location-reach', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: 1},
+
+      {standard: 'activity', version: '1.01+', element: 'location/location-class', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/location-class', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: 1},
+
+
+      {standard: 'activity', version: '1.01+', element: 'location/feature-designation', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'location/feature-designation', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: 1},
+
+
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: 1},
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'Must be on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'code', check: 'Must be on codelist (for non-default vocabulary)', bugs: 0, dashboard: 1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'sector', attribute:'vocabulary', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '2.02+', element: 'sector', attribute:'vocabulary-uri', check: 'Should be of type xsd:anyURI', bugs: 0, dashboard: 1, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'sector', attribute:'percentage', check: 'Percentages for all reported sectors must add up to 100%', bugs: 0, dashboard: -1, validator: -1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-country', attribute:'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'required', bugs: 1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'code', check: 'must be on codelist', bugs: 1, dashboard: -1, validator: -1},
-      {standard: 'activity', version: '1.01+', element: 'recipient-region', attribute:'percentage', check: 'should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: 1, validator: 1},
 
-      {standard: 'activity', version: '1.01+', element: 'recipient-country / recipient-region', attribute:'percentage', check: 'Percentages for all reported countries and regions must add up to 100%.', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items', attribute:'vocabulary', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items', attribute:'vocabulary', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items', attribute:'-', check: 'Should occur no more than once', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item', attribute:'-', check: 'Should occur at least once', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item', attribute:'percentage', check: 'Should be of type xsd:decimal, between 0 and 100', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item', attribute:'percentage', check: 'For each vocabulary used, the percentage values should sum 100%', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item/description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item/description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item/description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+
+
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'vocabulary', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'vocabulary-uri', check: 'Should be of type xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'humanitarian-scope/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'vocabulary', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.02+', element: 'policy-marker', attribute:'vocabulary-uri', check: 'Should be of type xsd:anyURI', bugs: 0, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'Must be on codelist (for default vocabulary)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'Must be on codelist (for non-default vocabulary)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'This attribute MUST be used for all OECD DAC CRS vocabularies', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.0x', element: 'policy-marker', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'policy-marker/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '2.01+', element: 'policy-marker/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'collaboration-type', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'collaboration-type', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'default-flow-type', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'default-flow-type', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'default-finance-type', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'default-finance-type', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'default-aid-type', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'default-aid-type', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+      {standard: 'activity', version: '1.01+', element: 'default-tied-status', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'default-tied-status', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+
+
+
       {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
 
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for non-default vocabulary)', bugs: 0, dashboard: 0, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'vocabulry', check: 'on codelist if reported', bugs: 1, dashboard: 1, validator: 0},
+      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'vocabulary', check: 'on codelist if reported', bugs: 1, dashboard: 1, validator: 0},
       {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'required when using OECD DAC CRS vocabulary (1)', bugs: 1, dashboard: 0, validator: 0},
 
       {standard: 'activity', version: '1.01+', element: 'result/result-indicator/result-indicator-period', attribute:'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0},
