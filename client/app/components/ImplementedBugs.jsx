@@ -199,7 +199,7 @@ class ImplementedErrorList extends Component {
       {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item/description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '1.01+', element: 'country-budget-items/budget-item/description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
 
-
+      // need to re-check order for humanitarian scope (xsd sequence)
       {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'vocabulary', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '2.02+', element: 'humanitarian-scope', attribute:'vocabulary-uri', check: 'Should be of type xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
@@ -232,16 +232,135 @@ class ImplementedErrorList extends Component {
       {standard: 'activity', version: '1.01+', element: 'default-tied-status', attribute:'code', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
       {standard: 'activity', version: '1.01+', element: 'default-tied-status', attribute:'code', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
 
+      {standard: 'activity', version: '1.01+', element: 'budget', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget', attribute:'status', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/period-start', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/period-start', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/period-end', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/period-end', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/value', attribute:'currency', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/value', attribute:'value-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'budget/value', attribute:'value-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
 
+      // To check;
+
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement', attribute:'status', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/period-start', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/period-start', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/period-end', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/period-end', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/value', attribute:'currency', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/value', attribute:'value-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'planned-disbursement/value', attribute:'value-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
+
+      // TO DO: capital spend checks
+      {standard: 'activity', version: '1.01+', element: 'capital-spend', attribute:'percentage', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+
+      {standard: 'activity', version: '1.01+', element: 'transaction', attribute:'ref', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/transaction-type', attribute:'code', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'currency', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'value-date', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'text', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/humanitarian', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/disbursement-channel', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/flow-type', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/finance-type', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/aid-type', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/tied-status', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/description', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/sector', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/recipient-country', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'transaction/recipient-region', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+      // TO DO: document-link checks
+      {standard: 'activity', version: '1.01+', element: 'document-link', attribute:'url', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'document-link', attribute:'format', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'document-link/title', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'document-link/title/narrative', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'related-activity', attribute:'ref', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'related-activity', attribute:'type', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+      
+
+      {standard: 'activity', version: '1.01+', element: 'conditions', attribute:'type', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'conditions', attribute:'attached', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+
+
+      {standard: 'activity', version: '1.01+', element: 'result', attribute:'type', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result', attribute:'aggregation-status', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/title', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/title/narrative', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/description', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/description/narrative', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator', attribute:'measure', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator', attribute:'ascending', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'actualtivity', version: '1.01+', element: 'result/indicator/title', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/description', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/baseline', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/period', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-start', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-end', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/period/target', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'result/indicator/period/actual', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'crs-add', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/code', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/significance', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-type', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-plan', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/commitment-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-first-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-final-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-1', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-2', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/interest-received', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-outstanding', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-arrears', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/year', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/currency', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/value-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+      {standard: 'activity', version: '1.01+', element: 'fss', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/forecast', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/forecast/year', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/forecast/currency', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/forecast/value-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/extraction-date', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/priority', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      {standard: 'activity', version: '1.01+', element: 'fss/phaseout-year', attribute:'', check: '', bugs: 1, dashboard: -1, validator: -1},
+      
+
+      
+      {standard: 'activity', version: '1.0x', element: 'activity-website', attribute:'text', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+      
+      
+      
+
+      
+
+
+
+      // end of to check;
 
       {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
 
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for default vocabulary)', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'on codelist (for non-default vocabulary)', bugs: 0, dashboard: 0, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'vocabulary', check: 'on codelist if reported', bugs: 1, dashboard: 1, validator: 0},
-      {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'required when using OECD DAC CRS vocabulary (1)', bugs: 1, dashboard: 0, validator: 0},
+
 
       {standard: 'activity', version: '1.01+', element: 'result/result-indicator/result-indicator-period', attribute:'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0},
+
+
+
+
+      // need to check additional 2.02 element that are missing in the above, only added humanitarian-scope
 
 
       {standard: '-', version: '-', element: 'Any more suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
@@ -287,7 +406,8 @@ class ImplementedErrorList extends Component {
       overscanColumnCount,
       rowHeight,
       rowCount,
-      fixedHeader
+      fixedHeader,
+      implementedChecks
     } = this.state
 
     const headerClasses = cn(fixedHeader, 'colHeader')
@@ -302,6 +422,8 @@ class ImplementedErrorList extends Component {
             Do you have any additions? Feel free to add them to the <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> or <a target="_blank" href="https://github.com/VincentVW/iati_bugs">the code</a>!
             <br /><br />
             Last updated: 2016-08-04
+            <br /><br />
+            Amount of checks: {implementedChecks.length}
            </p>
         </div>
         <div id="implementedBugsList">
