@@ -10,7 +10,11 @@ From the root folder:
 
 `npm install`
 
-`npm run start`
+For devevelopment:
 
-Go to your browser at `http://localhost:3000/public/index.html`
+`npm start`
+
+For production build:
+
+`npm run build`
 
