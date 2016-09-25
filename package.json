@@ -1,22 +1,9 @@
 {
-  "name": "iati_bugs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test:server": "mocha server/ --require babel-core/register --recursive",
-    "build:webpack": "webpack",
-    "build:prod": "webpack --config webpack.config.production.js",
-    "build": "npm run build:webpack",
-    "build:scss": "cat client/scss/app.scss | node-sass --include-path public/ --include-path client/scss --output-style expanded > public/css/app.css",
-    "wp": "webpack-dev-server --content-base ./public",
-    "dev": "parallelshell 'npm run webpack-dev-server' 'npm run watch:server'",
-    "start": "webpack && node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "iati_bugs2",
+  "version": "0.0.1",
+  "private": true,
   "devDependencies": {
+    "react-scripts": "0.5.1",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.9.1",
     "babel-loader": "^6.2.4",
@@ -56,10 +43,10 @@
     "minimatch": "^3.0.2",
     "moment": "^2.14.1",
     "node-sass": "^3.8.0",
-    "react": "^15.1.0",
+    "react": "^15.3.2",    
     "react-addons-shallow-compare": "^15.1.0",
     "react-document-title": "^2.0.2",
-    "react-dom": "^15.1.0",
+    "react-dom": "^15.3.2",
     "react-infinite-scroll": "^0.1.5",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.1",
@@ -70,5 +57,12 @@
     "request-promise": "^3.0.0",
     "sass-loader": "^3.2.1",
     "style-loader": "^0.13.1"
+  },
+
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }

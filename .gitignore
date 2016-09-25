@@ -1,4 +1,4 @@
 node_modules/*
 npm-debug.log
 client/app/config.js
-
+.DS_Store*
