@@ -25,12 +25,11 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'default-currency', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
             {standard: 'activity', version: '2.02',  element: 'iati-activity', attribute:'humanitarian', check: 'Must be of type xsd:boolean', bugs: 1, dashboard: 0, validator: 1},
             {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'hierarchy', check: 'Must be of type xsd:int', bugs: 1, dashboard: 0, validator: 1},
+            {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'hierarchy', check: 'If multiple levels are reported then, to avoid double counting, financial transactions should only be reported at the lowest hierarchical level.', bugs: 0, dashboard: 0, validator: 0},
             
             {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: 'Required element', bugs: 1, dashboard: 0, validator: 1},
             {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: 'Must be prefixed with either the current org ref for the reporting org or a previous identifier reported in other-identifier, and suffixed with the organisation’s own activity identifier.', bugs: 0, dashboard: 0, validator: 0},
             {standard: 'activity', version: '1.01+', element: 'iati-identifier', attribute:'text', check: 'Should match the regex [^\/\&\|\?]+', bugs: 0, dashboard: 0, validator: 1},
-            
-
 
             {standard: 'activity', version: '1.01+', element: 'reporting-org', attribute:'ref', check: 'Must be of type xsd:int', bugs: 1, dashboard: 1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'reporting-org', attribute:'ref', check: 'Must be in format {RegistrationAgency}-{RegistrationNumber}', bugs: 0, dashboard: 0, validator: 0},
@@ -45,6 +44,7 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'title/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: 0, validator: 1},
 
+            {standard: 'activity', version: '1.0x',  element: 'description', attribute:'-', check: 'Should occur at least once', bugs: 0, dashboard: 0, validator: 1},
             {standard: 'activity', version: '1.0x',  element: 'description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: 0, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'description/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: 0, validator: 1},
@@ -56,7 +56,7 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.02+', element: 'participating-org', attribute:'activity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'participating-org', attribute:'text', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'participating-org', attribute:'text', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'participating-org/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'participating-org/narrative', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
 
@@ -78,15 +78,14 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'type', check: 'All instances of the ActivityDateType code 2 & 4 (actual dates) are not expected to be in the future.', bugs: 0, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'iso-date', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'activity-date', attribute:'iso-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'activity-date', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'activity-date', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'activity-date/narratives', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'activity-date/narratives', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
 
-
             {standard: 'activity', version: '1.01+', element: 'contact-info', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'-', check: 'Required element', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/organisation', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/organisation', attribute:'-', check: 'Required element', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/organisation', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/organisation', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/organisation', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/organisation/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/organisation/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
@@ -95,14 +94,14 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '2.01+', element: 'contact-info/department/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/department/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
             
-            {standard: 'activity', version: '1.0x', element: 'contact-info/person-name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/person-name', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/person-name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/person-name', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/person-name', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/person-name/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/person-name/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
             
-            {standard: 'activity', version: '1.0x', element: 'contact-info/job-title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/job-title', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/job-title', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/job-title', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/job-title', attribute:'-', check: 'Should occur no more than once', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/job-title/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/job-title/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
@@ -111,8 +110,8 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'contact-info/email', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'contact-info/website', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
 
-            {standard: 'activity', version: '1.0x', element: 'contact-info/mailing-address', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'contact-info/mailing-address', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/mailing-address', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'contact-info/mailing-address', attribute:'text', check: 'Should not be empty', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/mailing-address/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'contact-info/mailing-address/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
 
@@ -136,15 +135,15 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'location/location-id', attribute:'code', check: 'Must be on codelist (for any vocabulary)', bugs: 0, dashboard: -1, validator: 1},
             {standard: 'activity', version: '1.01+', element: 'location/location-id', attribute:'vocabulary', check: 'Must be on codelist', bugs: 0, dashboard: -1, validator: 1},
 
-            {standard: 'activity', version: '1.0x', element: 'location/name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+            {standard: 'activity', version: '1.0x',  element: 'location/name', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/name/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/name/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
 
-            {standard: 'activity', version: '1.0x', element: 'location/description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+            {standard: 'activity', version: '1.0x',  element: 'location/description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
 
-            {standard: 'activity', version: '1.0x', element: 'location/activity-description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
+            {standard: 'activity', version: '1.0x',  element: 'location/activity-description', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/activity-description/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: 1},
             {standard: 'activity', version: '2.01+', element: 'location/activity-description/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: 1},
 
@@ -204,7 +203,7 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'Must be on codelist (for default vocabulary)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'code', check: 'Must be on codelist (for non-default vocabulary)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '1.01+', element: 'policy-marker', attribute:'significance', check: 'This attribute MUST be used for all OECD DAC CRS vocabularies', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.0x', element: 'policy-marker', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.0x',  element: 'policy-marker', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'policy-marker/narrative', attribute:'text', check: 'Should not be empty when used', bugs: 1, dashboard: -1, validator: -1},
             {standard: 'activity', version: '2.01+', element: 'policy-marker/narrative', attribute:'xml:lang', check: 'xml:lang should be provided on element itself or the iati-activity (as default language)', bugs: 1, dashboard: -1, validator: -1},
 
@@ -246,114 +245,106 @@ class ImplementedErrorList extends Component {
             {standard: 'activity', version: '1.01+', element: 'planned-disbursement/value', attribute:'value-date', check: 'Should be of type xsd:date', bugs: 1, dashboard: -1, validator: -1},
 
             // TO DO: capital spend checks
-            {standard: 'activity', version: '1.01+', element: 'capital-spend', attribute:'percentage', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'capital-spend',                        attribute:'percentage', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
 
-            {standard: 'activity', version: '1.01+', element: 'transaction', attribute:'ref', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/transaction-type', attribute:'code', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'currency', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'value-date', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/value', attribute:'text', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/humanitarian', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/disbursement-channel', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/flow-type', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/finance-type', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/aid-type', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/tied-status', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/description', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/sector', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/recipient-country', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'transaction/recipient-region', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction',                          attribute: 'ref', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/transaction-type',         attribute: 'code', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/value',                    attribute: 'currency', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/value',                    attribute: 'value-date', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/value',                    attribute: 'text', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/humanitarian',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/disbursement-channel',     attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/flow-type',                attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/finance-type',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/aid-type',                 attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/tied-status',              attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'receiver-acivity-id', check: 'Must be an existing IATI activity', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/description',              attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/sector',                   attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/recipient-country',        attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'transaction/recipient-region',         attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
             // TO DO: document-link checks
-            {standard: 'activity', version: '1.01+', element: 'document-link', attribute:'url', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'document-link', attribute:'format', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'document-link/title', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'document-link/title/narrative', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            
-            {standard: 'activity', version: '1.01+', element: 'related-activity', attribute:'ref', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'related-activity', attribute:'type', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
-            
 
-            {standard: 'activity', version: '1.01+', element: 'conditions', attribute:'type', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'conditions', attribute:'attached', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            
+            {standard: 'activity', version: '1.01+', element: 'document-link',                        attribute:'url', check: 'Required attribute', bugs: -1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'document-link',                        attribute:'url', check: 'Should be of type xsd:anyURI', bugs: -1, dashboard: -1, validator: -1},
 
+            {standard: 'activity', version: '1.01+', element: 'document-link',                        attribute:'format', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'document-link',                        attribute:'format', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
 
-            {standard: 'activity', version: '1.01+', element: 'result', attribute:'type', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result', attribute:'aggregation-status', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/title', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/title/narrative', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/description', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/description/narrative', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator', attribute:'measure', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator', attribute:'ascending', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'actualtivity', version: '1.01+', element: 'result/indicator/title', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/description', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/baseline', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/period', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-start', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-end', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/target', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/actual', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'document-link/title',                  attribute: '-', check: 'Should occur once and only once', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'document-link/title/narrative',        attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
-            {standard: 'activity', version: '1.01+', element: 'crs-add', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/code', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/significance', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-type', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-plan', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/commitment-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-first-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-final-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-1', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-2', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'related-activity',                     attribute:'ref', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'related-activity',                     attribute:'type', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
             
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/interest-received', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-outstanding', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-arrears', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/year', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/currency', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/value-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            
-            {standard: 'activity', version: '1.01+', element: 'fss', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/forecast', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/forecast/year', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/forecast/currency', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/forecast/value-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/extraction-date', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/priority', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            {standard: 'activity', version: '1.01+', element: 'fss/phaseout-year', attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
-            
+            {standard: 'activity', version: '1.01+', element: 'conditions',                           attribute:'attached', check: 'Required attribute', bugs: -1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'conditions/condition',                 attribute:'type', check: 'Required attribute', bugs: -1, dashboard: -1, validator: -1},
 
+            {standard: 'activity', version: '1.01+', element: 'result',                               attribute:'type',                   check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result',                               attribute:'aggregation-status',     check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/title',                         attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/title/narrative',               attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/description',                   attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/description/narrative',         attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator',                     attribute:'measure',                check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator',                     attribute:'ascending',              check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/title',               attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/description',         attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/baseline',            attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/period',              attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-start', attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/period-end',   attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/target',       attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'result/indicator/period/actual',       attribute: 'todo',                  check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
-            {standard: 'activity', version: '1.0x', element: 'activity-website', attribute:'text', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add',                                    attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag',                       attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/code',                  attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/aidtype-flag/significance',          attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms',                         attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-type',          attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-plan',          attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/commitment-date',         attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-first-date',    attribute: 'todo',         check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/repayment-final-date',    attribute: 'todo',         check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-1',                  attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-terms/rate-2',                  attribute: 'todo',            check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status',                        attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/interest-received',      attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-outstanding',  attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/principal-arrears',      attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/year',                   attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/currency',               attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'crs-add/loan-status/value-date',             attribute: 'todo',      check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
+            {standard: 'activity', version: '1.01+', element: 'fss',                      attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/forecast',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/forecast/year',        attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/forecast/currency',    attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/forecast/value-date',  attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/extraction-date',      attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/priority',             attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
+            {standard: 'activity', version: '1.01+', element: 'fss/phaseout-year',        attribute: 'todo', check: 'todo', bugs: 1, dashboard: -1, validator: -1},
             
 
             
-
+            {standard: 'activity', version: '1.0x', element: 'activity-website',          attribute:'text', check: 'xsd:anyURI', bugs: 1, dashboard: -1, validator: -1},
+            
+            
 
 
             // end of to check;
 
-            {standard: 'activity', version: '1.01+', element: 'transaction/provider-org', attribute:'provider-acivity-id', check: 'Must be an existing IATI activity', bugs: 0, dashboard: -1, validator: -1},
-
-
-
-            {standard: 'activity', version: '1.01+', element: 'result/result-indicator/result-indicator-period', attribute:'significance', check: 'given when vocabulary="1" used', bugs: 1, dashboard: 0, validator: 0},
-
-
+            
 
 
             // need to check additional 2.02 element that are missing in the above, only added humanitarian-scope
-
-
             {standard: '-', version: '-', element: 'Any more suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
           ],
     }
@@ -400,13 +391,13 @@ class ImplementedErrorList extends Component {
     return (
       <div className="ListWrapper2">
         <div className="ListInfo">
-          <p style={{fontWeight: 'bold'}}>Note: This list is highly incomplete and there's many more checks done. This page will be updated in the upcoming days.</p>
+          <p style={{fontWeight: 'bold'}}>Note: This list is highly incomplete and there are many more checks done.</p>
           <p>
             The below list will show a complete list of all IATI validation checks. 
             <br /><br />
             Do you have any additions? Feel free to add them to the <a target="_blank" href="https://trello.com/b/cAa0ryxh/iati-bugs">Trello board</a> or <a target="_blank" href="https://github.com/VincentVW/iati_bugs">the code</a>!
             <br /><br />
-            Last updated: 2016-08-04
+            Last updated: 2016-12-18
             <br /><br />
             Amount of checks: {implementedChecks.length}
            </p>
