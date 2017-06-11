@@ -585,6 +585,8 @@ class ImplementedErrorList extends Component {
 
   implementedContent (status){
     switch(status){
+      case -2:
+        return 'cant implement'
       case -1:
         return 'unknown'
       case 0:

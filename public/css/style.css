@@ -567,6 +567,13 @@ body{
   background-color: #AFA36D;
 }
 
+.status--2{
+  text-align: center;
+  margin: 2px;
+  color: #fff;
+  background-color: #AFA36D;
+}
+
 .loader{
   position: absolute;
   z-index: 10;
