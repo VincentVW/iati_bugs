@@ -47,7 +47,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-import { enableFullscreen } from '../actions/common'
-export default connect(mapStateToProps, {
-    enableFullscreen,
-})(NavBar)
+export default NavBar

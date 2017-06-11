@@ -5,7 +5,6 @@ import * as datasetsActions from './actions/datasets'
 import * as publisherActions from './actions/publisher'
 import * as publishersActions from './actions/publishers'
 import * as modelAggregationActions from './actions/modelAggregation'
-import * as commonActions from './actions/common'
 
 import { combineReducers } from 'redux'
 
@@ -169,17 +168,6 @@ function loader(state = false, action) {
   }
 }
 
-function fullscreen(state = false, action) {
-  switch (action.type) {
-    case commonActions.ENABLE_FULLSCREEN:
-      return true
-    case commonActions.DISABLE_FULLSCREEN:
-      return false
-    default:
-      return state
-  }
-}
-
 import { routerReducer as routing } from 'react-router-redux'
 
 const rootReducer = combineReducers({
@@ -193,7 +181,6 @@ const rootReducer = combineReducers({
     publisherDatasets,
     publisherCommonErrors,
     modelAggregation,
-    fullscreen,
     routing,
 })
 
