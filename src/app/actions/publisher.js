@@ -38,7 +38,7 @@ export function fetchPublisher(publisherId) {
 
     dispatch(requestPublisher(publisherId))
 
-    return fetch(oipaApiUrl+`publishers/`+publisherId+`/?format=json&fields=org_id,org_name,activity_count,note_count`)
+    return fetch(oipaApiUrl+`publishers/`+publisherId+`/?format=json&fields=id,iati_id,publisher_iati_id,display_name,name,activity_count,note_count`)
         .then((response) => {
         if (response.status >= 400) {
             dispatch(failedToFetchPublisher(publisherId))
@@ -96,8 +96,8 @@ export function fetchPublisherDatasets(publisherId, page, ordering) {
       'next': false,
       'previous': false,
     })
-    
-    return fetch(oipaApiUrl+`datasets/?format=json&page_size=400&ordering=`+ordering+`&publisher_id=`+publisherId+`&fields=publisher,id,ref,title,type,source_url,date_updated,note_count`)
+
+    return fetch(oipaApiUrl+`datasets/?format=json&page_size=400&ordering=`+ordering+`&publisher_id=`+publisherId+`&fields=id,name,title,note_count,filetype,source_url,date_updated`)
         .then((response) => {
 			if (response.status >= 400) {
 			    dispatch(failedToFetchPublisherDatasets(publisherId, page))

@@ -107,9 +107,12 @@ class Publisher extends Component {
       loading,
       publisherLoading
     } = this.state
+
     const {params, publisher} = this.props
+
     const headerClasses = cn(fixedHeader, 'colHeader')
     const loaderClasses = cn({loading: loading}, 'loader')
+
     return (
       <div>
         <div className="ListInfo">
@@ -243,7 +246,7 @@ class Publisher extends Component {
       )
     }
 
-    let ref = row.ref
+    let ref = row.name
 	if (ref.length > 32){ ref = ref.substr(0,32) + '...'; }
 	let url = '/datasets/' + row.id
 	let title = row.title
@@ -267,7 +270,7 @@ class Publisher extends Component {
         </div>
 
         <div className="rv-col column-4" style={{width: this._getColumnWidth({index: 3})}}>
-          {row.type}
+          {row.filetype}
         </div>
 
         <div className="rv-col column-5" style={{width: this._getColumnWidth({index: 4})}}>

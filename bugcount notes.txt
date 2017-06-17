@@ -1,2 +1,7 @@
 total amount of bugs on 2017-06-10: 1.992.583
 
+amount of checks on 2017-06-10: 252 (89.2% implemented)
+
+amounts of checks on 2017-06-12: 316 (98.7% implemented)
+
+amounts of checks on 2017-06-13: 373 (98.4% implemented)

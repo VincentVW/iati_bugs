@@ -447,10 +447,10 @@ class DatasetList extends Component {
         </div>
       )
     } else {
-      let ref = row.ref
+      let ref = row.name
       if (ref.length > 32){ ref = ref.substr(0,32) + '...'; }
       let url = '/datasets/' + row.id
-      let publisherName = row.publisher.org_name
+      let publisherName = row.publisher.display_name
       if(publisherName.length > 45){
         publisherName = publisherName.substr(0,42) + '...'
       }
@@ -458,7 +458,7 @@ class DatasetList extends Component {
         <div className={rowCn}>
 
           <div className="rv-col column-1" style={{width: this._getColumnWidth({index: 0})}}>
-            {row.publisher.org_id}
+            {row.publisher.publisher_iati_id}
           </div>
           
           <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}} title={row.publisher.org_name}>
@@ -480,7 +480,7 @@ class DatasetList extends Component {
           </div>
 
           <div className="rv-col column-6" style={{width: this._getColumnWidth({index: 5})}}>
-            {row.type}
+            {row.filetype}
           </div>
 
           <div className="rv-col column-7" style={{width: this._getColumnWidth({index: 6})}}>

@@ -23,7 +23,7 @@ class DatasetInfoList extends Component {
           </div>
 
           <div className="rv-row even">
-            <div className="rv-col col-1">Reference</div><div className="rv-col col-2">{dataset.get('ref')}</div>
+            <div className="rv-col col-1">Reference</div><div className="rv-col col-2">{dataset.get('name')}</div>
           </div>
 
           <div className="rv-row uneven">
@@ -31,11 +31,11 @@ class DatasetInfoList extends Component {
           </div>
 
           <div className="rv-row even">
-            <div className="rv-col col-1">Publisher</div><div className="rv-col col-2">{dataset.get('publisher').org_name}</div>
+            <div className="rv-col col-1">Publisher</div><div className="rv-col col-2">{dataset.get('publisher').display_name}</div>
           </div>
 
           <div className="rv-row uneven">
-            <div className="rv-col col-1">Standard type</div><div className="rv-col col-2">{dataset.get('type')}</div>
+            <div className="rv-col col-1">Standard type</div><div className="rv-col col-2">{dataset.get('filetype')}</div>
           </div>
 
           <div className="rv-row even">

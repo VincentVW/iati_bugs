@@ -74,7 +74,7 @@ export function fetchDatasets(page, ordering, filters) {
       'filterChangeTime': filters.get('filterChangeTime')
     })
     
-    return fetch(oipaApiUrl+`datasets/?page=`+page+`&format=json&page_size=200&ordering=`+ordering+`&fields=publisher,id,ref,title,type,source_url,date_updated,note_count`+filter_addition)
+    return fetch(oipaApiUrl+`datasets/?page=`+page+`&format=json&page_size=200&ordering=`+ordering+filter_addition)
         .then((response) => {
       	if (response.status >= 400) {
             dispatch(failedToFetchDatasets(page))

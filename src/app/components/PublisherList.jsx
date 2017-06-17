@@ -199,7 +199,7 @@ class PublisherList extends Component {
             type="text"
             onChange={this.onPublisherSearch}
             value={publisherSearchInput}
-            placeholder="Publisher ref"
+            placeholder="Publisher id"
           />
         break
       case 1:
@@ -250,19 +250,19 @@ class PublisherList extends Component {
         </div>
       )
     } else {
-      let url = 'publishers/' + row._publisher.id
-      let publisherName = row._publisher.org_name
+      let url = `publishers/${row._publisher.id}`
+      let publisherName = row._publisher.display_name
       if(publisherName.length > 90){
-        publisherName = publisherName.substr(0,87) + '...'
+        publisherName = `${publisherName.substr(0,87)}...`
       }
       return (
         <div className={rowCn}>
 
           <div className="rv-col column-1" style={{width: this._getColumnWidth({index: 0})}}>
-            {row._publisher.org_id}
+            {row._publisher.publisher_iati_id}
           </div>
           
-          <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}} title={row._publisher.org_name}>
+          <div className="rv-col column-2" style={{width: this._getColumnWidth({index: 1})}} title={row._publisher.display_name}>
             <Link to={url}>{publisherName}</Link>
           </div>
 

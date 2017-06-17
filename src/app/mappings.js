@@ -1,10 +1,12 @@
 
 export const errorTypeMapping = {
+	'FieldValidationError': 'Validation',
 	'ValidationError': 'Validation',
 	'RequiredFieldError': 'Missing attribute',
 	'EmptyFieldError': 'Empty element',
 	'XMLSyntaxError': 'XML syntax',
-	'UrlError': 'URL down'
+	'UrlError': 'URL down',
+	'XsdValidationError': 'XSD schema error'
 }
 
 export const elementMapping = {

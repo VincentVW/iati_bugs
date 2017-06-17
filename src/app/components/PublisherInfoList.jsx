@@ -13,7 +13,7 @@ class PublisherInfoList extends Component {
     if (publisher.size === 0){
       return (<div></div>)
     }
-
+    
     return (
       <div className="col">
         <h2>Publisher meta</h2>
@@ -27,18 +27,22 @@ class PublisherInfoList extends Component {
           </div>
 
           <div className="rv-row uneven">
-            <div className="rv-col col-1">Organisation identifier</div><div className="rv-col col-2">{publisher.get('org_id')}</div>
+            <div className="rv-col col-1">Organisation identifier</div><div className="rv-col col-2">{publisher.get('publisher_iati_id')}</div>
           </div>
 
           <div className="rv-row even">
-            <div className="rv-col col-1">Name on registry</div><div className="rv-col col-2">{publisher.get('org_name')}</div>
+            <div className="rv-col col-1">Name on registry</div><div className="rv-col col-2">{publisher.get('display_name')}</div>
           </div>
 
           <div className="rv-row uneven">
-            <div className="rv-col col-1"># Activities</div><div className="rv-col col-2">{publisher.get('activity_count')}</div>
+            <div className="rv-col col-1">ID on registry</div><div className="rv-col col-2">{publisher.get('iati_id')}</div>
           </div>
 
           <div className="rv-row even">
+            <div className="rv-col col-1"># Activities</div><div className="rv-col col-2">{publisher.get('activity_count')}</div>
+          </div>
+
+          <div className="rv-row uneven">
             <div className="rv-col col-1"># Bugs</div><div className="rv-col col-2">{publisher.get('note_count')}</div>
           </div>
 

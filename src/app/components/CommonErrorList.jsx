@@ -207,6 +207,7 @@ class CommonErrorList extends Component {
       if(message.length > 75){
         message = message.substring(0,75) + '...';
       }
+      
       return (
         <div className={rowCn}>
 

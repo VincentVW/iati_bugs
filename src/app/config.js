@@ -1,3 +1,3 @@
-export const oipaApiUrl = 'https://www.oipa.nl/api/';
+export const oipaApiUrl = 'http://37.97.246.52/api/';
 //export const oipaApiUrl = 'https://dev.oipa.nl/api/';
 // export const oipaApiUrl = 'http://localhost:8000/api/';
