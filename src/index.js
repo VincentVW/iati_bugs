@@ -1,28 +1,35 @@
-import './app/css'
-import 'react-virtualized/styles.css'
-import 'babel-polyfill'
-
-import { browserHistory } from "react-router"
-import { syncHistoryWithStore } from 'react-router-redux'
-
-import Root from './app/Root';
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import configureStore from './app/store/configureStore'
+import { Provider } from 'react-redux'
 
-const store = configureStore({})
-const history = syncHistoryWithStore(browserHistory, store)
+import createHistory from 'history/createBrowserHistory'
 
-history.listen(function (location) {
-    window.ga('send', 'pageview', location.pathname);
-});
+import { ConnectedRouter } from 'react-router-redux'
+import configureStore from './configureStore'
+
+
+import './scss/App.css'
+import 'babel-polyfill'
+
+import App from './containers/App'
+
+const history = createHistory()
+const store = configureStore({}, history)
+
+// Now you can dispatch navigation actions from anywhere!
+// store.dispatch(push('/foo'))
+
 
 export default store
 
-document.addEventListener('DOMContentLoaded', function () {
-    ReactDOM.render(
-        <Root store={store} history={history} />,
-        document.getElementById('root')
-    )
-});
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+        <App />
+    </ConnectedRouter>
+  </Provider>,
+  document.getElementById('root')
+)
+
