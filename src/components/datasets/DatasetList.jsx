@@ -185,7 +185,9 @@ class DatasetList extends Component {
           </TableColumn>
           {!publisher && 
             <TableColumn key='publisher_iati_id'>
-              <Link to={`/publishers/${row.publisher.id}`}>{row.publisher.display_name}</Link>
+              {row.publisher.display_name}
+              { // <Link to={`/publishers/${row.publisher.id}`}></Link>
+              }
             </TableColumn>
           }
           <TableColumn key='note_count'>

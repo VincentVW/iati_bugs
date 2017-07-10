@@ -127,10 +127,6 @@ class PublisherCommonErrors extends Component {
     })
   }
 
-  rowClick(row){
-    console.log('go to', `datasets/${row.id}`)
-    this.context.router.history.push(`/datasets/${row.id}`)
-  }
 
 
   render () {
@@ -156,7 +152,7 @@ class PublisherCommonErrors extends Component {
     const rows = data.slice(start, (start+pageSize)).map((row, i) => {
 
       return (
-        <TableRow key={i} onClick={() => { this.rowClick(row)}}>
+        <TableRow key={i}>
           <TableColumn key='model'>{elementMapping[row.model] ? elementMapping[row.model] : row.model}</TableColumn>
           <TableColumn key='field'>{row.field}</TableColumn>
           <TableColumn key='note_count'>{row.note_count}</TableColumn>

@@ -171,7 +171,7 @@ class ImplementedChecks extends Component {
           <Card id="implemented-checks-list-table" tableCard>
 
             <div className="md-grid">
-              <div className="md-cell md-cell--4">
+              <div className="md-cell md-cell--6">
 
                 <TextField
                   id="search-input"
@@ -183,7 +183,7 @@ class ImplementedChecks extends Component {
                 />
 
               </div>
-              <div className="md-cell md-cell--8 align-right">
+              <div className="md-cell md-cell--5 align-right">
                 <Button
                   flat={true}
                   label='Reset'

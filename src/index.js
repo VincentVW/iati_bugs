@@ -9,7 +9,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import configureStore from './configureStore'
 
 
-import './scss/App.css'
+import './scss/app.css'
 import 'babel-polyfill'
 
 import App from './containers/App'

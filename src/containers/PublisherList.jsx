@@ -195,8 +195,7 @@ class PublisherList extends Component {
                       <div className="md-grid">
                         <div className="md-cell md-cell--4">
 
-                          <h2></h2>
-                          
+                         
                           <TextField
                             id="search-input"
                             onKeyDown={this.keyDownQuery}

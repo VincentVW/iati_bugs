@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TextField from 'react-md/lib/TextFields'
+// import TextField from 'react-md/lib/TextFields'
 
 import LinearProgress from 'react-md/lib/Progress/LinearProgress'
 import DataTable from 'react-md/lib/DataTables/DataTable'
@@ -196,7 +196,7 @@ class NotesList extends Component {
       page,
       pageSize,
       fetching,
-      queryText,
+      // queryText,
       count,
       ordering,
       fieldFilter,
