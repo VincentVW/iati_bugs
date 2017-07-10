@@ -15,6 +15,7 @@ import TablePagination from 'react-md/lib/DataTables/TablePagination'
 import Button from 'react-md/lib/Buttons/Button'
 
 import { oipaApiUrl } from '../config.js'
+import { Link } from 'react-router-dom'
 
 
 const progressId = 'contentLoadingProgress';
@@ -161,18 +162,21 @@ class PublisherList extends Component {
       onPagination: this._handlePagination
     }
 
-
     const rows = data.map((row, i) => {
-
       return (
         <TableRow key={i} onClick={() => { this.rowClick(row)}}>
           <TableColumn key='publisher_iati_id'>
-            {row.publisher_iati_id}
+            <Link to={`publishers/${row.id}`}>{row.publisher_iati_id}</Link>
           </TableColumn>
           <TableColumn key='display_name'>
-            {row.display_name}
+            <Link to={`publishers/${row.id}`}>{row.display_name}</Link>
           </TableColumn>
-          <TableColumn key='note_count'>{row.note_count}</TableColumn>
+          <TableColumn key='note_count'>
+            <Link to={`publishers/${row.id}`}>{row.note_count}</Link>
+          </TableColumn>
+          <TableColumn key='link'>
+            <a target="_blank" rel="noopener noreferrer" href={`https://iatiregistry.org/publisher/${row.name}`}>go to the registry</a>
+          </TableColumn>
         </TableRow>
       )
     })
@@ -187,71 +191,49 @@ class PublisherList extends Component {
                 <div className="md-cell md-cell--12">
 
                   <Card id="publisher-list-table" tableCard>
-                    
-                    
-                          <h2>publishers</h2>
+                      
+                      <div className="md-grid">
+                        <div className="md-cell md-cell--4">
+
+                          <h2></h2>
                           
                           <TextField
                             id="search-input"
                             onKeyDown={this.keyDownQuery}
                             onChange={this.changeQuery}
                             value={queryText}
-                            label="Search..."
+                            label="Search by publisher reference or name..."
                             lineDirection="center"
                             placeholder=""
                             customSize="search"
-                            className="md-cell md-cell--12 md-cell--bottom"
                           >
                           </TextField>
-                       
+                        </div>
+                        <div className="md-cell md-cell--8 align-right">
+
                           <Button
-                            primary
-                            flat
+                            flat={true}
                             label='Reset'
+                            primary
+                            tooltipLabel='Reset'
                             onClick={this.removeQuery}
                           >
                             refresh
                           </Button>
+                        </div>
+                      </div>  
 
+                      <DataTable baseId="publisher-table" plain>
 
-
-                          <DataTable baseId="publisher-table" plain>
-
-                            <Header sortValue={ordering} sort={this.sort}></Header>
-                            
-                            <TableBody>
-                              {rows}
-                            </TableBody>
-                            <TablePagination {...paginationMeta} />
-                          </DataTable>
-
-
+                        <Header sortValue={ordering} sort={this.sort}></Header>
+                        
+                        <TableBody>
+                          {rows}
+                        </TableBody>
+                        <TablePagination {...paginationMeta} />
+                      </DataTable>
 
                     </Card>
-
-                        
-
-
-
-
-
-
-
-
-                  { /*}
-
-
-                  <CSSTransitionGroup
-                    component="div"
-                    className="text-container"
-                    transitionName="opacity"
-                    transitionEnterTimeout={1500}
-                    transitionLeaveTimeout={1500}
-                    {...accessibilityProps}
-                  >
-          
-                    </CSSTransitionGroup> */}
-
                 </div>
             </div>
 
@@ -277,22 +259,30 @@ const Header = ({ sortValue, sort }) => (
         sorted={sortValue.includes('publisher_iati_id') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('publisher_iati_id')}
         tooltipLabel="The IATI organisation identifier as reported on the registry"
+        className="publisher-col-1 col-orderable"
       >
-        Publisher reference
+        Reference
       </TableColumn>
       <TableColumn
         sorted={sortValue.includes('display_name') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('display_name')}
         tooltipLabel="The publisher's name as reported on the registry"
+        className="publisher-col-2 col-orderable"
       >
-        Publisher name
+        Name
       </TableColumn>
       <TableColumn
         tooltipLabel="The amount of errors found on this publisher"
+        className="publisher-col-4"
       >
-        Bug count
+        # of validation errors
       </TableColumn>
-
+      <TableColumn
+        tooltipLabel="Link to the registry"
+        className="publisher-col-3"
+      >
+        Link to the registry
+      </TableColumn>
     </TableRow>
   </TableHeader>
 );

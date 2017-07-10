@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import TextField from 'react-md/lib/TextFields'
 
-import LinearProgress from 'react-md/lib/Progress/LinearProgress';
+import LinearProgress from 'react-md/lib/Progress/LinearProgress'
 import DataTable from 'react-md/lib/DataTables/DataTable'
 import TableHeader from 'react-md/lib/DataTables/TableHeader'
 import TableBody from 'react-md/lib/DataTables/TableBody'
@@ -10,10 +10,15 @@ import TableRow from 'react-md/lib/DataTables/TableRow'
 import TableColumn from 'react-md/lib/DataTables/TableColumn'
 import Card from 'react-md/lib/Cards/Card'
 import TablePagination from 'react-md/lib/DataTables/TablePagination'
-import Button from 'react-md/lib/Buttons/Button';
+import Button from 'react-md/lib/Buttons/Button'
+import SelectField from 'react-md/lib/SelectFields'
 
 import { oipaApiUrl } from '../../config.js'
+import _ from 'lodash'
 
+
+import { errorTypeMapping, elementMapping } from '../../mappings'
+      
 
 const progressId = 'contentLoadingProgress';
 
@@ -31,7 +36,11 @@ class NotesList extends Component {
       count: 0,
       fetching: true,
       data: [],
-      ordering: 'display_name'
+      ordering: 'line_number',
+      modelFilter: '',
+      fieldFilter: '',
+      modelFilterOptions: [],
+      fieldFilterOptions: []
     }
 
     this.changeQuery = this.changeQuery.bind(this)
@@ -42,6 +51,11 @@ class NotesList extends Component {
     this._handlePagination = this._handlePagination.bind(this)
     this.timeout = null
     this.removeQuery = this.removeQuery.bind(this)
+    this.loadFilterOptions = this.loadFilterOptions.bind(this)
+
+
+    this._handleModelFilterChange = this._handleModelFilterChange.bind(this)
+    this._handleFieldFilterChange = this._handleFieldFilterChange.bind(this)
   }
 
   setQuery(q){
@@ -78,6 +92,8 @@ class NotesList extends Component {
     this.setState({
       query: '',
       queryText: '',
+      modelFilter: '',
+      fieldFilter: '',
       fetching: true,
       page: 1,
       pageSize: 10,
@@ -86,8 +102,11 @@ class NotesList extends Component {
   }
 
   loadData(state, props){
-    const query = `datasets/${props.dataset.id}/notes/?format=json&page=${state.page}&page_size=${state.pageSize}&q=${state.query}&ordering=${state.ordering}`
+    let query = `datasets/${props.datasetId}/notes/?format=json&page=${state.page}&page_size=${state.pageSize}&q=${state.query}&ordering=${state.ordering}`
     
+    if(state.modelFilter !== ''){ query += `&model=${encodeURIComponent(state.modelFilter)}` }
+    if(state.fieldFilter !== ''){ query += `&field=${encodeURIComponent(state.fieldFilter)}` }
+
     fetch(oipaApiUrl + query)
       .then((response) => {
         return response.json()
@@ -102,6 +121,25 @@ class NotesList extends Component {
     )
   }
 
+  loadFilterOptions(results){
+
+    var modelOptions = _.uniqBy(results, (o) => (o.model)).map((o) => {
+
+      const modelNicename = elementMapping[o.model] ? elementMapping[o.model] : o.model
+      return { 
+        code: o.model, 
+        name: modelNicename 
+      }
+    })
+    
+    var fieldOptions = _.uniqBy(results, (o) => (o.field)).map((o) => ({ code: o.field, name: o.field }))
+
+    this.setState({
+      modelFilterOptions: [{code: '', name: 'Show all'}, ...modelOptions],
+      fieldFilterOptions: [{code: '', name: 'Show all'}, ...fieldOptions]
+    })
+  }
+
   componentDidMount() {
     this.loadData(this.state, this.props)
   }
@@ -109,6 +147,12 @@ class NotesList extends Component {
   componentWillUpdate(nextProps, nextState){
     if ((nextState.fetching === true && this.state.fetching === false) || nextProps.publisher !== this.props.publisher){
       this.loadData(nextState, nextProps)
+    } else if(nextState.modelFilter !== this.state.modelFilter || nextState.fieldFilter !== this.state.fieldFilter){
+      this.loadData(nextState, nextProps)
+    }
+
+    if(nextProps.commonErrors !== this.props.commonErrors){
+      this.loadFilterOptions(nextProps.commonErrors)
     }
   }
 
@@ -130,20 +174,35 @@ class NotesList extends Component {
     })
   }
 
+  _handleModelFilterChange(value){
+    this.setState({
+      modelFilter: value,
+      fetching: true,
+    })
+
+  }
+
+  _handleFieldFilterChange(value){
+    this.setState({
+      fieldFilter: value,
+      fetching: true,
+    })
+  }
 
   render () {
 
     const {
-          data,
-          page,
-          pageSize,
-          fetching,
-          queryText,
-          count,
-          ordering
+      data,
+      page,
+      pageSize,
+      fetching,
+      queryText,
+      count,
+      ordering,
+      fieldFilter,
+      modelFilter
     } = this.state
 
-    
     const paginationMeta = {
       rows: count,
       rowsPerPage: pageSize,
@@ -152,16 +211,19 @@ class NotesList extends Component {
       defaultRowsPerPage: 10,
     }
 
-    const rows = data.map((row, i) => {
+    const rows = data && data.map((row, i) => {
+
+      const model = elementMapping[row.model] ? elementMapping[row.model] : row.model
+      
       return (
         <TableRow key={i}>
-          <TableColumn key='line_number'>{row.line_number}</TableColumn>
+          <TableColumn key='line_number'>{row.line_number === -1 ? '-' : row.line_number}</TableColumn>
           <TableColumn key='iati_identifier'>{row.iati_identifier}</TableColumn>
-          <TableColumn key='model'>{row.model}</TableColumn>
+          <TableColumn key='model'>{model}</TableColumn>
           <TableColumn key='field'>{row.field}</TableColumn>
           <TableColumn key='message'>{row.message}</TableColumn>
-          <TableColumn key='variable'>{row.variable}</TableColumn>
-          <TableColumn key='exception_type'>{row.exception_type}</TableColumn>
+          <TableColumn key='variable'>{row.variable != null && row.variable.trim() === '' ? "empty string" : row.variable}</TableColumn>
+          <TableColumn key='exception_type'>{errorTypeMapping[row.exception_type]}</TableColumn>
         </TableRow>
       )
     })
@@ -174,9 +236,23 @@ class NotesList extends Component {
         </div>
 
           <div className="md-grid">
-            <div className="md-cell md-cell--4">
-
+            <div className="md-cell md-cell--8">
               <h2>Validation errors</h2>
+            </div>
+            <div className="md-cell md-cell--4 align-right">
+
+              <Button
+                flat={true}
+                label='Reset'
+                primary
+                tooltipLabel='Reset'
+                onClick={this.removeQuery}
+              >
+                refresh
+              </Button>
+            </div>
+            <div className="md-cell md-cell--4-offset md-cell--8 no-vertical-margin">
+              { /*
               <TextField
                 id="search-input"
                 onKeyDown={this.keyDownQuery}
@@ -189,20 +265,40 @@ class NotesList extends Component {
                 className="md-cell md-cell--12 md-cell--bottom"
               >
               </TextField>
-            </div>
-            <div className="md-cell md-cell--8 align-right">
+              */ }
 
-              <Button
-                flat={true}
-                label='Reset'
-                primary
-                tooltipLabel='Reset'
-                onClick={this.removeQuery}
-              >
-                refresh
-              </Button>
+              <SelectField
+                id="fields"
+                label="Filter by field"
+                placeholder="Select a field"
+                menuItems={this.state.fieldFilterOptions}
+                onChange={this._handleFieldFilterChange}
+                value={fieldFilter}
+                itemLabel="name"
+                itemValue="code"
+                className="md-cell"
+                helpOnFocus
+                helpText="Select an IATI field"
+              />
+
+              <SelectField
+                id="elements"
+                label="Filter by element"
+                placeholder="Select an element"
+                menuItems={this.state.modelFilterOptions}
+                onChange={this._handleModelFilterChange}
+                value={modelFilter}
+                itemLabel="name"
+                itemValue="code"
+                className="md-cell"
+                helpOnFocus
+                helpText="Select an IATI element"
+              />
+
             </div>
-          </div>  
+          </div>
+
+
 
         <DataTable plain className='notes-table'>
 
@@ -235,7 +331,7 @@ const Header = ({ sortValue, sort }) => (
         sorted={sortValue.includes('line_number') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('line_number')}
         tooltipLabel="The line number on which this validation error occurs"
-        className='notes-col-1'
+        className='notes-col-1 col-orderable'
       >
         Line
       </TableColumn>
@@ -243,7 +339,7 @@ const Header = ({ sortValue, sort }) => (
         sorted={sortValue.includes('iati_identifier') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('iati_identifier')}
         tooltipLabel="The IATI identifier of the activity where this error occurs"
-        className='notes-col-2'
+        className='notes-col-2 col-orderable'
       >
         identifier
       </TableColumn>
@@ -251,7 +347,7 @@ const Header = ({ sortValue, sort }) => (
         sorted={sortValue.includes('model') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('model')}
         tooltipLabel="The IATI element on which this error occurs"
-        className='notes-col-3'
+        className='notes-col-3 col-orderable'
       >
         Element
       </TableColumn>
@@ -259,31 +355,27 @@ const Header = ({ sortValue, sort }) => (
         sorted={sortValue.includes('field') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('field')}
         tooltipLabel="The IATI attribute on which this error occurs"
-        className='notes-col-4'
+        className='notes-col-4 col-orderable'
       >
         Attribute
       </TableColumn>
 
       <TableColumn
-        sorted={sortValue.includes('message') ? sortValue.charAt(0) === '-' ? true : false : undefined}
-        onClick={() => sort('message')}
         tooltipLabel="A message that describes the error"
         className='notes-col-5'
       >
-        Message
+        The rule
       </TableColumn>
       <TableColumn
         sorted={sortValue.includes('variable') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('variable')}
-        tooltipLabel="A message that describes the error"
-        className='notes-col-6'
+        tooltipLabel="The value as found in the XML"
+        className='notes-col-6 col-orderable'
       >
-        Variable
+        The value used in the XML
       </TableColumn>
 
       <TableColumn
-        sorted={sortValue.includes('exception_type') ? sortValue.charAt(0) === '-' ? true : false : undefined}
-        onClick={() => sort('exception_type')}
         tooltipLabel=""
         className='notes-col-7'
       >

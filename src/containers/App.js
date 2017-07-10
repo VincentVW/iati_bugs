@@ -10,7 +10,7 @@ import PublisherList from './PublisherList.jsx'
 import Publisher from './Publisher.jsx'
 import DatasetsPage from './DatasetsPage.jsx'
 import Dataset from './Dataset.jsx'
-
+import CommonErrors from './CommonErrors.jsx'
 import About from './About.jsx'
 
 
@@ -41,15 +41,15 @@ const menuItems = [
     }, {
       key: '/datasets',
       primaryText: 'Datasets',
-      leftIcon: <FontIcon>business</FontIcon>,
+      leftIcon: <FontIcon>note</FontIcon>,
     }, {
       key: '/common-bugs',
       primaryText: 'Common bugs',
-      leftIcon: <FontIcon>insert_chart</FontIcon>,
+      leftIcon: <FontIcon>cached</FontIcon>,
     }, {
       key: '/implemented-checks',
       primaryText: 'Implemented checks',
-      leftIcon: <FontIcon>note</FontIcon>,
+      leftIcon: <FontIcon>playlist_add_check</FontIcon>,
     }, {
       key: '/about',
       primaryText: 'About',
@@ -132,7 +132,7 @@ class App extends Component {
                             <Route path="/publishers/:publisherId" component={Publisher}/>
                             <Route exact={true} path="/datasets" component={DatasetsPage} />
                             <Route path="/datasets/:datasetId" component={Dataset} />
-
+                            <Route path="/common-bugs" component={CommonErrors} />
                             <Route exact={true} path="/about" component={About} />
                             
                             { /*

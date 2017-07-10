@@ -1,12 +1,20 @@
 import React, { Component } from 'react'
 import TextField from 'react-md/lib/TextFields'
-import DataTableContainer from '../components/helpers/DataTable'
-import { implementedChecks } from '../components/checksList'
+import { allImplementedChecks } from '../components/checksList'
 
 import { connect } from 'react-redux'
 import { setPageTitle } from '../actions/header'
-import Avatar from 'react-md/lib/Avatars';
-import Chip from 'react-md/lib/Chips';
+import Avatar from 'react-md/lib/Avatars'
+import Chip from 'react-md/lib/Chips'
+
+import DataTable from 'react-md/lib/DataTables/DataTable'
+import TableHeader from 'react-md/lib/DataTables/TableHeader'
+import TableBody from 'react-md/lib/DataTables/TableBody'
+import TableRow from 'react-md/lib/DataTables/TableRow'
+import TableColumn from 'react-md/lib/DataTables/TableColumn'
+import Card from 'react-md/lib/Cards/Card'
+import Button from 'react-md/lib/Buttons/Button'
+import cn from 'classnames'
 
 
 class ImplementedChecks extends Component {
@@ -16,25 +24,74 @@ class ImplementedChecks extends Component {
 
     this.state = {
           query: '',
+          status: -3,
           implementedChecks: []
     }
 
     this.changeQuery = this.changeQuery.bind(this)
     this.setQuery = this.setQuery.bind(this)
     this.timeout = null
+
+
+    this.removeQuery = this.removeQuery.bind(this)
+    this.filterByStatus = this.filterByStatus.bind(this)
   }
 
-  setQuery(q){
-    if(q === ''){
+  removeQuery(){
+    this.setState({
+      query: '',
+      status: -3,
+      implementedChecks: allImplementedChecks
+    })
+  }
+
+  setQuery(query){
+
+    const { status } = this.state
+
+    if(query === ''){
+
+      const filteredChecks = allImplementedChecks
+        .filter((o) => (o.bugs === status || status === -3))
+        
       this.setState({
         query: '',
-        implementedChecks: implementedChecks
+        implementedChecks: filteredChecks
       })
     } else {
-      const filteredChecks = implementedChecks.filter((o) => o.element.includes(q) || o.attribute.includes(q) || o.check.includes(q))
+      const filteredChecks = allImplementedChecks
+        .filter((o) => (o.bugs === status || status === -3))
+        .filter((o) => o.element.includes(query) || o.attribute.includes(query) || o.check.includes(query))
+
       this.setState({
-        query: q,
+        query: query,
         implementedChecks: filteredChecks
+      })
+    }
+  }
+
+  filterByStatus(status){
+    const { query } = this.state
+
+    if(query === ''){
+
+      const filteredChecks = allImplementedChecks
+        .filter((o) => (o.bugs === status || status === -3))
+        
+      this.setState({
+        query: '',
+        implementedChecks: filteredChecks,
+        status: status
+      })
+    } else {
+      const filteredChecks = allImplementedChecks
+        .filter((o) => (o.bugs === status || status === -3))
+        .filter((o) => o.element.includes(query) || o.attribute.includes(query) || o.check.includes(query))
+
+      this.setState({
+        query: query,
+        implementedChecks: filteredChecks,
+        status: status
       })
     }
   }
@@ -55,7 +112,7 @@ class ImplementedChecks extends Component {
 
   componentDidMount() {
     this.props.setPageTitle(`Implemented checks`)
-    this.setState({implementedChecks: implementedChecks})
+    this.setState({implementedChecks: allImplementedChecks})
   }
 
   shouldComponentUpdate(nextProps, nextState){
@@ -68,7 +125,8 @@ class ImplementedChecks extends Component {
   render () {
 
         const {
-              implementedChecks
+              implementedChecks,
+              status
         } = this.state
 
         const statusMapping = {
@@ -78,75 +136,143 @@ class ImplementedChecks extends Component {
           '1': <span style={{color: 'green'}}>✓</span>
         }
 
-        const rows = this.state.implementedChecks.map((row) => {
-          // const bugsClasses = cn('rv-col', 'column-4', 'status-'+row.bugs)
-          // const bugsText = this.implementedContent(row.bugs)
-          return {
-                key: `${row.element}-${row.attribute}`,
-                standard_type: row.standard,
-                version: row.version,
-                element: row.element,
-                attribute: row.attribute,
-                implement: statusMapping[parseInt(row.bugs, 10)],
-                validation_checks: row.check
-          }
-      })
+        const rows = implementedChecks.map((row, i) => {
+          return (
+            <TableRow key={`${row.element}-${row.attribute}-${row.check}`}>
+              <TableColumn key='standard_type'>
+                {row.standard}
+              </TableColumn>
+              <TableColumn key='version'>
+                {row.version}
+              </TableColumn>
+              <TableColumn key='element'>
+                {row.element}
+              </TableColumn>
+              <TableColumn key='attribute'>
+                {row.attribute}
+              </TableColumn>
+              <TableColumn key='implement'>
+                {statusMapping[parseInt(row.bugs, 10)]}
+              </TableColumn>
+              <TableColumn key='validation_checks'>
+                {row.check}
+              </TableColumn>
+            </TableRow>
+          )
+        })
+
+      console.log(status)
 
     return (
-        <div>
-       
 
-            <div className="md-grid">
+      <div className="md-grid">
                 <div className="md-cell md-cell--12">
 
-                    <DataTableContainer 
-                        cardId='activity-list-tablee'
-                        title={''} 
-                        rows={rows} 
-                        headers={[
-                                {ref: 'standard_type',    name: 'Standard type'},
-                                {ref: 'version',          name: 'Version'},
-                                {ref: 'element',          name: 'Element'},
-                                {ref: 'attribute',        name: 'Attribute'},
-                                {ref: 'implement',        name: 'Implemented'},
-                                {ref: 'validation_checks',name: 'Validation check'},
-                        ]}
-                        pagination={false}>
-                        <div className="align-right">
-                          <Chip
-                            label={implementedChecks.filter(o => (o.bugs === 1)).length + " Implemented checks"}
-                            avatar={<Avatar suffix="light-green">✓</Avatar>}
-                          />
+          <Card id="implemented-checks-list-table" tableCard>
 
-                          <Chip
-                            label={implementedChecks.filter(o => (o.bugs === 0)).length + " Non-implemented checks"}
-                            avatar={<Avatar suffix="red">X</Avatar>}
-                          />
+            <div className="md-grid">
+              <div className="md-cell md-cell--4">
 
-                          <Chip
-                            label={implementedChecks.filter(o => (o.bugs === -2)).length + " Non-implementable checks"}
-                            avatar={<Avatar suffix="yellow">:|</Avatar>}
-                          />
+                <TextField
+                  id="search-input"
+                  onKeyDown={this.changeQuery}
+                  label="Search by iati element/attribute/error msg..."
+                  lineDirection="center"
+                  placeholder=""
+                  customSize="search"
+                />
 
-                        </div>
+              </div>
+              <div className="md-cell md-cell--8 align-right">
+                <Button
+                  flat={true}
+                  label='Reset'
+                  primary
+                  tooltipLabel='Reset'
+                  onClick={this.removeQuery}
+                >
+                  refresh
+                </Button>
+              </div>
+            </div>  
 
-                        <TextField
-                          id="search-input"
-                          onKeyDown={this.changeQuery}
-                          label="Search by iati element/attribute/error msg..."
-                          lineDirection="center"
-                          placeholder=""
-                          customSize="title"
-                          className="md-cell md-cell--bottom"
-                        />
+            <div className="md-grid">
+              <div className="md-cell md-cell--4">
 
-                    </DataTableContainer>
-                </div>
+            
+
+              </div>
+              <div className="md-cell md-cell--8 align-right">
+                
+                <Chip
+                  label={allImplementedChecks.filter(o => (o.bugs === 1)).length + " Implemented checks"}
+                  avatar={<Avatar suffix="light-green">✓</Avatar>}
+                  onClick={this.filterByStatus.bind(this, 1)}
+                  className={cn({'selected': status === 1})}
+
+                />
+
+                <Chip
+                  label={allImplementedChecks.filter(o => (o.bugs === 0)).length + " Non-implemented checks"}
+                  avatar={<Avatar suffix="red">X</Avatar>}
+                  onClick={this.filterByStatus.bind(this, 0)}
+                  className={cn({'selected': status === 0})}
+                />
+
+                <Chip
+                  label={allImplementedChecks.filter(o => (o.bugs === -2)).length + " Non-implementable checks"}
+                  avatar={<Avatar suffix="yellow">:|</Avatar>}
+                  onClick={this.filterByStatus.bind(this, -2)}
+                  className={cn({'selected': status === -2})}
+                />
+
+              </div>
             </div>
-        </div>
+
+            <DataTable plain>
+              <Header></Header>
+              <TableBody>
+                {rows}
+              </TableBody>
+            </DataTable>
+          </Card>
+        </div> 
+      </div> 
     )
   }
 }
+
+
+
+/* Header.jsx */
+
+const Header = () => {
+
+  return (
+  <TableHeader>
+    <TableRow autoAdjust={false}>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-1'>
+        Standard type
+      </TableColumn>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-2'>
+        Version
+      </TableColumn>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-3'>
+        Element
+      </TableColumn>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-4'>
+        Attribute
+      </TableColumn>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-5'>
+        Implemented
+      </TableColumn>
+      <TableColumn tooltipLabel="" className='implemented-checks-col-6'>
+        Validation checks
+      </TableColumn>
+    </TableRow>
+  </TableHeader>
+)};
+
 
 
 export default connect(null, {

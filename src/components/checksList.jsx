@@ -1,4 +1,4 @@
-export const implementedChecks = [
+export const allImplementedChecks = [
     {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'last-updated-datetime', check: 'last-updated-time is less than previously existing activity', bugs: 1, dashboard: 0, validator: 0},
     {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'last-updated-datetime', check: 'last-updated-time is not present, but is present on previously existing activity', bugs: 1, dashboard: 0, validator: 0},
     {standard: 'activity', version: '1.01+', element: 'iati-activity', attribute:'xml:lang', check: 'Must be on codelist', bugs: 1, dashboard: 1, validator: 0},
@@ -33,6 +33,8 @@ export const implementedChecks = [
     {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Must be in the format {Registration Agency} - (Registration Number}', bugs: 1, dashboard: 0, validator: 1},
     {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Participating-org/@ref should match the regex [^\/\&\|\?]+', bugs: 1, dashboard: 0, validator: 1},
     {standard: 'activity', version: '2.01+', element: 'participating-org', attribute:'ref', check: 'Either @ref or narrative must be present', bugs: 1, dashboard: 0, validator: 1},
+    {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'ref', check: 'Must be an existing IATI organisation', bugs: -2, dashboard: -1, validator: -1},
+
     {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'participating-org', attribute:'role', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
@@ -248,7 +250,7 @@ export const implementedChecks = [
 
     {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: '-', check: 'Must occur no more than once (within each parent element)', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'ref', check: 'Must be in the format {Registration Agency} - (Registration Number}', bugs: 1, dashboard: -1, validator: -1},
-    {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'ref', check: 'Must be an existing IATI organisation', bugs: 1, dashboard: -1, validator: -1},
+    {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'ref', check: 'Must be an existing IATI organisation', bugs: -2, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'ref', check: 'If this is not present then the narrative MUST contain the name of the organisation.', bugs: -2, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/provider-org',             attribute: 'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
@@ -258,7 +260,7 @@ export const implementedChecks = [
 
     {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: '-', check: 'Must occur no more than once (within each parent element)', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'ref', check: 'Must be in the format {Registration Agency} - (Registration Number}', bugs: 1, dashboard: -1, validator: -1},
-    {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'ref', check: 'Must be an existing IATI organisation', bugs: 1, dashboard: -1, validator: -1},
+    {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'ref', check: 'Must be an existing IATI organisation', bugs: -2, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'ref', check: 'If this is not present then the narrative MUST contain the name of the organisation.', bugs: -2, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'type', check: 'Must be on codelist', bugs: 1, dashboard: -1, validator: -1},
     {standard: 'activity', version: '1.01+', element: 'transaction/receiver-org',             attribute: 'type', check: 'Required attribute', bugs: 1, dashboard: -1, validator: -1},
@@ -501,5 +503,5 @@ export const implementedChecks = [
 
 
     // need to check additional 2.02 element that are missing in the above, only added humanitarian-scope
-    {standard: '-', version: '-', element: 'Any more suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
+    {standard: '-', version: '-', element: 'More suggestions?', attribute:'Add to the Trello board please!', check: '-', bugs: 0, dashboard: 0, validator: 0},
     ]

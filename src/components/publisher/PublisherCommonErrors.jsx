@@ -205,7 +205,7 @@ const Header = ({ sortValue, sort, publisher }) => (
         Attribute
       </TableColumn>
       <TableColumn tooltipLabel="The amount of found validation errors">
-        Note count
+        Invalid occurences
       </TableColumn>
     </TableRow>
   </TableHeader>

@@ -54,7 +54,14 @@ a:hover{
 }
 
 .md-chip{
-  margin-top: 3.5rem;
+  margin-left: 1rem;
+}
+
+.md-chip.selected{
+  background-color: #666;
+  .md-chip-text{
+    color: #fff;
+  }
 }
 
 #search-input{
@@ -72,9 +79,22 @@ a:hover{
 
 // Tables in general
 .md-table-header{
-  background-color: #4d7572 !important;
+  // background-color: #4d7572 !important;
+  border-top: 2px solid #4d7572;
+  border-bottom: 2px solid #4d7572;
+  
+  .col-orderable{
+    text-decoration: underline;
+  }
+
+  .md-table-column--header{
+    height: 50px;
+    font-size: 14px;
+  }
+
   .md-text--secondary{
-    color: #fff;
+    color: #4d7572 !important;
+    font-weight: bold;
   }
 }
 
@@ -82,14 +102,14 @@ a:hover{
   
 
   .md-table-row{
-    cursor: pointer;
+    // cursor: pointer;
 
-    &:hover td{
+    a:hover{
       color: #4d7572;
     }
-    td{
-      text-decoration: underline;
-    }
+    // td{
+    //   text-decoration: underline;
+    // }
   }
 }
 
@@ -155,13 +175,75 @@ p{
 
 
 
+#homepage{
+  // .md-paper--1{
+  //   border: 1px solid #4d7572;
+  // } 
+  // .md-paper--1:hover{
+  //   -webkit-box-shadow: 0px 2px 5px 4px rgba(77,117,114,1);
+  //   -moz-box-shadow: 0px 2px 5px 4px rgba(77,117,114,1);
+  //   box-shadow: 0px 2px 5px 4px rgba(77,117,114,1);
+  //   // border-bottom: 3px solid #4d7572;
+  // } 
 
 
+
+.md-paper--1 {
+//   position: relative;
+//   display: inline-block;
+  width: 90%;
+
+//   // height: 100%;
+//   background-color: #fff;
+//   border-radius: 5px;
+//   box-shadow: 0 1px 2px rgba(77, 117, 114, 0.1);
+//   border-radius: 5px;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+
+}
+
+// .md-paper--1::after {
+//   content: "";
+//   border-radius: 5px;
+//   position: absolute;
+//   z-index: -1;
+//   top: 0;
+//   left: 0;
+//   width: 90%;
+//   // height: 100%;
+//   // box-shadow: 0 5px 15px rgba(77, 117, 114, 0.3);
+//   opacity: 0;
+//   -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+//   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+// }
+
+.md-paper--1:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.1, 1.1);
+  transform: scale(1.1, 1.1);
+
+  img{
+    cursor: pointer;
+  }
+}
+
+// .md-paper--1:hover::after {
+//     opacity: 1;
+// }
+
+}
+
+
+
+// 4d7572
 
 .homepage-intro{
     padding: 2rem 0 1rem;
     font-size: 1.26rem;
 
+    
     img{
       margin-left: auto;
       margin-right: auto;
@@ -170,6 +252,14 @@ p{
       margin-bottom: 1rem;
     }
 } 
+
+.md-media-overlay{
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.md-card-title--large{
+  font-size: 20px;
+}
 
 .grid-max-width{
     max-width: 1200px;
@@ -236,7 +326,7 @@ code{
 }
 
 
-.notes-table table{ 
+.notes-table table, #dataset-list-table table, #publisher-list-table table, #common-errors-list-table table, #implemented-checks-list-table table{ 
   table-layout: fixed; 
 
   .md-table-column{
@@ -244,12 +334,17 @@ code{
   }
 }
 
+hr{
+  margin-top: 2em;
+  margin-bottom: 4em;
+}
+
 // TABLES
-.notes-col-1{ width: 5%; }
+.notes-col-1{ width: 6%; }
 .notes-col-2{ width: 15%; }
 .notes-col-3{ width: 15%; }
 .notes-col-4{ width: 10%; }
-.notes-col-5{ width: 25%; }
+.notes-col-5{ width: 24%; }
 .notes-col-6{ width: 20%; }
 .notes-col-7{ width: 10%; }
 
@@ -261,7 +356,43 @@ code{
 .dataset-col-5{ width: 15%; }
 .dataset-col-45{ width: 40%; }
 
+.publisher-col-1{ width: 25%; }
+.publisher-col-2{ width: 35%; }
+.publisher-col-3{ width: 20%; }
+.publisher-col-4{ width: 20%; }
 
+.common-errors-col-1{ width: 15%; }
+.common-errors-col-2{ width: 30%; }
+.common-errors-col-3{ width: 15%; }
+.common-errors-col-4{ width: 10%; }
+.common-errors-col-5{ width: 30%; }
+
+.implemented-checks-col-1{ width: 15%; }
+.implemented-checks-col-2{ width: 10%; }
+.implemented-checks-col-3{ width: 20%; }
+.implemented-checks-col-4{ width: 20%; }
+.implemented-checks-col-5{ width: 10%; }
+.implemented-checks-col-6{ width: 25%; }
+
+.md-data-table .md-icon-text:last-child{
+  padding-left: 1px;
+}
+
+#fields-menu, #elements-menu{
+  float: right;
+  margin-bottom: 0;
+}
+
+.col-orderable:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.no-vertical-margin{
+  margin-top: 0;
+  margin-bottom: 0;
+  
+}
 // ABOUT
 
 .about-page{

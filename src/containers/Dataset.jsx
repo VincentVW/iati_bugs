@@ -14,6 +14,7 @@ import TableRow from 'react-md/lib/DataTables/TableRow'
 import TableColumn from 'react-md/lib/DataTables/TableColumn'
 import Card from 'react-md/lib/Cards/Card'
 import { Link } from 'react-router-dom'
+import DatasetList from '../components/datasets/DatasetList'
 
 
 class Dataset extends Component {
@@ -21,22 +22,39 @@ class Dataset extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+        datasetId: this.context.router.route.match.params.datasetId,
         dataset: {
-            id: this.context.router.route.match.params.datasetId,
             name: 'Loading'
         },
-        fetching: true
+        fetching: true,
+        commonErrors: []
     }
+
+    this.setCommonErrors = this.setCommonErrors.bind(this)
   }
 
   componentDidMount() {
     this.props.setPageTitle(`${this.state.dataset.name}`)
-    this.getDataset(this.state)
+    this.getDataset(this.state.datasetId)
   }
 
-  getDataset(state){
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.datasetId !== this.context.router.route.match.params.datasetId){
+      this.setState({
+        datasetId: this.context.router.route.match.params.datasetId
+      })
+      
+      this.getDataset(this.context.router.route.match.params.datasetId)
+      window.scroll(0,0)
+    }
+    // if(this.state.datasetId !== prevState.datasetId){
+    //   
+    // }
+  }
 
-    const query = `datasets/${state.dataset.id}/?format=json`
+  getDataset(datasetId){
+
+    const query = `datasets/${datasetId}/?format=json`
     
     fetch(oipaApiUrl + query)
       .then((response) => {
@@ -54,25 +72,30 @@ class Dataset extends Component {
     )
   }
 
+  setCommonErrors(results){
+    this.setState({commonErrors: results})
+  }
+
   render () {
 
     const {
-      dataset
+      dataset,
+      datasetId,
+      commonErrors
     } = this.state
 
+    const publisherId = this.state.dataset.publisher ? this.state.dataset.publisher.id : '0';
+
     const rows = [
-        {name: 'Name on the registry', value: dataset.title},
-        {name: 'Reference on the registry', value: <a href={`https://iatiregistry.org/dataset/${dataset.name}`} target="_blank" rel="noopener noreferrer">{dataset.name}</a>},
+        {name: 'Name on the registry', value: <div>{dataset.title} (<a href={`https://iatiregistry.org/dataset/${dataset.name}`} target="_blank" rel="noopener noreferrer">{dataset.name}</a>)</div>},
         {name: 'Publisher of this dataset', value: dataset.publisher ? (<Link to={`/publishers/${dataset.publisher.id}`}>{dataset.publisher.display_name}</Link>) : '-'},
-        {name: 'ID on the registry', value: dataset.iati_id},
+        // {name: 'ID on the registry', value: dataset.iati_id},
         {name: 'Last checked', value: dataset.date_updated},
         {name: 'Amount of IATI activities', value: dataset.activity_count},
         {name: 'Amount of validation errors', value: dataset.note_count},
         {name: 'Dataset URL', value: <a target="_blank" rel="noopener noreferrer" href={dataset.source_url}>go to</a>},
         {name: 'IATI version', value: `${dataset.iati_version} (according to the registry)`},
         {name: 'Filetype', value: dataset.filetype}
-
-
     ].map((o) => {
         return (
             <TableRow key={o.name}>
@@ -121,15 +144,28 @@ class Dataset extends Component {
                 </Card>
             </div>
             <div className="md-cell md-cell--6">
-                <DatasetCommonErrors dataset={dataset} />
+                <DatasetCommonErrors setCommonErrors={this.setCommonErrors} datasetId={datasetId} />
             </div>
         </div>
 
         <div className="md-grid">
             <div className="md-cell md-cell--12 md-cell--12-desktop">
-              <NotesList dataset={dataset} />
+              <NotesList commonErrors={commonErrors} datasetId={datasetId} />
             </div>
         </div>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <div className="md-grid">
+            <div className="md-cell md-cell--12 md-cell--12-desktop">
+                <DatasetList page='dataset' publisher={publisherId} />
+            </div>
+        </div>
+
 
       </div>
     )

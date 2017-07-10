@@ -14,6 +14,8 @@ import Button from 'react-md/lib/Buttons/Button'
 
 import { oipaApiUrl } from '../../config.js'
 import cn from 'classnames'
+import { Link } from 'react-router-dom'
+
 
 const progressId = 'contentLoadingProgress';
 
@@ -87,7 +89,7 @@ class DatasetList extends Component {
 
   loadData(state, props){
 
-    let query = `datasets/?format=json&page=${state.page}&page_size=${state.pageSize}&q=${state.query}&ordering=${state.ordering}&fields=id,name,title,filetype,publisher,source_url,date_updated,note_count`
+    let query = `datasets/?format=json&filetype=1&page=${state.page}&page_size=${state.pageSize}&q=${state.query}&ordering=${state.ordering}&fields=id,name,title,filetype,publisher,source_url,date_updated,note_count`
     
     if(props.publisher){
       query += `&publisher_id=${props.publisher}`
@@ -135,11 +137,11 @@ class DatasetList extends Component {
     })
   }
 
-  rowClick(row){
-    console.log('go to', `datasets/${row.id}`)
+  // rowClick(row){
+  //   console.log('go to', `datasets/${row.id}`)
 
-    this.context.router.history.push(`/datasets/${row.id}`)
-  }
+  //   this.context.router.history.push(`/datasets/${row.id}`)
+  // }
 
 
   render () {
@@ -169,23 +171,26 @@ class DatasetList extends Component {
 
     const rows = data.map((row, i) => {
 
+      // <TableRow key={i} onClick={() => { this.rowClick(row)}}>
       return (
-        <TableRow key={i} onClick={() => { this.rowClick(row)}}>
+        <TableRow key={i}>
           <TableColumn key='name'>
-            {row.name}
+            <Link to={`/datasets/${row.id}`}>{row.name}</Link>
           </TableColumn>
           <TableColumn key='title'>
-            {row.title}
+            <Link to={`/datasets/${row.id}`}>{row.title}</Link>
           </TableColumn>
           <TableColumn key='filetype'>
             {row.filetype}
           </TableColumn>
           {!publisher && 
             <TableColumn key='publisher_iati_id'>
-              {row.publisher.display_name}
+              <Link to={`/publishers/${row.publisher.id}`}>{row.publisher.display_name}</Link>
             </TableColumn>
           }
-          <TableColumn key='note_count'>{row.note_count}</TableColumn>
+          <TableColumn key='note_count'>
+            <Link to={`/datasets/${row.id}`}>{row.note_count}</Link>
+          </TableColumn>
         </TableRow>
       )
     })
@@ -201,7 +206,10 @@ class DatasetList extends Component {
           <div className="md-grid">
             <div className="md-cell md-cell--4">
 
-              {publisher && 
+              {publisher && this.props.page &&
+                <h2>Other datasets by this publisher</h2>
+              }
+              {publisher && !this.props.page &&
                 <h2>Datasets by this publisher</h2>
               }
               
@@ -210,11 +218,10 @@ class DatasetList extends Component {
                 onKeyDown={this.keyDownQuery}
                 onChange={this.changeQuery}
                 value={queryText}
-                label="Search..."
+                label="Search by dataset name or title..."
                 lineDirection="center"
                 placeholder=""
                 customSize="search"
-                className="md-cell md-cell--12 md-cell--bottom"
               >
               </TextField>
             </div>
@@ -266,7 +273,7 @@ const Header = ({ sortValue, sort, publisher }) => {
         sorted={sortValue.includes('name') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('name')}
         tooltipLabel="The dataset name as reported on the registry"
-        className='dataset-col-1'
+        className='dataset-col-1 col-orderable'
       >
         Name
       </TableColumn>
@@ -274,7 +281,7 @@ const Header = ({ sortValue, sort, publisher }) => {
         sorted={sortValue.includes('title') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('title')}
         tooltipLabel="The dataset title as reported on the registry"
-        className='dataset-col-2'
+        className='dataset-col-2 col-orderable'
       >
         Title
       </TableColumn>
@@ -282,14 +289,12 @@ const Header = ({ sortValue, sort, publisher }) => {
         sorted={sortValue.includes('filetype') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('filetype')}
         tooltipLabel="The dataset's IATI type as reported on the registry"
-        className='dataset-col-3'
+        className='dataset-col-3 col-orderablev'
       >
         Filetype
       </TableColumn>
       {!publisher && 
         <TableColumn
-          sorted={sortValue.includes('publisher_title') ? sortValue.charAt(0) === '-' ? true : false : undefined}
-          onClick={() => sort('publisher_title')}
           tooltipLabel="The publisher's name as reported on the registry"
           className='dataset-col-4'
         >
@@ -300,9 +305,9 @@ const Header = ({ sortValue, sort, publisher }) => {
         sorted={sortValue.includes('note_count') ? sortValue.charAt(0) === '-' ? true : false : undefined}
         onClick={() => sort('note_count')}
         tooltipLabel="The amount of found validation errors"
-        className={cn({'dataset-col-5': publisher, 'dataset-col-45': !publisher})} 
+        className={cn({'col-orderable': true, 'dataset-col-5': !publisher, 'dataset-col-45': publisher})} 
       >
-        Note count
+        # of validation errors
       </TableColumn>
     </TableRow>
   </TableHeader>

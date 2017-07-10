@@ -22,7 +22,7 @@ class DatasetCommonErrors extends Component {
 
     this.state = {
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       query: '',
       queryText: '',
       count: 0,
@@ -80,11 +80,11 @@ class DatasetCommonErrors extends Component {
   }
 
   loadData(state, props){
-    if(!props.dataset){
+    if(!props.datasetId){
       return false;
     }
 
-    const query = `datasets/aggregations/?format=json&group_by=model&aggregations=note_count&order_by=-note_count&id=${props.dataset.id}`
+    const query = `datasets/aggregations/?format=json&group_by=model&aggregations=note_count&order_by=-note_count&id=${props.datasetId}`
     fetch(oipaApiUrl + query)
       .then((response) => {
         return response.json()
@@ -95,6 +95,8 @@ class DatasetCommonErrors extends Component {
             data: json.results,
             fetching: false
         })
+
+        this.props.setCommonErrors(json.results)
       }
     )
   }
@@ -104,7 +106,7 @@ class DatasetCommonErrors extends Component {
   }
 
   componentWillUpdate(nextProps, nextState){
-    if ((nextState.fetching === true && this.state.fetching === false) || nextProps.dataset.id !== this.props.dataset.id){
+    if ((nextState.fetching === true && this.state.fetching === false) || nextProps.datasetId !== this.props.datasetId){
       this.loadData(nextState, nextProps)
     }
   }
@@ -149,7 +151,7 @@ class DatasetCommonErrors extends Component {
       rowsPerPage: pageSize,
       page: page,
       defaultPage: 1,
-      defaultRowsPerPage: 10,
+      defaultRowsPerPage: 5,
     }
 
     const start = (page*pageSize - pageSize)
@@ -205,7 +207,7 @@ const Header = ({ sortValue, sort }) => (
         Attribute
       </TableColumn>
       <TableColumn tooltipLabel="The amount of found validation errors">
-        Note count
+        Invalid occurences
       </TableColumn>
     </TableRow>
   </TableHeader>
