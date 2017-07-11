@@ -153,6 +153,7 @@ class ImplementedChecks extends Component {
               </TableColumn>
               <TableColumn key='implement'>
                 {statusMapping[parseInt(row.bugs, 10)]}
+                {row.new && <span>&nbsp;(new)</span>}
               </TableColumn>
               <TableColumn key='validation_checks'>
                 {row.check}

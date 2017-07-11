@@ -1,8 +1,8 @@
 # IATI bugs
 
-IATI validation errors from <a target="_blank" href="https://github.com/zimmerman-zimmerman/OIPA">OIPA</a>.
+IATI validation errors on <a target="_blank" href="http://www.iatibugtracker.org">IATI Bug Tracker</a> from <a target="_blank" href="https://github.com/zimmerman-zimmerman/OIPA">OIPA</a>.
 
-Work in progress.
+
 
 # Install & run
 
