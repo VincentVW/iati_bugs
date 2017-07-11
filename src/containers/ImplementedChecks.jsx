@@ -161,8 +161,6 @@ class ImplementedChecks extends Component {
           )
         })
 
-      console.log(status)
-
     return (
 
       <div className="md-grid">
@@ -171,7 +169,7 @@ class ImplementedChecks extends Component {
           <Card id="implemented-checks-list-table" tableCard>
 
             <div className="md-grid">
-              <div className="md-cell md-cell--6">
+              <div className="md-cell md-cell--5">
 
                 <TextField
                   id="search-input"
@@ -183,7 +181,7 @@ class ImplementedChecks extends Component {
                 />
 
               </div>
-              <div className="md-cell md-cell--5 align-right">
+              <div className="md-cell md-cell--7 align-right">
                 <Button
                   flat={true}
                   label='Reset'

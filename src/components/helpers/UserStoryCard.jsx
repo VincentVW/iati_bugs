@@ -10,7 +10,7 @@ class UserStoryCard extends Component {
 
   render () {
     return (
-      <div className="md-cell md-cell--6">
+      <div className="md-cell md-cell--6-desktop md-cell--12-tablet">
         <Card className="md-block-centered">
           
           <Media>

@@ -41,7 +41,7 @@ class Home extends Component {
 
       <div id="homepage">
         <div className="md-grid grid-max-width homepage-intro">
-          <div className="md-cell md-cell--3-offset md-cell--6 center-items">
+          <div className="md-cell md-cell--3-desktop-offset md-cell--6-desktop md-cell--12-tablet center-items">
             <img alt="website logo" src='/favicon.png' width="100" height="100" />
             This tool shows insights on data bugs in all IATI datasets published through the IATI Registry.
 
