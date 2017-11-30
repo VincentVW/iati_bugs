@@ -13,6 +13,8 @@ import Dataset from './Dataset.jsx'
 import CommonErrors from './CommonErrors.jsx'
 import About from './About.jsx'
 
+import Activity from './Activity.jsx'
+
 
 import ErrorPage from './ErrorPage.jsx'
 import NavigationDrawer from 'react-md/lib/NavigationDrawers'
@@ -134,6 +136,8 @@ class App extends Component {
                             <Route path="/datasets/:datasetId" component={Dataset} />
                             <Route path="/common-bugs" component={CommonErrors} />
                             <Route exact={true} path="/about" component={About} />
+                            
+                            <Route path="/activities/:activityId" component={Activity} />
                             
                             { /*
                             <Route exact={true} path="/datasets" component={DatasetList} />
